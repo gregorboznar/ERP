@@ -13,10 +13,10 @@ class ListMaterialReceipts extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make()
+            Actions\CreateAction::make()->label(__('messages.material_receipt'))
                 ->modalWidth('3xl')
-                ->modalHeading('Create New Material Receipt')
-                ->modalDescription('Enter the details for the new material receipt')
+                ->modalHeading(__('messages.create_new_material_receipt'))
+                ->modalDescription(__('messages.enter_details_for_new_material_receipt'))
                 ->closeModalByClickingAway(true)
                 ->createAnother(false),
         ];

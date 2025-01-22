@@ -15,13 +15,21 @@ use Illuminate\Support\Facades\Auth;
 
 class MaterialReceiptResource extends Resource
 {
-    protected static ?string $model = MaterialReceipt::class;
+
+
 
     protected static ?string $navigationIcon = 'carbon-receipt';
 
     public static function getNavigationLabel(): string
     {
-        return __('messages.material_receipts');
+        return __('messages.material_receipt');
+    }
+
+
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('messages.material_receipt');
     }
 
     public static function getNavigationGroup(): ?string
@@ -34,24 +42,34 @@ class MaterialReceiptResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('title')
+                    ->label(__('messages.title'))
                     ->required()
                     ->maxLength(255),
-                Forms\Components\DatePicker::make('delivery_date')->native(false)->closeOnDateSelection()
+                Forms\Components\DatePicker::make('delivery_date')
+                    ->label(__('messages.delivery_date'))
+                    ->native(false)
+                    ->closeOnDateSelection()
                     ->required(),
                 Forms\Components\TextInput::make('delivery_note_number')
+                    ->label(__('messages.delivery_note_number'))
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('batch_number')
+                    ->label(__('messages.batch_number'))
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('weight')
+                    ->label(__('messages.weight'))
                     ->required()
                     ->numeric(),
                 Forms\Components\TextInput::make('total')
+                    ->label(__('messages.total'))
                     ->required()
                     ->numeric(),
                 Forms\Components\Select::make('material_id')
-                    ->relationship('material', 'title')->native(false)
+                    ->label(__('messages.material'))
+                    ->relationship('material', 'title')
+                    ->native(false)
                     ->required(),
                 Forms\Components\Hidden::make('user_id')
                     ->default(fn() => Auth::id())
@@ -63,55 +81,104 @@ class MaterialReceiptResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('title')->sortable()->searchable(),
-                TextColumn::make('delivery_date')->date()->sortable(),
-                TextColumn::make('delivery_note_number')->sortable()->searchable(),
-                TextColumn::make('batch_number')->sortable()->searchable(),
-                TextColumn::make('weight')->numeric()->sortable(),
-                TextColumn::make('total')->numeric()->sortable(),
-                TextColumn::make('user.name')->sortable()->searchable(),
-                TextColumn::make('material.title')->sortable()->searchable(),
-                TextColumn::make('created_at')->dateTime()->sortable(),
+                TextColumn::make('title')
+                    ->label(__('messages.title'))
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('delivery_date')
+                    ->label(__('messages.delivery_date'))
+                    ->date()
+                    ->sortable(),
+                TextColumn::make('delivery_note_number')
+                    ->label(__('messages.delivery_note_number'))
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('batch_number')
+                    ->label(__('messages.batch_number'))
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('weight')
+                    ->label(__('messages.weight'))
+                    ->numeric()
+                    ->sortable(),
+                TextColumn::make('total')
+                    ->label(__('messages.total'))
+                    ->numeric()
+                    ->sortable(),
+                TextColumn::make('user.name')
+                    ->label(__('messages.user'))
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('material.title')
+                    ->label(__('messages.material'))
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('created_at')
+                    ->label(__('messages.created_at'))
+                    ->dateTime('d.m.Y H:i')
+                    ->sortable(),
             ])
             ->filters([
-                //
+                Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
-                    ->modalHeading('Edit Material Receipt')
-                    ->modalButton('Save Changes')
+                    ->icon('heroicon-o-pencil-square')
+                    ->label('')
+                    ->modalHeading(__('messages.edit_material_receipt'))
+                    ->modalButton(__('messages.save_changes'))
                     ->modalWidth('3xl')
                     ->form([
                         Forms\Components\Grid::make(2) // 2 columns in a row
                             ->schema([
                                 Forms\Components\TextInput::make('title')
+                                    ->label(__('messages.title'))
                                     ->required()
                                     ->maxLength(255),
-                                Forms\Components\DatePicker::make('delivery_date')->native(false)->closeOnDateSelection()
+                                Forms\Components\DatePicker::make('delivery_date')
+                                    ->label(__('messages.delivery_date'))
+                                    ->native(false)
+                                    ->closeOnDateSelection()
                                     ->required(),
                                 Forms\Components\TextInput::make('delivery_note_number')
+                                    ->label(__('messages.delivery_note_number'))
                                     ->required()
                                     ->maxLength(255),
                                 Forms\Components\TextInput::make('batch_number')
+                                    ->label(__('messages.batch_number'))
                                     ->required()
                                     ->maxLength(255),
                                 Forms\Components\TextInput::make('weight')
+                                    ->label(__('messages.weight'))
                                     ->required()
                                     ->numeric(),
                                 Forms\Components\TextInput::make('total')
+                                    ->label(__('messages.total'))
                                     ->required()
                                     ->numeric(),
                                 Forms\Components\Select::make('material_id')
-                                    ->relationship('material', 'title')->native(false)
+                                    ->label(__('messages.material'))
+                                    ->relationship('material', 'title')
+                                    ->native(false)
                                     ->required(),
                             ]),
                         Forms\Components\Hidden::make('user_id')
                             ->default(fn() => Auth::id())
                             ->required(),
                     ]),
+                Tables\Actions\DeleteAction::make()
+                    ->icon('heroicon-o-trash')
+                    ->label('')
+                    ->modalHeading(__('messages.delete_material_receipt'))
+                    ->modalDescription(__('messages.delete_material_receipt_confirmation'))
+                    ->modalSubmitActionLabel(__('messages.confirm'))
+                    ->modalCancelActionLabel(__('messages.cancel'))
+                    ->modalWidth('md'),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
+                Tables\Actions\ForceDeleteBulkAction::make(),
+                Tables\Actions\RestoreBulkAction::make(),
             ]);
     }
 
