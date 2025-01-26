@@ -17,18 +17,21 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Illuminate\Support\Facades\Log;
+
 
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
+        $settings = \App\Models\Settings::first();
+        $brandName = $settings ? $settings->title : 'Admin';
 
 
         return $panel
             ->spa()
             ->default()
             ->id('admin')
+            ->brandName($brandName)
             ->path('admin')
             ->login()
             ->colors([

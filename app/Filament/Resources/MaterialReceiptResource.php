@@ -34,9 +34,8 @@ class MaterialReceiptResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return 'Inventory';
+        return 'Operativa';
     }
-
     public static function form(Forms\Form $form): Forms\Form
     {
         return $form

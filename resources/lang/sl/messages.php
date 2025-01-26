@@ -2,6 +2,12 @@
 
 return [
 
+  'series_tender' => 'Razpis serij',
+  'series_number' => 'Številka serije',
+  'series_name' => 'Ime serije',
+  'company' => 'Podjetje',
+  'article' => 'Artikel',
+  'tender_date' => 'Datum razpisa',
   'material_receipt' => 'Prevzemica materiala',
   'users' => 'Uporabniki',
   'user' => 'Uporabnik',
