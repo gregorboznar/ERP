@@ -10,8 +10,7 @@ return new class extends Migration
   {
     Schema::create('series_tenders', function (Blueprint $table) {
       $table->id();
-      $table->integer('series_number');
-      $table->string('series_name');
+      $table->string('series_number', 20);
       $table->string('company');
       $table->string('article');
       $table->date('tender_date');

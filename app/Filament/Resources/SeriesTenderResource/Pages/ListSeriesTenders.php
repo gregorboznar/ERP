@@ -13,11 +13,12 @@ class ListSeriesTenders extends ListRecords
   protected function getHeaderActions(): array
   {
     return [
-      Actions\CreateAction::make()
-        ->modalHeading(__('messages.create_series_tender'))
-        ->modalSubmitActionLabel(__('messages.save'))
-        ->createAnother(false)
-        ->slideOver(),
+      Actions\CreateAction::make()->label(__('messages.new_series_tender'))
+        ->modalHeading(__('messages.new_series_tender'))
+        ->modalDescription(__('messages.enter_details_for_new_series_tender'))
+        ->modalWidth('lg')
+        ->closeModalByClickingAway(true)
+        ->createAnother(false),
     ];
   }
 }

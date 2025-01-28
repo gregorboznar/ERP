@@ -12,14 +12,12 @@ class SeriesTender extends Model
 
   protected $fillable = [
     'series_number',
-    'series_name',
     'company',
     'article',
     'tender_date'
   ];
 
   protected $casts = [
-    'series_number' => 'integer',
     'tender_date' => 'date',
   ];
 }

@@ -10,6 +10,8 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\DeleteAction;
 
 class SeriesTenderResource extends Resource
 {
@@ -33,18 +35,19 @@ class SeriesTenderResource extends Resource
       ->schema([
         TextInput::make('series_number')
           ->required()
-          ->numeric()
-          ->label('Series Number'),
-        TextInput::make('series_name')
-          ->required()
-          ->label('Series Name'),
+          ->string()
+          ->maxLength(255)
+          ->label(__('messages.series_number')),
+
+
+
         TextInput::make('company')
-          ->required(),
+          ->required()->label(__('messages.company')),
         TextInput::make('article')
-          ->required(),
+          ->required()->label(__('messages.article')),
         DatePicker::make('tender_date')
-          ->required()
-          ->label('Tender Date'),
+          ->required()->native(false)
+          ->label(__('messages.tender_date')),
       ]);
   }
 
@@ -54,12 +57,10 @@ class SeriesTenderResource extends Resource
       ->columns([
         TextColumn::make('series_number')
           ->label(__('messages.series_number'))
+          ->formatStateUsing(fn($state) => str_pad($state, strlen($state), '0', STR_PAD_LEFT))
           ->sortable()
           ->searchable(),
-        TextColumn::make('series_name')
-          ->label(__('messages.series_name'))
-          ->sortable()
-          ->searchable(),
+
         TextColumn::make('company')
           ->label(__('messages.company'))
           ->sortable()
@@ -73,6 +74,13 @@ class SeriesTenderResource extends Resource
           ->date()
           ->sortable(),
       ])
+      ->actions([
+        EditAction::make(),
+        DeleteAction::make()
+          ->modalHeading(__('messages.delete_series_tender'))
+          ->modalDescription(__('messages.delete_series_tender_confirmation'))
+          ->successNotificationTitle(__('messages.deleted')),
+      ])
       ->defaultSort('series_number');
   }
 
@@ -85,8 +93,12 @@ class SeriesTenderResource extends Resource
   {
     return [
       'index' => Pages\ListSeriesTenders::route('/'),
-      'create' => Pages\CreateSeriesTender::route('/create'),
       'edit' => Pages\EditSeriesTender::route('/{record}/edit'),
     ];
+  }
+
+  public static function getNavigationBadge(): ?string
+  {
+    return static::getModel()::count();
   }
 }

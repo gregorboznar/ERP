@@ -18,6 +18,16 @@ class Machine extends Model
     'control_period',
   ];
 
+  public function getName(): string
+  {
+    return $this->machine_type . ' - ' . $this->manufacturer . ' (' . $this->year_of_manufacture . ')';
+  }
+
+  public function getNameAttribute(): string
+  {
+    return $this->getName();
+  }
+
   protected $casts = [
     'year_of_manufacture' => 'integer',
     'control_period' => 'date',

@@ -33,5 +33,9 @@ return [
   'delete_material_receipt_confirmation' => 'Ali ste prepričani, da želite izbrisati to prevzemnico materiala?',
   'created_at' => 'Datum',
   'new_user' => 'Nov uporabnik',
+  'new_series_tender' => 'Dodaj novo serijo',
+  'delete_series_tender' => 'Izbriši serijo',
+  'delete_series_tender_confirmation' => 'Ali ste prepričani, da želite izbrisati to serijo?',
+  'deleted' => 'Izbrisano',
 
 ];
