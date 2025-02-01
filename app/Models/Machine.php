@@ -42,6 +42,12 @@ class Machine extends Model
     return $value ?? $this->getName();
   }
 
+  public function maintenancePoints()
+  {
+    return $this->belongsToMany(MaintenancePoint::class, 'machine_maintenance_point')
+        ->withTimestamps();
+  }
+
   protected $casts = [
     'year_of_manufacture' => 'integer',
     'control_period' => 'date',
