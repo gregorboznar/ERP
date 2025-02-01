@@ -34,6 +34,7 @@ class AdminPanelProvider extends PanelProvider
             ->brandName($brandName)
             ->path('admin')
             ->login()
+            /*  ->sidebarCollapsibleOnDesktop() */
             ->colors([
                 'primary' => Color::Amber,
             ])

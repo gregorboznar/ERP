@@ -25,20 +25,9 @@ class Machine extends Model
     $parts = [];
 
     if ($this->machine_type) {
-      $parts[] = $this->machine_type;
     }
 
-    if ($this->manufacturer) {
-      $parts[] = $this->manufacturer;
-    }
 
-    if ($this->year_of_manufacture) {
-      $parts[] = "({$this->year_of_manufacture})";
-    }
-
-    if ($this->inventory_number) {
-      $parts[] = "[{$this->inventory_number}]";
-    }
 
     return implode(' - ', array_filter($parts)) ?: 'Unnamed Machine';
   }

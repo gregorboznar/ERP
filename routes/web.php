@@ -8,3 +8,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::resource('machines', MachineController::class);
+
+Route::get('/terms', function () {
+    return view('terms');
+});
