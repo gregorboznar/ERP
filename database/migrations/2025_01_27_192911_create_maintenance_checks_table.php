@@ -16,7 +16,6 @@ return new class extends Migration
                 $table->id();
                 $table->date('date');
                 $table->foreignId('machine_id')->constrained()->onDelete('cascade');
-                $table->foreignId('maintenance_point_id')->constrained()->onDelete('cascade');
                 $table->boolean('completed')->default(false);
                 $table->text('notes')->nullable();
                 $table->timestamps();

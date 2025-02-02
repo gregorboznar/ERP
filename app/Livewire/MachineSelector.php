@@ -17,7 +17,7 @@ class MachineSelector extends Component
 
     public function updatedSelectedMachine($value)
     {
-        $this->dispatch('machine-selected', machineId: $value);
+        $this->dispatch('machine-selected', ['machineId' => $value]);
     }
 
     public function render()

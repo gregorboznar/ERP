@@ -11,11 +11,10 @@ return new class extends Migration
         Schema::create('machine_maintenance_point', function (Blueprint $table) {
             $table->id();
             $table->foreignId('machine_id')->constrained()->onDelete('cascade');
-            $table->foreignId('maintenance_point_id')->constrained()->onDelete('cascade');
             $table->timestamps();
 
             // Add unique constraint to prevent duplicates
-            $table->unique(['machine_id', 'maintenance_point_id']);
+            $table->unique(['machine_id']);
         });
 
         // Remove the machine_id column from maintenance_points table

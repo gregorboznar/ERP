@@ -4,13 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class MaintenanceCheck extends Model
 {
     protected $fillable = [
         'date',
         'machine_id',
-        'maintenance_point_id',
         'completed',
         'notes'
     ];
@@ -20,8 +20,10 @@ class MaintenanceCheck extends Model
         return $this->belongsTo(Machine::class);
     }
 
-    public function maintenancePoint(): BelongsTo
+    public function maintenancePoints(): BelongsToMany
     {
-        return $this->belongsTo(MaintenancePoint::class);
+        return $this->belongsToMany(MaintenancePoint::class, 'maintenance_check_points')
+            ->withPivot('checked')
+            ->withTimestamps();
     }
 }

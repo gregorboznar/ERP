@@ -15,19 +15,18 @@ class Machine extends Model
     'type',
     'year_of_manufacture',
     'manufacturer',
+    'inventory_number',
     'control_period',
     'title',
-
   ];
 
   public function getName(): string
   {
     $parts = [];
 
-    if ($this->machine_type) {
+    if ($this->attributes['title'] ?? null) {
+      $parts[] = $this->attributes['title'];
     }
-
-
 
     return implode(' - ', array_filter($parts)) ?: 'Unnamed Machine';
   }
@@ -37,7 +36,7 @@ class Machine extends Model
     return $this->getName();
   }
 
-  public function getTitleAttribute($value): string
+  public function getTitleAttribute($value)
   {
     return $value ?? $this->getName();
   }
@@ -45,7 +44,7 @@ class Machine extends Model
   public function maintenancePoints()
   {
     return $this->belongsToMany(MaintenancePoint::class, 'machine_maintenance_point')
-        ->withTimestamps();
+      ->withTimestamps();
   }
 
   protected $casts = [
