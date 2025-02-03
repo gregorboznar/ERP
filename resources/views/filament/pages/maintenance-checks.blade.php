@@ -37,42 +37,19 @@
                 },
                 prevWeek() {
                     this.currentWeek = Math.max(this.currentWeek - 1, 0);
-                },
-                maintenanceData: {},
-                async fetchMaintenanceData() {
-                    const weeks = this.weeks[this.currentWeek];
-                    
-                    // Prepare an object to store maintenance data for each machine
-                    this.maintenanceData = {};
-
-                    @foreach ($machines as $machine)
-                        const machineId = {{ $machine->id }};
-                        
-                        // Fetch maintenance checks for this machine and week
-                        const response = await fetch(`/maintenance-checks/machine/${machineId}?start=${weeks.start}&end=${weeks.end}`);
-                        const data = await response.json();
-                        
-                        this.maintenanceData[machineId] = data;
-                    @endforeach
                 }
-            }" 
-            x-init="fetchMaintenanceData()" 
-            @week-changed.window="fetchMaintenanceData()">
+            }">
                 <div class="mb-4 flex items-center justify-between">
-                    <button 
-                        @click="prevWeek(); $dispatch('week-changed')" 
-                        :disabled="currentWeek === 0"
+                    <button @click="prevWeek" :disabled="currentWeek === 0"
                         class="fi-btn relative grid-flow-col items-center justify-center font-semibold outline-none inline-flex gap-1 px-3 py-2 text-sm rounded-lg bg-gray-50 text-gray-950 hover:bg-gray-100 focus:bg-gray-100 dark:bg-white/5 dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10 disabled:pointer-events-none disabled:opacity-70">
                         Previous Week
                     </button>
-                    
+
                     <div class="text-center">
                         <span x-text="currentWeekLabel" class="font-semibold text-gray-950 dark:text-white"></span>
                     </div>
-                    
-                    <button 
-                        @click="nextWeek(); $dispatch('week-changed')" 
-                        :disabled="currentWeek === weeks.length - 1"
+
+                    <button @click="nextWeek" :disabled="currentWeek === weeks.length - 1"
                         class="fi-btn relative grid-flow-col items-center justify-center font-semibold outline-none inline-flex gap-1 px-3 py-2 text-sm rounded-lg bg-gray-50 text-gray-950 hover:bg-gray-100 focus:bg-gray-100 dark:bg-white/5 dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10 disabled:pointer-events-none disabled:opacity-70">
                         Next Week
                     </button>
@@ -80,20 +57,34 @@
 
                 <div class="mt-4">
                     @foreach ($machines as $machine)
-                        <div 
-                            id="tab-{{ $machine->id }}" 
-                            class="space-y-4" 
-                            x-show="activeTab === {{ $machine->id }}"
+                        <div id="tab-{{ $machine->id }}" class="space-y-4" x-show="activeTab === {{ $machine->id }}"
                             x-transition:enter="transition ease-out duration-300"
                             x-transition:enter-start="opacity-0 transform scale-90"
                             x-transition:enter-end="opacity-100 transform scale-100">
                             <div class="w-full">
+                                @php
+                                    // Get maintenance checks for this machine in the current week
+                                    $weekStartDate = $startOfWeek->copy()->addWeeks($currentWeek)->format('Y-m-d');
+                                    $weekEndDate = $startOfWeek
+                                        ->copy()
+                                        ->addWeeks($currentWeek)
+                                        ->endOfWeek()
+                                        ->format('Y-m-d');
+
+                                    $maintenanceChecks = \App\Models\MaintenanceCheck::where('machine_id', $machine->id)
+                                        ->whereBetween('date', [$weekStartDate, $weekEndDate])
+                                        ->with('maintenancePoints')
+                                        ->get();
+                                @endphp
+
                                 @if ($machine->maintenancePoints->count() > 0)
-                                    <div class="fi-ta-container overflow-x-auto rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10">
+                                    <div
+                                        class="fi-ta-container overflow-x-auto rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10">
                                         <table class="w-full text-start text-sm">
                                             <thead class="divide-y divide-gray-200 dark:divide-white/10">
                                                 <tr class="bg-gray-50 dark:bg-white/5">
-                                                    <th class="fi-ta-header-cell px-3 py-3.5 text-left font-semibold text-gray-950 dark:text-white sm:first:ps-6">
+                                                    <th
+                                                        class="fi-ta-header-cell px-3 py-3.5 text-left font-semibold text-gray-950 dark:text-white sm:first:ps-6">
                                                         Maintenance Points
                                                     </th>
                                                     @php
@@ -103,7 +94,8 @@
                                                             ->addWeeks($currentWeek);
                                                     @endphp
                                                     @foreach ($days as $index => $day)
-                                                        <th class="fi-ta-header-cell px-3 py-3.5 text-center font-semibold text-gray-950 dark:text-white">
+                                                        <th
+                                                            class="fi-ta-header-cell px-3 py-3.5 text-center font-semibold text-gray-950 dark:text-white">
                                                             {{ $day }}
                                                             <br>
                                                             <small class="text-xs text-gray-500 dark:text-gray-400">
@@ -115,8 +107,10 @@
                                             </thead>
                                             <tbody class="divide-y divide-gray-200 dark:divide-white/10">
                                                 @foreach ($machine->maintenancePoints as $point)
-                                                    <tr class="hover:bg-gray-50 dark:hover:bg-white/5 transition duration-75">
-                                                        <td class="fi-ta-cell px-3 py-4 text-left font-medium text-gray-950 dark:text-white sm:first:ps-6">
+                                                    <tr
+                                                        class="hover:bg-gray-50 dark:hover:bg-white/5 transition duration-75">
+                                                        <td
+                                                            class="fi-ta-cell px-3 py-4 text-left font-medium text-gray-950 dark:text-white sm:first:ps-6">
                                                             {{ $point->name }}
                                                         </td>
                                                         @for ($day = 0; $day < 7; $day++)
@@ -125,32 +119,39 @@
                                                                     $checkDate = $currentWeekStart
                                                                         ->copy()
                                                                         ->addDays($day);
+                                                                    $checkForPointAndDate = $maintenanceChecks->first(
+                                                                        function ($check) use ($point, $checkDate) {
+                                                                            return $check->date ===
+                                                                                $checkDate->format('Y-m-d') &&
+                                                                                $check->maintenancePoints->contains(
+                                                                                    'id',
+                                                                                    $point->id,
+                                                                                );
+                                                                        },
+                                                                    );
+
+                                                                    $checkPoint = $checkForPointAndDate
+                                                                        ? $checkForPointAndDate->maintenancePoints->firstWhere(
+                                                                            'id',
+                                                                            $point->id,
+                                                                        )
+                                                                        : null;
                                                                 @endphp
-                                                                <template 
-                                                                    x-if="maintenanceData[{{ $machine->id }}] && 
-                                                                        maintenanceData[{{ $machine->id }}].checks.find(check => 
-                                                                            check.maintenance_point_id === {{ $point->id }} && 
-                                                                            check.date === '{{ $checkDate->format('Y-m-d') }}'
-                                                                        )"
-                                                                >
-                                                                    <span 
-                                                                        x-html="
-                                                                            maintenanceData[{{ $machine->id }}].checks.find(check => 
-                                                                                check.maintenance_point_id === {{ $point->id }} && 
-                                                                                check.date === '{{ $checkDate->format('Y-m-d') }}'
-                                                                            ).checked 
-                                                                            ? '<span class=\'inline-flex items-center justify-center w-6 h-6 rounded-full bg-green-100 text-green-600 dark:bg-green-800/20 dark:text-green-400\'>✓</span>'
-                                                                            : '<span class=\'inline-flex items-center justify-center w-6 h-6 rounded-full bg-yellow-100 text-yellow-600 dark:bg-yellow-800/20 dark:text-yellow-400\'>⏳</span>'
-                                                                        "
-                                                                    ></span>
-                                                                </template>
-                                                                <template x-if="!maintenanceData[{{ $machine->id }}] || 
-                                                                    !maintenanceData[{{ $machine->id }}].checks.find(check => 
-                                                                        check.maintenance_point_id === {{ $point->id }} && 
-                                                                        check.date === '{{ $checkDate->format('Y-m-d') }}'
-                                                                    )">
+                                                                @if ($checkPoint)
+                                                                    @if ($checkPoint->pivot->checked)
+                                                                        <span
+                                                                            class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-green-100 text-green-600 dark:bg-green-800/20 dark:text-green-400">
+                                                                            ✓
+                                                                        </span>
+                                                                    @else
+                                                                        <span
+                                                                            class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-yellow-100 text-yellow-600 dark:bg-yellow-800/20 dark:text-yellow-400">
+                                                                            ⏳
+                                                                        </span>
+                                                                    @endif
+                                                                @else
                                                                     <span class="text-gray-400">-</span>
-                                                                </template>
+                                                                @endif
                                                             </td>
                                                         @endfor
                                                     </tr>
