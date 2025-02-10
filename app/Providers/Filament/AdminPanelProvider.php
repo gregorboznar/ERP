@@ -37,19 +37,14 @@ class AdminPanelProvider extends PanelProvider
 
         return $panel
             ->spa()
-            /*    ->sidebarCollapsibleOnDesktop() */
+            ->sidebarCollapsibleOnDesktop()
             ->default()
             ->id('admin')
             ->brandName($brandName)
             ->path('admin')
             ->login()
             ->viteTheme('resources/css/filament/admin/theme.css')
-            ->renderHook(
-                'panels::head.end',
-                fn() => new HtmlString('
-                    @vite([\'resources/css/filament/admin/theme.css\'])
-                ')
-            )
+
             ->colors([
                 'primary' => Color::Amber,
             ])
