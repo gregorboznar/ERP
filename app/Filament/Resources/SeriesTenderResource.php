@@ -27,6 +27,10 @@ class SeriesTenderResource extends Resource
   {
     return 'Operativa';
   }
+  public static function getPluralModelLabel(): string
+  {
+    return __('messages.series_tender');
+  }
 
 
   public static function form(Form $form): Form

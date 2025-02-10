@@ -18,9 +18,10 @@ return [
   'title' => 'Naslov',
   'delivery_date' => 'Datum dostave',
   'delivery_note_number' => 'Številka dobavnice',
-  'batch_number' => 'Številka serije',
-  'weight' => 'Teža',
+  'batch_number' => 'Številka sarže',
+  'weight' => 'Teža (kg)',
   'total' => 'Skupaj',
+  'total_packages' => 'Skupaj bundov',
   'material' => 'Material',
   'new_material_receipt' => 'nova prevzemnica materiala',
   'showing' => 'Prikazujem :from do :to od :total rezultatov',
@@ -37,5 +38,6 @@ return [
   'delete_series_tender' => 'Izbriši serijo',
   'delete_series_tender_confirmation' => 'Ali ste prepričani, da želite izbrisati to serijo?',
   'deleted' => 'Izbrisano',
+  'daily_check' => 'Dnevna kontrola',
 
 ];

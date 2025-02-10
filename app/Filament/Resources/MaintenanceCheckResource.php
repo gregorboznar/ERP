@@ -15,6 +15,8 @@ class MaintenanceCheckResource extends Resource
   protected static ?string $model = MaintenanceCheck::class;
   protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-check';
 
+
+
   public static function form(Form $form): Form
   {
     return $form

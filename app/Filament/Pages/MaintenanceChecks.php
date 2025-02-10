@@ -16,15 +16,30 @@ use Filament\Notifications\Notification;
 
 class MaintenanceChecks extends Page
 {
+
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-check';
-    protected static ?string $navigationLabel = 'Maintenance Checks';
-    protected static ?string $title = 'Maintenance Checks';
+    protected static ?string $navigationLabel = 'Dnevna kontrola';
+    protected static ?string $title = 'Dnevna kontrola';
     protected static ?string $slug = 'maintenance-checks-dashboard';
     protected static ?int $navigationSort = 3;
     protected static ?string $model = null;
     protected static bool $shouldRegisterNavigation = true;
 
     protected static string $view = 'filament.pages.maintenance-checks';
+
+    public static function getNavigationLabel(): string
+    {
+        return __('messages.daily_check');
+    }
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Operativa';
+    }
+    public static function getPluralModelLabel(): string
+    {
+        return __('messages.daily_check');
+    }
+
 
     public static function getSlug(): string
     {
@@ -37,6 +52,8 @@ class MaintenanceChecks extends Page
         'maintenance_points' => [],
         'notes' => null,
     ];
+
+    public $currentWeek = 0;
 
     public function mount()
     {
@@ -112,10 +129,41 @@ class MaintenanceChecks extends Page
         ];
     }
 
+    public function nextWeek()
+    {
+        $this->currentWeek = min($this->currentWeek + 1, 12);
+    }
+
+    public function previousWeek()
+    {
+        $this->currentWeek = max($this->currentWeek - 1, -12);
+    }
+
+    public function getWeekDates()
+    {
+        $startOfWeek = now()->startOfWeek()->addWeeks($this->currentWeek);
+        return [
+            'start' => $startOfWeek->format('Y-m-d'),
+            'end' => $startOfWeek->copy()->endOfWeek()->format('Y-m-d'),
+        ];
+    }
+
     protected function getViewData(): array
     {
+        $weekDates = $this->getWeekDates();
+        $startOfWeek = now()->startOfWeek()->addWeeks($this->currentWeek);
+        $endOfWeek = $startOfWeek->copy()->endOfWeek();
+
+        $machines = Machine::with(['maintenancePoints', 'maintenanceChecks' => function ($query) use ($weekDates) {
+            $query->whereBetween('date', [$weekDates['start'], $weekDates['end']])
+                ->with('maintenancePoints');
+        }])->get();
+
         return [
-            'machines' => Machine::all(),
+            'machines' => $machines,
+            'currentWeek' => $this->currentWeek,
+            'startOfWeek' => $startOfWeek,
+            'endOfWeek' => $endOfWeek,
         ];
     }
 }

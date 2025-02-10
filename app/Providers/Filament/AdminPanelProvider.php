@@ -17,24 +17,39 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Illuminate\Support\Facades\Schema;
 use App\Filament\Pages\MaintenanceChecks;
+use Illuminate\Support\HtmlString;
 
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
-        $settings = \App\Models\Settings::first();
-        $brandName = $settings ? $settings->title : 'Admin';
-
+        $brandName = 'Admin';
+        try {
+            if (class_exists(\App\Models\Settings::class) && \Schema::hasTable('settings')) {
+                $settings = \App\Models\Settings::first();
+                $brandName = $settings ? $settings->title : 'Admin';
+            }
+        } catch (\Exception $e) {
+            // Silently continue with default brand name if there's an error
+        }
 
         return $panel
             ->spa()
+            /*    ->sidebarCollapsibleOnDesktop() */
             ->default()
             ->id('admin')
             ->brandName($brandName)
             ->path('admin')
             ->login()
-            /*  ->sidebarCollapsibleOnDesktop() */
+            ->viteTheme('resources/css/filament/admin/theme.css')
+            ->renderHook(
+                'panels::head.end',
+                fn() => new HtmlString('
+                    @vite([\'resources/css/filament/admin/theme.css\'])
+                ')
+            )
             ->colors([
                 'primary' => Color::Amber,
             ])

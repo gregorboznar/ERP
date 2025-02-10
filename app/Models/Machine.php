@@ -47,6 +47,11 @@ class Machine extends Model
       ->withTimestamps();
   }
 
+  public function maintenanceChecks()
+  {
+    return $this->hasMany(MaintenanceCheck::class);
+  }
+
   protected $casts = [
     'year_of_manufacture' => 'integer',
     'control_period' => 'date',

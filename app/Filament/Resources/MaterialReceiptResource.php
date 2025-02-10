@@ -40,10 +40,7 @@ class MaterialReceiptResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('title')
-                    ->label(__('messages.title'))
-                    ->required()
-                    ->maxLength(255),
+
                 Forms\Components\DatePicker::make('delivery_date')
                     ->label(__('messages.delivery_date'))
                     ->native(false)
@@ -62,7 +59,7 @@ class MaterialReceiptResource extends Resource
                     ->required()
                     ->numeric(),
                 Forms\Components\TextInput::make('total')
-                    ->label(__('messages.total'))
+                    ->label(__('messages.total_packages'))
                     ->required()
                     ->numeric(),
                 Forms\Components\Select::make('material_id')
@@ -80,8 +77,8 @@ class MaterialReceiptResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('title')
-                    ->label(__('messages.title'))
+                TextColumn::make('material.title')
+                    ->label(__('messages.material'))
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('delivery_date')
@@ -101,22 +98,20 @@ class MaterialReceiptResource extends Resource
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('total')
-                    ->label(__('messages.total'))
+                    ->label(__('messages.total_packages'))
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('user.name')
                     ->label(__('messages.user'))
                     ->sortable()
                     ->searchable(),
-                TextColumn::make('material.title')
-                    ->label(__('messages.material'))
-                    ->sortable()
-                    ->searchable(),
+
                 TextColumn::make('created_at')
                     ->label(__('messages.created_at'))
                     ->dateTime('d.m.Y H:i')
                     ->sortable(),
             ])
+            ->recordCheckboxPosition(null)
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
             ])
@@ -130,10 +125,7 @@ class MaterialReceiptResource extends Resource
                     ->form([
                         Forms\Components\Grid::make(2) // 2 columns in a row
                             ->schema([
-                                Forms\Components\TextInput::make('title')
-                                    ->label(__('messages.title'))
-                                    ->required()
-                                    ->maxLength(255),
+
                                 Forms\Components\DatePicker::make('delivery_date')
                                     ->label(__('messages.delivery_date'))
                                     ->native(false)
@@ -152,7 +144,7 @@ class MaterialReceiptResource extends Resource
                                     ->required()
                                     ->numeric(),
                                 Forms\Components\TextInput::make('total')
-                                    ->label(__('messages.total'))
+                                    ->label(__('messages.total_packages'))
                                     ->required()
                                     ->numeric(),
                                 Forms\Components\Select::make('material_id')
@@ -174,11 +166,7 @@ class MaterialReceiptResource extends Resource
                     ->modalCancelActionLabel(__('messages.cancel'))
                     ->modalWidth('md'),
             ])
-            ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
-                Tables\Actions\ForceDeleteBulkAction::make(),
-                Tables\Actions\RestoreBulkAction::make(),
-            ]);
+            ->bulkActions([]);
     }
 
     public static function getPages(): array
