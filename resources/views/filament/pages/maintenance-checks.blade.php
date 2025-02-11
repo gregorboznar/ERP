@@ -84,7 +84,7 @@
                                             @endphp
                                             @if ($checkPoint)
                                             @if ($checkPoint->pivot->checked)
-                                            <span class="inline-flex items-center justify-center w-24 h-6 rounded-full bg-green-100 text-green-600 dark:bg-green-800/20 dark:text-green-400 mt-8">
+                                            <span class="inline-flex items-center justify-center w-24 h-6 rounded-full bg-green-100 text-green-600 dark:bg-green-800/20 dark:text-green-400 ">
                                                 ✓
                                             </span>
                                             @else
