@@ -18,7 +18,9 @@ class ListMaterialReceipts extends ListRecords
                 ->modalHeading(__('messages.create_new_material_receipt'))
                 ->modalDescription(__('messages.enter_details_for_new_material_receipt'))
                 ->closeModalByClickingAway(true)
-                ->createAnother(false),
+                ->createAnother(false)
+                ->modalSubmitActionLabel(__('messages.save'))
+                ->modalCancelActionLabel(__('messages.cancel')),
         ];
     }
 }

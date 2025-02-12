@@ -4,6 +4,7 @@ return [
 
   'series_tender' => 'Razpis serij',
   'series_number' => 'Številka serije',
+  'enter_details_for_new_series_tender' => 'Vnesite podrobnosti za novo serijo',
   'series_name' => 'Ime serije',
   'company' => 'Podjetje',
   'article' => 'Artikel',
@@ -39,5 +40,12 @@ return [
   'delete_series_tender_confirmation' => 'Ali ste prepričani, da želite izbrisati to serijo?',
   'deleted' => 'Izbrisano',
   'daily_check' => 'Dnevna kontrola',
-
+  'new_maintenance_check' => 'Nova kontrola stroja',
+  'select_machine' => 'Izberi stroj',
+  'check_date' => 'Čas kontrole',
+  'maintenance_points' => 'Točke kontrole',
+  'notes' => 'Opombe',
+  'save' => 'Shrani',
+  'add_any_additional_notes_here' => 'Dodajte dodatne opombe tukaj...',
+  'select_machine_to_view_maintenance_points' => 'Izberite stroj, da si ogledate točke kontrole',
 ];

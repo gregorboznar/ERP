@@ -2,14 +2,13 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Machine Selection -->
         <div class="col-span-1">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">Select Machine</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">{{ __('messages.select_machine') }}</label>
             <div wire:ignore x-data="{
                 init() {
                     Livewire.on('machine-selected', (event) => {
                         console.log('Machine selected:', event);
-                        @this.set('data.machine_id', event[0].machineId).then(() => {
-                            Livewire.dispatch('maintenance-points-updated');
-                        });
+                        @this.$wire.$set('data.machine_id', event.machineId);
+                        @this.$wire.$refresh();
                     })
                 }
             }" class="w-full">
@@ -22,8 +21,8 @@
 
         <!-- Check Date -->
         <div class="col-span-1">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">Check Date</label>
-            <input type="date" wire:model="data.check_date"
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">{{ __('messages.check_date') }}</label>
+            <input type="datetime-local" wire:model="data.check_date"
                 class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-800 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
             @error('data.check_date')
             <p class="mt-1 text-sm text-danger-500">{{ $message }}</p>
@@ -32,8 +31,8 @@
     </div>
 
     <div class="space-y-4">
-        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">Maintenance Points</h3>
-        <div class="border dark:border-gray-700 rounded-lg divide-y dark:divide-gray-700">
+        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ __('messages.maintenance_points') }}</h3>
+        <div class="border dark:border-gray-700 rounded-lg divide-y dark:divide-gray-700" wire:poll.visible>
             @if (isset($data['machine_id']) && $data['machine_id'])
             @php
             $machine = \App\Models\Machine::with(['maintenancePoints'])->findOrFail($data['machine_id']);
@@ -66,7 +65,7 @@
             @endif
             @else
             <div class="p-4 text-sm text-gray-500 dark:text-gray-400">
-                Select a machine to view maintenance points.
+                {{ __('messages.select_machine_to_view_maintenance_points') }}
             </div>
             @endif
         </div>
@@ -77,10 +76,10 @@
 
     <!-- Notes -->
     <div>
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">Notes</label>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">{{ __('messages.notes') }}</label>
         <textarea wire:model="data.notes" rows="3"
             class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-800 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-            placeholder="Add any additional notes here..."></textarea>
+            placeholder="{{ __('messages.add_any_additional_notes_here') }}"></textarea>
         @error('data.notes')
         <p class="mt-1 text-sm text-danger-500">{{ $message }}</p>
         @enderror

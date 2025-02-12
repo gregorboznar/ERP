@@ -18,7 +18,9 @@ class ListSeriesTenders extends ListRecords
         ->modalDescription(__('messages.enter_details_for_new_series_tender'))
         ->modalWidth('lg')
         ->closeModalByClickingAway(true)
-        ->createAnother(false),
+        ->createAnother(false)
+        ->modalSubmitActionLabel(__('messages.save'))
+        ->modalCancelActionLabel(__('messages.cancel')),
     ];
   }
 }

@@ -69,7 +69,7 @@ class MaintenanceChecks extends Page
     {
         return [
             Action::make('createMaintenanceCheck')
-                ->label('New Maintenance Check')
+                ->label(__('messages.new_maintenance_check'))
                 ->icon('heroicon-m-plus')
                 ->modalContent(view('filament.pages.partials.maintenance-check-modal', [
                     'data' => $this->data,
@@ -119,14 +119,23 @@ class MaintenanceChecks extends Page
     public function updatedDataMachineId($value)
     {
         $this->data['maintenance_points'] = [];
-        $this->dispatch('maintenance-points-updated');
+        $this->reset(['data.maintenance_points']);
+        $this->dispatch('$refresh');
     }
 
     protected function getListeners()
     {
         return [
             'maintenance-points-updated' => '$refresh',
+            'machine-selected' => 'handleMachineSelected',
         ];
+    }
+
+    public function handleMachineSelected($event)
+    {
+        $this->data['machine_id'] = $event['machineId'];
+        $this->data['maintenance_points'] = [];
+        $this->dispatch('$refresh');
     }
 
     public function nextWeek()
