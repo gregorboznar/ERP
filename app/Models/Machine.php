@@ -22,13 +22,7 @@ class Machine extends Model
 
   public function getName(): string
   {
-    $parts = [];
-
-    if ($this->attributes['title'] ?? null) {
-      $parts[] = $this->attributes['title'];
-    }
-
-    return implode(' - ', array_filter($parts)) ?: 'Unnamed Machine';
+    return $this->attributes['name'] ?? 'Unnamed Machine';
   }
 
   public function getNameAttribute(): string

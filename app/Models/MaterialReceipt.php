@@ -19,7 +19,7 @@ class MaterialReceipt extends Model
         'total',
         'user_id',
         'material_id',
-
+        'deleted_at',
     ];
 
     protected $casts = [

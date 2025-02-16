@@ -10,6 +10,7 @@ use Filament\Tables\Table;
 use Filament\Tables;
 use App\Models\ConfirmationCompliance as ConfirmationComplianceModel;
 use App\Models\VisualCharacteristic;
+use App\Models\MeasurementCharacteristic;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -48,6 +49,17 @@ class ConfirmationCompliance extends Page implements HasTable
       ->get();
   }
 
+  protected function getMeasurementCharacteristics(): Collection
+  {
+    return MeasurementCharacteristic::query()
+      ->whereIn('id', function ($query) {
+        $query->select('measurement_characteristic_id')
+          ->from('product_measurement_characteristics')
+          ->where('product_id', $this->record);
+      })
+      ->get();
+  }
+
   public function getSubNavigation(): array
   {
     return [
@@ -77,10 +89,7 @@ class ConfirmationCompliance extends Page implements HasTable
           ->where('product_id', $this->record)
       )
       ->columns([
-        Tables\Columns\TextColumn::make('name')
-          ->label('Name')
-          ->searchable()
-          ->sortable(),
+
         Tables\Columns\TextColumn::make('created_at')
           ->label('Created At')
           ->dateTime()
@@ -107,10 +116,9 @@ class ConfirmationCompliance extends Page implements HasTable
           ->label('New Confirmation Compliance')
           ->icon('heroicon-m-plus')
           ->size(ActionSize::Large)
+          ->createAnother(false)
           ->form([
-            Forms\Components\TextInput::make('name')
-              ->required()
-              ->maxLength(255),
+
             Forms\Components\Section::make('Visual Characteristics')
               ->schema([
                 View::make('filament.pages.partials.visual-characteristics-form')
@@ -118,8 +126,16 @@ class ConfirmationCompliance extends Page implements HasTable
                     'characteristics' => $this->getVisualCharacteristics(),
                   ])
               ]),
+            Forms\Components\Section::make('Measurement Characteristics')
+              ->schema([
+                View::make('filament.pages.partials.measurement-characteristics-form')
+                  ->viewData([
+                    'characteristics' => $this->getMeasurementCharacteristics(),
+                  ])
+              ]),
             Forms\Components\Hidden::make('product_id')
               ->default($this->record),
+
           ])
       ]);
   }
