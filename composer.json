@@ -9,6 +9,7 @@
         "php": "^8.2",
         "bezhansalleh/filament-shield": "^3.3",
         "codeat3/blade-carbon-icons": "^2.31",
+        "filafly/phosphor-icon-replacement": "^1.0",
         "filament/filament": "*",
         "laravel/framework": "^11.31",
         "laravel/tinker": "^2.9",

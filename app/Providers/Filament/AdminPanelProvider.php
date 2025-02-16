@@ -20,6 +20,7 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Illuminate\Support\Facades\Schema;
 use App\Filament\Pages\MaintenanceChecks;
 use Illuminate\Support\HtmlString;
+use Filafly\PhosphorIconReplacement;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -48,6 +49,7 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Amber,
             ])
+            ->plugin(PhosphorIconReplacement::make())
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([

@@ -43,8 +43,7 @@ class Machine extends Model
 
   public function maintenancePoints()
   {
-    return $this->belongsToMany(MaintenancePoint::class, 'machine_maintenance_point')
-      ->withTimestamps();
+    return $this->belongsToMany(MaintenancePoint::class, 'machine_maintenance_point');
   }
 
   public function maintenanceChecks()
