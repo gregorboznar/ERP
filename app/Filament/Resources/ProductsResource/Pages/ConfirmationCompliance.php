@@ -20,6 +20,8 @@ use Filament\Actions\CreateAction;
 use Filament\Support\Enums\ActionSize;
 use Illuminate\Support\Collection;
 use Filament\Forms\Components\View;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 class ConfirmationCompliance extends Page implements HasTable
 {
@@ -115,10 +117,13 @@ class ConfirmationCompliance extends Page implements HasTable
         Tables\Actions\CreateAction::make()
           ->label('New Confirmation Compliance')
           ->icon('heroicon-m-plus')
-          ->size(ActionSize::Large)
+          ->size(ActionSize::ExtraLarge)
           ->createAnother(false)
+          ->beforeFormFilled(function (array $data): array {
+            $data['characteristics'] = [];
+            return $data;
+          })
           ->form([
-
             Forms\Components\Section::make('Visual Characteristics')
               ->schema([
                 View::make('filament.pages.partials.visual-characteristics-form')
@@ -135,8 +140,44 @@ class ConfirmationCompliance extends Page implements HasTable
               ]),
             Forms\Components\Hidden::make('product_id')
               ->default($this->record),
-
           ])
+          ->using(function (array $data): Model {
+            Log::info('Form data received:', $data);
+
+            // Create the confirmation compliance record
+            $confirmationCompliance = ConfirmationComplianceModel::create([
+              'product_id' => $data['product_id'],
+            ]);
+
+            // Handle visual characteristics
+            if (isset($data['data']['visual_characteristics']) && is_array($data['data']['visual_characteristics'])) {
+              foreach ($data['data']['visual_characteristics'] as $characteristicId => $status) {
+                $isCompliant = $status === 'DA';
+                $created = $confirmationCompliance->visualCharacteristics()->create([
+                  'visual_characteristic_id' => $characteristicId,
+                  'is_compliant' => $isCompliant,
+                  'notes' => null,
+                ]);
+                Log::info("Created visual characteristic record:", $created->toArray());
+              }
+            }
+
+            // Handle measurement characteristics
+            if (isset($data['data']['measurement_characteristics']) && is_array($data['data']['measurement_characteristics'])) {
+              foreach ($data['data']['measurement_characteristics'] as $characteristicId => $status) {
+                $isCompliant = $status === 'DA';
+                $created = $confirmationCompliance->measurementCharacteristics()->create([
+                  'measurement_characteristic_id' => $characteristicId,
+                  'measured_value' => 0,
+                  'is_compliant' => $isCompliant,
+                  'notes' => null,
+                ]);
+                Log::info("Created measurement characteristic record:", $created->toArray());
+              }
+            }
+
+            return $confirmationCompliance;
+          })
       ]);
   }
 }
