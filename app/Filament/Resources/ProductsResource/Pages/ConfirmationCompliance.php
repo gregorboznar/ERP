@@ -22,6 +22,7 @@ use Illuminate\Support\Collection;
 use Filament\Forms\Components\View;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
+use App\Livewire\ConfirmationComplianceForm;
 
 class ConfirmationCompliance extends Page implements HasTable
 {
@@ -91,7 +92,6 @@ class ConfirmationCompliance extends Page implements HasTable
           ->where('product_id', $this->record)
       )
       ->columns([
-
         Tables\Columns\TextColumn::make('created_at')
           ->label('Created At')
           ->dateTime()
@@ -114,70 +114,16 @@ class ConfirmationCompliance extends Page implements HasTable
         ]),
       ])
       ->headerActions([
-        Tables\Actions\CreateAction::make()
+        Tables\Actions\Action::make('new')
           ->label('New Confirmation Compliance')
           ->icon('heroicon-m-plus')
-          ->size(ActionSize::ExtraLarge)
-          ->createAnother(false)
-          ->beforeFormFilled(function (array $data): array {
-            $data['characteristics'] = [];
-            return $data;
-          })
           ->form([
-            Forms\Components\Section::make('Visual Characteristics')
-              ->schema([
-                View::make('filament.pages.partials.visual-characteristics-form')
-                  ->viewData([
-                    'characteristics' => $this->getVisualCharacteristics(),
-                  ])
-              ]),
-            Forms\Components\Section::make('Measurement Characteristics')
-              ->schema([
-                View::make('filament.pages.partials.measurement-characteristics-form')
-                  ->viewData([
-                    'characteristics' => $this->getMeasurementCharacteristics(),
-                  ])
-              ]),
-            Forms\Components\Hidden::make('product_id')
-              ->default($this->record),
+            Forms\Components\View::make('filament.pages.partials.confirmation-compliance-modal')
+              ->viewData(['record' => $this->record])
           ])
-          ->using(function (array $data): Model {
-            Log::info('Form data received:', $data);
-
-            // Create the confirmation compliance record
-            $confirmationCompliance = ConfirmationComplianceModel::create([
-              'product_id' => $data['product_id'],
-            ]);
-
-            // Handle visual characteristics
-            if (isset($data['data']['visual_characteristics']) && is_array($data['data']['visual_characteristics'])) {
-              foreach ($data['data']['visual_characteristics'] as $characteristicId => $status) {
-                $isCompliant = $status === 'DA';
-                $created = $confirmationCompliance->visualCharacteristics()->create([
-                  'visual_characteristic_id' => $characteristicId,
-                  'is_compliant' => $isCompliant,
-                  'notes' => null,
-                ]);
-                Log::info("Created visual characteristic record:", $created->toArray());
-              }
-            }
-
-            // Handle measurement characteristics
-            if (isset($data['data']['measurement_characteristics']) && is_array($data['data']['measurement_characteristics'])) {
-              foreach ($data['data']['measurement_characteristics'] as $characteristicId => $status) {
-                $isCompliant = $status === 'DA';
-                $created = $confirmationCompliance->measurementCharacteristics()->create([
-                  'measurement_characteristic_id' => $characteristicId,
-                  'measured_value' => 0,
-                  'is_compliant' => $isCompliant,
-                  'notes' => null,
-                ]);
-                Log::info("Created measurement characteristic record:", $created->toArray());
-              }
-            }
-
-            return $confirmationCompliance;
-          })
+          ->modalSubmitAction(false)
+          ->modalCancelAction(false)
+          ->modalWidth('4xl'),
       ]);
   }
 }
