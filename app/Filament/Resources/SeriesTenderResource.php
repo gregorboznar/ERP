@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\SeriesTenderResource\Pages;
 use App\Models\SeriesTender;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -12,6 +13,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\DeleteAction;
+use App\Models\Product;
 
 class SeriesTenderResource extends Resource
 {
@@ -47,8 +49,13 @@ class SeriesTenderResource extends Resource
 
         TextInput::make('company')
           ->required()->label(__('messages.company')),
-        TextInput::make('article')
-          ->required()->label(__('messages.article')),
+
+        Select::make('product_id')
+          ->required()
+          ->label(__('messages.product'))
+          ->options(Product::all()->pluck('name', 'id'))
+          ->searchable(),
+
         DatePicker::make('tender_date')
           ->required()->native(false)
           ->label(__('messages.tender_date')),
@@ -69,8 +76,8 @@ class SeriesTenderResource extends Resource
           ->label(__('messages.company'))
           ->sortable()
           ->searchable(),
-        TextColumn::make('article')
-          ->label(__('messages.article'))
+        TextColumn::make('product.name')
+          ->label(__('messages.product'))
           ->sortable()
           ->searchable(),
         TextColumn::make('tender_date')

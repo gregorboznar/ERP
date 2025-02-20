@@ -23,6 +23,7 @@ use Filament\Forms\Components\View;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use App\Livewire\ConfirmationComplianceForm;
+use Filament\Support\Enums\Alignment;
 
 class ConfirmationCompliance extends Page implements HasTable
 {
@@ -123,7 +124,8 @@ class ConfirmationCompliance extends Page implements HasTable
           ])
           ->modalSubmitAction(false)
           ->modalCancelAction(false)
-          ->modalWidth('4xl'),
+          ->modalWidth('7xl')
+          ->modalAlignment(Alignment::Center),
       ]);
   }
 }

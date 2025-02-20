@@ -13,11 +13,16 @@ class SeriesTender extends Model
   protected $fillable = [
     'series_number',
     'company',
-    'article',
+    'product_id',
     'tender_date'
   ];
 
   protected $casts = [
     'tender_date' => 'date',
   ];
+
+  public function product()
+  {
+    return $this->belongsTo(Product::class);
+  }
 }

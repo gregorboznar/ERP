@@ -12,7 +12,8 @@ class Product extends Model
 
   protected $fillable = [
     'name',
-
+    'nest_number',
+    'nest_start_number'
   ];
 
 

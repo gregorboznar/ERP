@@ -48,4 +48,5 @@ return [
   'save' => 'Shrani',
   'add_any_additional_notes_here' => 'Dodajte dodatne opombe tukaj...',
   'select_machine_to_view_maintenance_points' => 'Izberite stroj, da si ogledate točke kontrole',
+  'product' => 'Izdelek',
 ];
