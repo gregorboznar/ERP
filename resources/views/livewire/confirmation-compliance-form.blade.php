@@ -1,179 +1,316 @@
 <div>
-  <form wire:submit="save">
-    <div class="bg-white rounded-lg shadow w-full md:w-1/2">
-      <div class="p-4 border-b border-gray-200">
-        <p class="text-lg font-medium text-gray-900">Naziv: {{ $product->name }}</p>
-      </div>
-    </div>
-    <div class="bg-white rounded-lg shadow w-full md:w-1/2">
-      <div class="p-4 border-b border-gray-200">
-        <p class="text-lg font-medium text-gray-900">Naziv: {{ $seriesTenders->name }}</p>
-      </div>
-    </div>
-    <div class="space-y-6">
-      <!-- Visual Characteristics -->
-      <div class="bg-white rounded-lg shadow">
-        <div class="p-4 border-b border-gray-200">
-          <h3 class="text-lg font-medium text-gray-900">Visual Characteristics</h3>
-        </div>
-        <div class="divide-y divide-gray-200">
-          @foreach($characteristics as $characteristic)
-          <div class="p-4 hover:bg-gray-50"
-            wire:key="visual-{{ $characteristic->id }}"
-            x-data="{ 
-              selected: @entangle('visualCharacteristics.' . $characteristic->id).defer,
-              updateValue(value) {
-                this.selected = value;
-                @this.updateCharacteristic('visual', {{ $characteristic->id }}, value);
-              }
-            }">
-            <div class="flex items-center justify-between">
-              <div class="flex-1">
-                <h4 class="text-sm font-medium text-gray-900">{{ $characteristic->name }}</h4>
+  <div x-data="{ currentPage: 1 }">
+    <form wire:submit="save">
+      <!-- Page 1 -->
+      <div x-show="currentPage === 1">
+        <div class="flex">
+          <div class="w-1/2 p-4">
+            <div class="space-y-4 ">
+              <div class="flex space-x-4">
+                <div class="bg-white rounded-lg shadow w-full md:w-1/2">
+                  <div class="p-4 ">
+                    <span class="text-sm font-medium text-gray-900">{{ __('messages.name') }}: {{ $product->name }}</span>
+                  </div>
+                </div>
+                <div class="bg-white rounded-lg shadow w-full md:w-1/2">
+                  <div class="p-4  ">
+                    <span class="text-sm font-medium text-gray-900">{{ __('messages.code') }}: {{ $product->code }}</span>
+                  </div>
+                </div>
               </div>
-              <div class="ml-4 flex space-x-3">
-                <label class="inline-flex items-center">
-                  <input type="radio"
-                    name="visual_{{ $characteristic->id }}"
-                    value="1"
-                    class="sr-only"
-                    :checked="selected == 1">
-                  <span @click="updateValue(1)"
-                    :class="{
-                      'px-3 py-1.5 text-sm font-medium rounded-lg cursor-pointer transition-colors duration-150': true,
-                      'bg-green-600 text-white': selected == 1,
-                      'bg-gray-100 text-gray-700 hover:bg-gray-50': selected != 1
-                    }">
-                    <x-heroicon-m-check-circle class="w-4 h-4 inline-block" />
-                    DA
-                  </span>
-                </label>
-                <label class="inline-flex items-center">
-                  <input type="radio"
-                    name="visual_{{ $characteristic->id }}"
-                    value="2"
-                    class="sr-only"
-                    :checked="selected == 2">
-                  <span @click="updateValue(2)"
-                    :class="{
-                      'px-3 py-1.5 text-sm font-medium rounded-lg cursor-pointer transition-colors duration-150': true,
-                      'bg-rose-600 text-white': selected == 2,
-                      'bg-gray-100 text-gray-700 hover:bg-gray-50': selected != 2
-                    }">
-                    <x-heroicon-m-x-circle class="w-4 h-4 inline-block" />
-                    NE
-                  </span>
-                </label>
-                <label class="inline-flex items-center">
-                  <input type="radio"
-                    name="visual_{{ $characteristic->id }}"
-                    value="3"
-                    class="sr-only"
-                    :checked="selected == 3">
-                  <span @click="updateValue(3)"
-                    :class="{
-                      'px-3 py-1.5 text-sm font-medium rounded-lg cursor-pointer transition-colors duration-150': true,
-                      'bg-yellow-500 text-white': selected == 3,
-                      'bg-gray-100 text-gray-700 hover:bg-gray-50': selected != 3
-                    }">
-                    <x-heroicon-m-exclamation-circle class="w-4 h-4 inline-block" />
-                    N.O.
-                  </span>
-                </label>
+              <div class="flex space-x-4">
+                <div class="bg-white rounded-lg shadow w-full md:w-1/2">
+                  <div class="p-2 border-b border-gray-200">
+                    @if($machines->count() > 0)
+                    <span class="text-sm font-medium text-gray-900">{{ __('messages.machine') }}:</span>
+                    <select wire:model="selectedMachineId" class="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 filament-select">
+                      <option class="text-sm font-medium" value="">Select a machine</option>
+                      @foreach($machines as $machine)
+                      <option value="{{ $machine->id }}">{{ $machine->name }}</option>
+                      @endforeach
+                    </select>
+                    @else
+                    <p class="text-sm font-medium text-gray-900">{{ __('messages.no_machines_found') }}</p>
+                    @endif
+                  </div>
+                </div>
+                <div class="bg-white rounded-lg shadow w-full md:w-1/2">
+                  <div class="p-4 border-b border-gray-200">
+                    <label for="date" class="text-sm font-medium text-gray-900">{{ __('messages.check_date') }}:</label>
+                    <input value="{{ $selectedDate }}" type="date" wire:model="selectedDate" id="date" class="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500">
+                  </div>
+                </div>
+              </div>
+              <div class="bg-white rounded-lg shadow w-full md:w-1/2">
+                <div class="p-4 border-b border-gray-200">
+                  @if($seriesTenders->count() > 0)
+                  <p class="text-sm font-medium text-gray-900">{{ __('messages.series') }}:</p>
+                  <select wire:model="selectedSeriesTenderId" class="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 filament-select">
+                    <option value="">{{ __('messages.select_series_tender') }}</option>
+                    @foreach($seriesTenders as $seriesTender)
+                    <option value="{{ $seriesTender->id }}">{{ $seriesTender->series_number }}</option>
+                    @endforeach
+                  </select>
+                  @else
+                  <p class="text-sm font-medium text-gray-900">{{ __('messages.no_series_tenders_found') }}</p>
+                  @endif
+                </div>
               </div>
             </div>
           </div>
-          @endforeach
-        </div>
-      </div>
-
-      <!-- Measurement Characteristics -->
-      <div class="bg-white rounded-lg shadow">
-        <div class="p-4 border-b border-gray-200">
-          <h3 class="text-lg font-medium text-gray-900">Measurement Characteristics</h3>
-        </div>
-        <div class="divide-y divide-gray-200">
-          @foreach($measurementCharacteristicsList as $characteristic)
-          <div class="p-4 hover:bg-gray-50"
-            wire:key="measurement-{{ $characteristic->id }}"
-            x-data="{ 
-              selected: @entangle('measurementCharacteristics.' . $characteristic->id).defer,
-              updateValue(value) {
-                this.selected = value;
-                @this.updateCharacteristic('measurement', {{ $characteristic->id }}, value);
-              }
-            }">
-            <div class="flex items-center justify-between">
-              <div class="flex-1">
-                <h4 class="text-sm font-medium text-gray-900">{{ $characteristic->name }}</h4>
+          <!-- Visual Characteristics -->
+          <div class="w-1/2 p-4">
+            <div class="bg-white rounded-lg shadow">
+              <div class="p-4 border-b border-gray-200">
+                <h3 class="text-sm font-medium text-gray-900"> {{ __('messages.visual_characteristics') }} </h3>
               </div>
-              <div class="ml-4 flex space-x-3">
-                <label class="inline-flex items-center">
-                  <input type="radio"
-                    name="measurement_{{ $characteristic->id }}"
-                    value="1"
-                    class="sr-only"
-                    :checked="selected == 1">
-                  <span @click="updateValue(1)"
-                    :class="{
-                      'px-3 py-1.5 text-sm font-medium rounded-lg cursor-pointer transition-colors duration-150': true,
-                      'bg-green-600 text-white': selected == 1,
-                      'bg-gray-100 text-gray-700 hover:bg-gray-50': selected != 1
-                    }">
-                    <x-heroicon-m-check-circle class="w-4 h-4 inline-block" />
-                    DA
-                  </span>
-                </label>
-                <label class="inline-flex items-center">
-                  <input type="radio"
-                    name="measurement_{{ $characteristic->id }}"
-                    value="2"
-                    class="sr-only"
-                    :checked="selected == 2">
-                  <span @click="updateValue(2)"
-                    :class="{
-                      'px-3 py-1.5 text-sm font-medium rounded-lg cursor-pointer transition-colors duration-150': true,
-                      'bg-rose-600 text-white': selected == 2,
-                      'bg-gray-100 text-gray-700 hover:bg-gray-50': selected != 2
-                    }">
-                    <x-heroicon-m-x-circle class="w-4 h-4 inline-block" />
-                    NE
-                  </span>
-                </label>
-                <label class="inline-flex items-center">
-                  <input type="radio"
-                    name="measurement_{{ $characteristic->id }}"
-                    value="3"
-                    class="sr-only"
-                    :checked="selected == 3">
-                  <span @click="updateValue(3)"
-                    :class="{
-                      'px-3 py-1.5 text-sm font-medium rounded-lg cursor-pointer transition-colors duration-150': true,
-                      'bg-yellow-500 text-white': selected == 3,
-                      'bg-gray-100 text-gray-700 hover:bg-gray-50': selected != 3
-                    }">
-                    <x-heroicon-m-exclamation-circle class="w-4 h-4 inline-block" />
-                    N.O.
-                  </span>
-                </label>
+              <div class="divide-y divide-gray-200">
+                @foreach($characteristics as $characteristic)
+                <div class="px-2 hover:bg-gray-50"
+                  wire:key="visual-{{ $characteristic->id }}"
+                  x-data="{ 
+                  selected: @entangle('visualCharacteristics.' . $characteristic->id).defer,
+                  updateValue(value) {
+                    this.selected = value;
+                    @this.updateCharacteristic('visual', {{ $characteristic->id }}, value);
+                  }
+                }">
+                  <div class="flex items-center justify-between">
+                    <div class="flex flex-1">
+                      <div class="w-40 flex-shrink-0 mr-4">
+                        <h4 class="text-sm font-medium text-gray-900">{{ $characteristic->name }}</h4>
+                        @if($characteristic->nominal_value)
+                        <div class="text-xs text-gray-500 mt-1">
+                          Nominal: {{ $characteristic->nominal_value }} {{ $characteristic->unit }}
+                          @if($characteristic->tolerance)
+                          (±{{ $characteristic->tolerance }})
+                          @endif
+                        </div>
+                        @endif
+                      </div>
+                    </div>
+                    <div class="ml-4 flex space-x-3">
+                      <label class="inline-flex items-center ">
+                        <input type="radio"
+                          name="visual_{{ $characteristic->id }}"
+                          value="1"
+                          class="sr-only"
+                          x-model="selected">
+                        <span @click.prevent="updateValue(1)"
+                          x-bind:class="{
+                          'cursor-pointer': true,
+                          'm-4': true
+                        }">
+                          <x-filament::badge
+                            :color="$this->visualCharacteristics[$characteristic->id] == 1 ? 'success' : 'gray'"
+                            :outline="$this->visualCharacteristics[$characteristic->id] != 1"
+                            icon="heroicon-m-check-circle">
+                            DA
+                          </x-filament::badge>
+                        </span>
+                      </label>
+                      <label class="inline-flex items-center p-4">
+                        <input type="radio"
+                          name="visual_{{ $characteristic->id }}"
+                          value="2"
+                          class="sr-only"
+                          :checked="selected == 2">
+                        <span @click.prevent="updateValue(2)"
+                          x-bind:class="{
+                          'cursor-pointer': true
+                        }">
+                          <x-filament::badge
+                            :color="$this->visualCharacteristics[$characteristic->id] == 2 ? 'danger' : 'gray'"
+                            :outline="$this->visualCharacteristics[$characteristic->id] != 2"
+                            icon="heroicon-m-x-circle">
+                            NE
+                          </x-filament::badge>
+                        </span>
+                      </label>
+                      <label class="inline-flex items-center">
+                        <input type="radio"
+                          name="visual_{{ $characteristic->id }}"
+                          value="3"
+                          class="sr-only"
+                          :checked="selected == 3">
+                        <span @click.prevent="updateValue(3)"
+                          x-bind:class="{
+                          'cursor-pointer': true
+                        }">
+                          <x-filament::badge
+                            :color="$this->visualCharacteristics[$characteristic->id] == 3 ? 'warning' : 'gray'"
+                            :outline="$this->visualCharacteristics[$characteristic->id] != 3"
+                            icon="heroicon-m-exclamation-circle">
+                            N.O.
+                          </x-filament::badge>
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                @endforeach
               </div>
             </div>
           </div>
-          @endforeach
         </div>
       </div>
 
-      <div class="flex justify-end space-x-3">
-        <button type="submit" class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700">
-          Save Confirmation Compliance
+      <!-- Page 2 -->
+      <div x-show="currentPage === 2">
+        <!-- Measurement Characteristics -->
+        <div class="bg-white rounded-lg shadow">
+          <div class="p-4 border-b border-gray-200">
+            <h3 class="text-lg font-medium text-gray-900">{{ __('messages.measurement_characteristics') }}</h3>
+          </div>
+          <div class="divide-y divide-gray-200 ">
+            <div class="flex justify-between p-4">
+              <div class="">
+                <span class="text-sm font-medium text-gray-900">Mere po QKXXX</span>
+              </div>
+              <div class="">
+                <span class="text-sm font-medium text-gray-900">Izmerjene vrednosti</span>
+              </div>
+              <div class="">
+                <span class="text-sm font-medium text-gray-900">Status</span>
+              </div>
+            </div>
+
+            @foreach($measurementCharacteristicsList as $characteristic)
+            <div class="px-4 hover:bg-gray-50 py-2"
+              wire:key="measurement-{{ $characteristic->id }}"
+              x-data="{ 
+                    selected: @entangle('measurementCharacteristics.' . $characteristic->id).defer,
+                    updateValue(value) {
+                      this.selected = value;
+                      @this.updateCharacteristic('measurement', {{ $characteristic->id }}, value);
+                    }
+                  }">
+              <div class="flex items-center justify-between">
+                <div class="flex flex-1">
+                  <div class="flex items-center name-width mr-4">
+                    <h4 class="text-sm font-medium text-gray-900">{{ $characteristic->name }}</h4>
+                    @if($characteristic->nominal_value)
+                    <div class="text-xs text-gray-500 ml-2">
+                      Nominal: {{ $characteristic->nominal_value }} {{ $characteristic->unit }}
+                      @if($characteristic->tolerance)
+                      (±{{ $characteristic->tolerance }})
+                      @endif
+                    </div>
+                    @endif
+                  </div>
+                  @if($product->nest_number > 0)
+                  <div class=" flex items-center space-x-2 overflow-x-auto pb-2">
+                    @for($i = 1; $i <= $product->nest_number; $i++)
+                      <div class="flex-none w-20">
+                        <div class="relative p-2">
+                          <input
+                            type="text"
+                            step="0.0001"
+                            wire:model="measurementValues.{{ $characteristic->id }}.{{ $i }}"
+                            class="block w-full transition duration-75 rounded-lg shadow-sm focus:border-primary-500 focus:ring-1 focus:ring-inset focus:ring-primary-500 border-gray-300 text-sm"
+                            placeholder="{{ $characteristic->nominal_value ?? 'gn.' . $i }}">
+
+                        </div>
+                      </div>
+                      @endfor
+                  </div>
+                  @endif
+                </div>
+                <div class="ml-4 flex space-x-3">
+                  <label class="inline-flex items-center">
+                    <input type="radio"
+                      name="measurement_{{ $characteristic->id }}"
+                      value="1"
+                      class="sr-only"
+                      :checked="selected == 1">
+                    <span @click.prevent="updateValue(1)"
+                      x-bind:class="{
+                            'cursor-pointer': true
+                          }">
+                      <x-filament::badge
+                        :color="$this->measurementCharacteristics[$characteristic->id] == 1 ? 'success' : 'gray'"
+                        :outline="$this->measurementCharacteristics[$characteristic->id] != 1"
+                        icon="heroicon-m-check-circle">
+                        DA
+                      </x-filament::badge>
+                    </span>
+                  </label>
+                  <label class="inline-flex items-center p-4">
+                    <input type="radio"
+                      name="measurement_{{ $characteristic->id }}"
+                      value="2"
+                      class="sr-only"
+                      :checked="selected == 2">
+                    <span @click.prevent="updateValue(2)"
+                      x-bind:class="{
+                            'cursor-pointer': true
+                          }">
+                      <x-filament::badge
+                        :color="$this->measurementCharacteristics[$characteristic->id] == 2 ? 'danger' : 'gray'"
+                        :outline="$this->measurementCharacteristics[$characteristic->id] != 2"
+                        icon="heroicon-m-x-circle">
+                        NE
+                      </x-filament::badge>
+                    </span>
+                  </label>
+                  <label class="inline-flex items-center">
+                    <input type="radio"
+                      name="measurement_{{ $characteristic->id }}"
+                      value="3"
+                      class="sr-only"
+                      :checked="selected == 3">
+                    <span @click.prevent="updateValue(3)"
+                      x-bind:class="{
+                            'cursor-pointer': true
+                          }">
+                      <x-filament::badge
+                        :color="$this->measurementCharacteristics[$characteristic->id] == 3 ? 'warning' : 'gray'"
+                        :outline="$this->measurementCharacteristics[$characteristic->id] != 3"
+                        icon="heroicon-m-exclamation-circle">
+                        N.O.
+                      </x-filament::badge>
+                    </span>
+                  </label>
+                </div>
+              </div>
+            </div>
+            @endforeach
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Buttons -->
+      <div class="mt-6 flex justify-between items-center">
+        <button
+          type="button"
+          x-show="currentPage === 2"
+          @click="currentPage = 1"
+          class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">
+          Previous
         </button>
+        <div class="flex-1"></div>
+        <div class="flex space-x-3">
+          <button
+            type="button"
+            x-show="currentPage === 1"
+            @click="currentPage = 2"
+            class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700">
+            Next
+          </button>
+          <button
+            type="submit"
+            x-show="currentPage === 2"
+            class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700">
+            Save Confirmation Compliance
+          </button>
+        </div>
       </div>
-    </div>
-  </form>
+    </form>
 
-  @if($errors->has('save'))
-  <div class="mt-4 p-4 bg-red-50 text-red-700 rounded-lg">
-    {{ $errors->first('save') }}
+    @if($errors->has('save'))
+    <div class="mt-4 p-4 bg-red-50 text-red-700 rounded-lg">
+      {{ $errors->first('save') }}
+    </div>
+    @endif
   </div>
-  @endif
 </div>

@@ -20,7 +20,20 @@ class VisualCharacteristicResource extends Resource
 
   protected static ?string $navigationGroup = 'Quality Control';
 
-  protected static ?string $navigationParentItem = 'Confirmation Compliances';
+  public static function getNavigationLabel(): string
+  {
+    return __('messages.visual_characteristic_plural');
+  }
+
+  public static function getPluralModelLabel(): string
+  {
+    return __('messages.visual_characteristic_plural');
+  }
+
+  public static function getNavigationParentItem(): ?string
+  {
+    return __('messages.confirmation_compliance');
+  }
 
   protected static ?int $navigationSort = 1;
 
@@ -44,15 +57,9 @@ class VisualCharacteristicResource extends Resource
     return $table
       ->columns([
         Tables\Columns\TextColumn::make('name')
+          ->label(__('messages.name'))
           ->searchable(),
-        Tables\Columns\TextColumn::make('created_at')
-          ->dateTime()
-          ->sortable()
-          ->toggleable(isToggledHiddenByDefault: true),
-        Tables\Columns\TextColumn::make('updated_at')
-          ->dateTime()
-          ->sortable()
-          ->toggleable(isToggledHiddenByDefault: true),
+
       ])
       ->filters([
         //

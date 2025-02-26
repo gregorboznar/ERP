@@ -20,9 +20,22 @@ class MeasurementCharacteristicResource extends Resource
 
   protected static ?string $navigationGroup = 'Quality Control';
 
-  protected static ?string $navigationParentItem = 'Confirmation Compliances';
-
   protected static ?int $navigationSort = 0;
+  public static function getNavigationLabel(): string
+  {
+    return __('messages.measurement_characteristic_plural');
+  }
+
+  public static function getPluralModelLabel(): string
+  {
+    return __('messages.measurement_characteristic_plural');
+  }
+
+
+  public static function getNavigationParentItem(): ?string
+  {
+    return __('messages.confirmation_compliance');
+  }
 
   public static function getNavigationGroup(): ?string
   {
@@ -36,12 +49,7 @@ class MeasurementCharacteristicResource extends Resource
         Forms\Components\TextInput::make('name')
           ->required()
           ->maxLength(255),
-        Forms\Components\TextInput::make('unit')
-          ->maxLength(50),
-        Forms\Components\TextInput::make('nominal_value')
-          ->numeric(),
-        Forms\Components\TextInput::make('tolerance')
-          ->numeric(),
+
       ]);
   }
 
@@ -50,18 +58,9 @@ class MeasurementCharacteristicResource extends Resource
     return $table
       ->columns([
         Tables\Columns\TextColumn::make('name')
+          ->label(__('messages.name'))
           ->searchable(),
-        Tables\Columns\TextColumn::make('unit'),
-        Tables\Columns\TextColumn::make('nominal_value'),
-        Tables\Columns\TextColumn::make('tolerance'),
-        Tables\Columns\TextColumn::make('created_at')
-          ->dateTime()
-          ->sortable()
-          ->toggleable(isToggledHiddenByDefault: true),
-        Tables\Columns\TextColumn::make('updated_at')
-          ->dateTime()
-          ->sortable()
-          ->toggleable(isToggledHiddenByDefault: true),
+
       ])
       ->filters([
         //

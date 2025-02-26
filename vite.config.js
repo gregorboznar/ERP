@@ -9,6 +9,8 @@ export default defineConfig({
                 "resources/css/app.css",
                 "resources/js/app.js",
                 "resources/css/filament/admin/theme.css",
+                "resources/css/filament/admin/custom.css",
+                "resources/css/main.css",
             ],
             refresh: true,
         }),
@@ -20,7 +22,7 @@ export default defineConfig({
     },
     server: {
         hmr: {
-            host: "localhost",
+            host: "erp.test",
         },
     },
 });

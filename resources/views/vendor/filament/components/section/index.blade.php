@@ -177,7 +177,7 @@ $hasHeader = $hasIcon || $hasHeading || $hasDescription || $collapsible || $hasH
             @class([ 'fi-section-content' ,
             match ($compact) {
             true=> 'p-4',
-            false => 'p-0',
+            false => 'p-6',
             },
             ])
             >

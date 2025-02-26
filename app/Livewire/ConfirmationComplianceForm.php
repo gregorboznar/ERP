@@ -10,6 +10,8 @@ use App\Models\Product;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Models\SeriesTender;
+use App\Models\Machine;
+use Filament\Facades\Filament;
 
 class ConfirmationComplianceForm extends Component
 {
@@ -17,18 +19,26 @@ class ConfirmationComplianceForm extends Component
   public $product;
   public $visualCharacteristics = [];
   public $measurementCharacteristics = [];
+  public $measurementValues = [];
   public $characteristics;
   public $measurementCharacteristicsList;
   public $seriesTenders;
+  public $machines;
+  public $selectedSeriesTenderId;
+  public $selectedDate;
+
   public function mount($productId)
   {
     Log::info('Mounting ConfirmationComplianceForm with productId: ' . $productId);
 
     $this->productId = $productId;
     $this->product = Product::findOrFail($productId);
-    $this->seriesTenders = SeriesTender::where('product_id', $productId)->get();
+    $this->seriesTenders = SeriesTender::get();
+    $this->machines = Machine::get();
+    $this->selectedSeriesTenderId = '';
+    $this->selectedDate = now()->format('Y-m-d');
 
-    // Initialize visual characteristics
+
     $this->characteristics = VisualCharacteristic::whereIn('id', function ($query) {
       $query->select('visual_characteristic_id')
         ->from('product_visual_characteristics')
@@ -53,7 +63,16 @@ class ConfirmationComplianceForm extends Component
 
     foreach ($this->measurementCharacteristicsList as $characteristic) {
       $this->measurementCharacteristics[$characteristic->id] = null;
+      $this->measurementValues[$characteristic->id] = [];
+      // Initialize measurement values for each nest
+      if ($this->product->nest_number > 0) {
+        for ($i = 1; $i <= $this->product->nest_number; $i++) {
+          $this->measurementValues[$characteristic->id][$i] = null;
+        }
+      }
     }
+
+    Log::info('Product ID: ' . $productId);
   }
 
   protected function mapStatusToComplianceValue($status)
@@ -79,61 +98,65 @@ class ConfirmationComplianceForm extends Component
 
   public function save()
   {
-    Log::info('Saving form with data:', [
-      'visual' => $this->visualCharacteristics,
-      'measurement' => $this->measurementCharacteristics
-    ]);
-
     try {
       DB::beginTransaction();
+      $userId = auth('web')->id();
+      if (!$userId) {
+        throw new \Exception('User is not authenticated');
+      }
 
       $confirmationCompliance = ConfirmationCompliance::create([
         'product_id' => $this->productId,
+        'series_tender_id' => $this->selectedSeriesTenderId,
+        'user_id' => $userId,
       ]);
 
-      foreach ($this->visualCharacteristics as $id => $status) {
-        if ($status !== null) {
-          $complianceValue = $this->mapStatusToComplianceValue($status);
+      // Save visual characteristics
+      foreach ($this->visualCharacteristics as $characteristicId => $value) {
+        if (!is_null($value)) {
           $confirmationCompliance->visualCharacteristics()->create([
-            'visual_characteristic_id' => $id,
-            'is_compliant' => $complianceValue,
-            'notes' => null,
-          ]);
-          Log::info("Created visual characteristic", [
-            'id' => $id,
-            'status' => $status,
-            'compliance_value' => $complianceValue
+            'visual_characteristic_id' => $characteristicId,
+            'is_compliant' => $this->mapStatusToComplianceValue($value),
           ]);
         }
       }
 
-      foreach ($this->measurementCharacteristics as $id => $status) {
-        if ($status !== null) {
-          $complianceValue = $this->mapStatusToComplianceValue($status);
-          $confirmationCompliance->measurementCharacteristics()->create([
-            'measurement_characteristic_id' => $id,
-            'measured_value' => 0,
-            'is_compliant' => $complianceValue,
-            'notes' => null,
+      // Save measurement characteristics with nest values
+      foreach ($this->measurementCharacteristics as $characteristicId => $value) {
+        if (!is_null($value)) {
+          $measurementValues = $this->measurementValues[$characteristicId] ?? [];
+
+          // Create the main measurement characteristic record
+          $measurementCharacteristic = $confirmationCompliance->measurementCharacteristics()->create([
+            'measurement_characteristic_id' => $characteristicId,
+            'is_compliant' => $this->mapStatusToComplianceValue($value),
           ]);
-          Log::info("Created measurement characteristic", [
-            'id' => $id,
-            'status' => $status,
-            'compliance_value' => $complianceValue
-          ]);
+
+          // Save nest measurements
+          if (!empty($measurementValues)) {
+            foreach ($measurementValues as $nestNumber => $measuredValue) {
+              if (!is_null($measuredValue)) {
+                DB::table('confirmation_compliance_measurement_nest_values')->insert([
+                  'confirmation_compliance_measurement_characteristic_id' => $measurementCharacteristic->id,
+                  'nest_number' => $nestNumber,
+                  'measured_value' => $measuredValue,
+                  'created_at' => now(),
+                  'updated_at' => now(),
+                ]);
+              }
+            }
+          }
         }
       }
 
       DB::commit();
 
-      $this->dispatch('confirmation-saved', confirmationId: $confirmationCompliance->id);
-
+      session()->flash('success', 'Confirmation compliance saved successfully.');
       return redirect()->route('filament.admin.resources.products.confirmation-compliance', ['record' => $this->productId]);
     } catch (\Exception $e) {
       DB::rollBack();
       Log::error('Error saving confirmation compliance: ' . $e->getMessage());
-      Log::error('Stack trace: ' . $e->getTraceAsString());
-      $this->addError('save', 'Error saving confirmation compliance: ' . $e->getMessage());
+      $this->addError('save', 'Failed to save confirmation compliance. Please try again.');
     }
   }
 

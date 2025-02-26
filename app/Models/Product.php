@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Product extends Model
 {
@@ -15,6 +16,12 @@ class Product extends Model
     'nest_number',
     'nest_start_number'
   ];
+
+
+  public function seriesTenders()
+  {
+    return $this->hasMany(SeriesTender::class);
+  }
 
 
   public function visualCharacteristics()

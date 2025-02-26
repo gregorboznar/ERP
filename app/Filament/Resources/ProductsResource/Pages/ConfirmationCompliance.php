@@ -93,12 +93,11 @@ class ConfirmationCompliance extends Page implements HasTable
           ->where('product_id', $this->record)
       )
       ->columns([
-        Tables\Columns\TextColumn::make('created_at')
-          ->label('Created At')
-          ->dateTime()
+        Tables\Columns\TextColumn::make('user.name')
+          ->label('User')
           ->sortable(),
-        Tables\Columns\TextColumn::make('updated_at')
-          ->label('Updated At')
+        Tables\Columns\TextColumn::make('created_at')
+          ->label(__('messages.created_at'))
           ->dateTime()
           ->sortable(),
       ])
@@ -116,7 +115,8 @@ class ConfirmationCompliance extends Page implements HasTable
       ])
       ->headerActions([
         Tables\Actions\Action::make('new')
-          ->label('New Confirmation Compliance')
+          ->label(__('messages.new_confirmation_compliance_button'))
+          ->modalHeading(__('messages.new_confirmation_compliance_title'))
           ->icon('heroicon-m-plus')
           ->form([
             Forms\Components\View::make('filament.pages.partials.confirmation-compliance-modal')

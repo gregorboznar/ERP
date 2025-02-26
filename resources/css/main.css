@@ -1,4 +1,7 @@
-
 .no-asterisk .required-indicator {
     display: none;
+}
+
+.name-width {
+    min-width: 259px !important;
 }

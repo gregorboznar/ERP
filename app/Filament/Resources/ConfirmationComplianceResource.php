@@ -24,6 +24,16 @@ class ConfirmationComplianceResource extends Resource
 
     protected static ?int $navigationSort = 2;
 
+    public static function getNavigationLabel(): string
+    {
+        return __('messages.confirmation_compliance');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('messages.confirmation_compliance');
+    }
+
     public static function getNavigationGroup(): ?string
     {
         return __('Quality Control');
@@ -41,7 +51,16 @@ class ConfirmationComplianceResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label(__('messages.user'))
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('product.name')
+                    ->label(__('messages.product'))
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('messages.created_at'))
+                    ->dateTime()
+                    ->sortable(),
             ])
             ->filters([
                 //

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Models\ConfirmationComplianceMeasurementNestValue;
 
 class ConfirmationCompliance extends Model
 {
@@ -14,6 +15,8 @@ class ConfirmationCompliance extends Model
 
   protected $fillable = [
     'product_id',
+    'series_tender_id',
+    'user_id',
   ];
 
   public function product(): BelongsTo
@@ -29,5 +32,15 @@ class ConfirmationCompliance extends Model
   public function measurementCharacteristics(): HasMany
   {
     return $this->hasMany(ConfirmationComplianceMeasurementCharacteristic::class);
+  }
+
+  public function measurementNestValues(): HasMany
+  {
+    return $this->hasMany(ConfirmationComplianceMeasurementNestValue::class);
+  }
+
+  public function user(): BelongsTo
+  {
+    return $this->belongsTo(User::class);
   }
 }

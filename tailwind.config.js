@@ -1,8 +1,10 @@
 import defaultTheme from "tailwindcss/defaultTheme";
 import colors from "tailwindcss/colors";
+import preset from "./vendor/filament/filament/tailwind.config.preset";
 
 /** @type {import('tailwindcss').Config} */
 export default {
+    presets: [preset],
     content: [
         "./vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php",
         "./storage/framework/views/*.php",
@@ -42,5 +44,14 @@ export default {
     plugins: [
         require("@tailwindcss/forms"),
         require("@tailwindcss/typography"),
+    ],
+    safelist: [
+        "bg-green-600",
+        "bg-rose-600",
+        "bg-yellow-500",
+        "text-white",
+        "hover:bg-gray-50",
+        "bg-gray-100",
+        "text-gray-700",
     ],
 };

@@ -25,8 +25,6 @@ class MaterialReceiptResource extends Resource
         return __('messages.material_receipt');
     }
 
-
-
     public static function getPluralModelLabel(): string
     {
         return __('messages.material_receipt');
