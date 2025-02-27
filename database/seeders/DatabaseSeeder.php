@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             MachineSeeder::class,
             MaintenancePointSeeder::class,
+            MeltTemperatureSeeder::class,
         ]);
 
         User::factory()->create([

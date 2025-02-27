@@ -71,4 +71,8 @@ return [
   'measurement_characteristic' => 'Merilna karakteristika',
   'measurement_characteristic_plural' => 'Merilne karakteristike',
   'name' => 'Ime',
+  'create_new_melt_temperature' => 'Nova meritev taljenja',
+  'enter_details_for_new_melt_temperature' => 'Vnesite podrobnosti za novo meritev taljenja',
+  'melt_temperature' => 'Meritev taljenja',
+  'melt_temperature_plural' => 'Meritve taljenja',
 ];
