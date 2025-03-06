@@ -5,6 +5,8 @@ namespace App\Filament\Resources\MeltTemperatureResource\Pages;
 use App\Filament\Resources\MeltTemperatureResource;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Actions;
+use Illuminate\Support\Facades\DB;
+use App\Filament\Resources\MeltTemperatureResource\Widgets\MeltTemperatureChart;
 
 class ListMeltTemperatures extends ListRecords
 {
@@ -21,6 +23,13 @@ class ListMeltTemperatures extends ListRecords
         ->createAnother(false)
         ->modalSubmitActionLabel(__('messages.save'))
         ->modalCancelActionLabel(__('messages.cancel')),
+    ];
+  }
+
+  protected function getHeaderWidgets(): array
+  {
+    return [
+      MeltTemperatureChart::class,
     ];
   }
 }
