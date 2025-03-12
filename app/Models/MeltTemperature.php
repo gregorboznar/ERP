@@ -10,13 +10,16 @@ class MeltTemperature extends Model
 {
   use HasFactory;
 
-  protected $fillable = ['temperature', 'recorded_at_1', 'recorded_at_2', 'recorded_at_3', 'recorded_at_4', 'user_id', 'machine_id', 'product_id', 'series_id', 'temperature_1', 'temperature_2', 'temperature_3', 'temperature_4'];
+  protected $fillable = [
+    'user_id',
+    'machine_id',
+    'product_id',
+    'series_id',
+    'temperature_readings'
+  ];
 
   protected $casts = [
-    'recorded_at_1' => 'datetime',
-    'recorded_at_2' => 'datetime',
-    'recorded_at_3' => 'datetime',
-    'recorded_at_4' => 'datetime',
+    'temperature_readings' => 'array',
   ];
 
   protected static function boot()
@@ -37,7 +40,6 @@ class MeltTemperature extends Model
 
   public function machine()
   {
-
     return $this->belongsTo(Machine::class);
   }
 

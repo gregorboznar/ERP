@@ -11,8 +11,10 @@ class CreateMeltTemperaturesTable extends Migration
     Schema::create('melt_temperatures', function (Blueprint $table) {
       $table->id();
       $table->foreignId('user_id')->constrained()->nullable(); // Foreign key to users table
-      $table->decimal('temperature', 8, 2); // Adjust precision as needed
-      $table->timestamp('recorded_at')->useCurrent(); // Default to current timestamp
+      $table->foreignId('machine_id')->constrained()->nullable(); // Foreign key to machines table
+      $table->foreignId('product_id')->constrained()->nullable(); // Foreign key to products table
+      $table->foreignId('series_id')->constrained('series_tenders')->nullable(); // Foreign key to series_tenders table
+      $table->json('temperature_readings')->nullable(); // JSON column for temperature readings
       $table->softDeletes(); // Soft deletes
       $table->timestamps(); // Created at and updated at
     });

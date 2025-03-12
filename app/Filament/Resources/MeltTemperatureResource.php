@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\TimePicker;
+use Filament\Forms\Components\Repeater;
 
 class MeltTemperatureResource extends Resource
 {
@@ -70,61 +71,38 @@ class MeltTemperatureResource extends Resource
               ->default(Machine::first()->id),
           ]),
 
-
-        Grid::make(4)
+        // Replace the fixed temperature and time fields with a repeater
+        Repeater::make('temperature_readings')
+          ->label(__('messages.temperature_readings'))
           ->schema([
-            TextInput::make('temperature_1')
-              ->required()
-              ->label(__('messages.temperature_1'))
-              ->numeric()
-              ->integer(),
+            Grid::make(2)
+              ->schema([
+                TextInput::make('temperature')
+                  ->required()
+                  ->label(__('messages.temperature'))
+                  ->numeric()
+                  ->integer(),
 
-            TextInput::make('temperature_2')
-              ->required()
-              ->label(__('messages.temperature_2'))
-              ->numeric()
-              ->integer(),
-
-            TextInput::make('temperature_3')
-              ->required()
-              ->label(__('messages.temperature_3'))
-              ->numeric()
-              ->integer(),
-
-            TextInput::make('temperature_4')
-              ->required()
-              ->label(__('messages.temperature_4'))
-              ->numeric()
-              ->integer(),
-          ]),
-        Grid::make(4)
-          ->schema([
-            TimePicker::make('recorded_at_1')
-              ->required()
-              ->default(now()->format('H:i'))
-              ->format('H:i')
-              ->withoutSeconds() // This removes the seconds select
-              ->label(__('messages.recorded_at')),
-
-            TimePicker::make('recorded_at_2')
-              ->required()
-              ->format('H:i')
-              ->withoutSeconds()
-              ->label(__('messages.recorded_at')),
-
-            TimePicker::make('recorded_at_3')
-              ->required()
-              ->format('H:i')
-              ->withoutSeconds()
-              ->label(__('messages.recorded_at')),
-
-            TimePicker::make('recorded_at_4')
-              ->required()
-              ->format('H:i')
-              ->withoutSeconds()
-              ->label(__('messages.recorded_at')),
+                TimePicker::make('recorded_at')
+                  ->required()
+                  ->default(now()->format('H:i'))
+                  ->format('H:i')
+                  ->withoutSeconds()
+                  ->label(__('messages.recorded_at')),
+              ]),
           ])
+          ->grid(1)
+          ->defaultItems(1)
+          ->createItemButtonLabel(__('messages.add_temperature'))
+          ->collapsible()
+          ->columnSpanFull()
+          ->itemLabel(function (array $state): ?string {
+            if (isset($state['temperature']) && isset($state['recorded_at'])) {
+              return __('messages.temperature') . ': ' . $state['temperature'] . ' - ' . $state['recorded_at'];
+            }
 
+            return null;
+          }),
       ]);
   }
 
@@ -135,17 +113,8 @@ class MeltTemperatureResource extends Resource
         Tables\Columns\TextColumn::make('user.name')
           ->label(__('messages.operator'))
           ->searchable(),
-        Tables\Columns\TextColumn::make('temperature_1')
-          ->label(__('messages.temp_1'))
-          ->searchable(),
-        Tables\Columns\TextColumn::make('temperature_2')
-          ->label(__('messages.temp_2'))
-          ->searchable(),
-        Tables\Columns\TextColumn::make('temperature_3')
-          ->label(__('messages.temp_3'))
-          ->searchable(),
-        Tables\Columns\TextColumn::make('temperature_4')
-          ->label(__('messages.temp_4'))
+        Tables\Columns\TextColumn::make('series.series_number')
+          ->label(__('messages.series_number'))
           ->searchable(),
         Tables\Columns\TextColumn::make('product.name')
           ->label(__('messages.product_name'))
@@ -153,10 +122,10 @@ class MeltTemperatureResource extends Resource
         Tables\Columns\TextColumn::make('machine.name')
           ->label(__('messages.machine'))
           ->searchable(),
-
-        Tables\Columns\TextColumn::make('recorded_at_1')
-          ->label(__('messages.recorded_at'))
-          ->dateTime('d.m.Y H:i'),
+        Tables\Columns\TextColumn::make('created_at')
+          ->label(__('messages.created_at'))
+          ->dateTime('d.m.Y H:i')
+          ->sortable(),
       ])
       ->actions([
         Tables\Actions\EditAction::make(),
