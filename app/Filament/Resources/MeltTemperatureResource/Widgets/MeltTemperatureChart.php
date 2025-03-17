@@ -4,64 +4,72 @@ namespace App\Filament\Resources\MeltTemperatureResource\Widgets;
 
 use Filament\Widgets\ChartWidget;
 use App\Models\MeltTemperature;
+use App\Models\TemperatureReading;
 use Carbon\Carbon;
 
 class MeltTemperatureChart extends ChartWidget
 {
-    protected static ?string $heading = 'Temperature Chart';
+    protected static ?string $heading = 'Melt Temperature Chart';
+
+    public function getHeading(): string
+    {
+        return __('messages.melt_temperature_chart');
+    }
 
     protected function getData(): array
     {
         $today = Carbon::today();
 
-        $temperatures = MeltTemperature::whereDate('recorded_at_1', $today)
-            ->orderBy('recorded_at_1')
+        // Get today's temperature readings
+        $readings = TemperatureReading::whereHas('meltTemperature', function ($query) use ($today) {
+            $query->whereDate('created_at', $today);
+        })
+            ->orderBy('recorded_at')
             ->get();
 
-        // Prepare data for each temperature series
-        $series = [
-            ['label' => 'Temperature 1', 'recorded_at' => 'recorded_at_1', 'temperature' => 'temperature_1', 'color' => 'rgb(255, 99, 132)'],
-            ['label' => 'Temperature 2', 'recorded_at' => 'recorded_at_2', 'temperature' => 'temperature_2', 'color' => 'rgb(54, 162, 235)'],
-            ['label' => 'Temperature 3', 'recorded_at' => 'recorded_at_3', 'temperature' => 'temperature_3', 'color' => 'rgb(255, 206, 86)'],
-            ['label' => 'Temperature 4', 'recorded_at' => 'recorded_at_4', 'temperature' => 'temperature_4', 'color' => 'rgb(75, 192, 192)'],
-        ];
+        // Prepare data for temperature series
+        $data = $readings->map(function ($reading) {
+            return [
+                'x' => Carbon::parse($reading->recorded_at)->format('H:i'),
+                'y' => $reading->temperature,
+            ];
+        })
+            ->sortBy('x')
+            ->values();
 
-        $datasets = [];
-
-        foreach ($series as $seriesInfo) {
-            $data = $temperatures->map(function ($record) use ($seriesInfo) {
-                return [
-                    'x' => Carbon::parse($record->{$seriesInfo['recorded_at']})->format('H:i'),
-                    'y' => $record->{$seriesInfo['temperature']},
-                ];
-            })
-                // Sort each dataset by the 'x' value to ensure proper ordering
-                ->sortBy('x')
-                ->values();
-
-            $datasets[] = [
-                'label' => $seriesInfo['label'],
+        $datasets = [
+            [
+                'label' => 'Temperature (°C)',
                 'data' => $data,
-                'borderColor' => $seriesInfo['color'],
-                'backgroundColor' => 'transparent',
+                'borderColor' => 'rgb(255, 99, 132)',
+                'backgroundColor' => 'rgba(255, 99, 132, 0.1)',
                 'borderWidth' => 2,
-                'tension' => 0.1,  // Slight curvature for the lines
-                'fill' => false,
+                'tension' => 0.3,
+                'fill' => true,
                 'pointRadius' => 4,
                 'pointHoverRadius' => 6,
-            ];
-        }
+                'pointBackgroundColor' => 'rgb(255, 99, 132)',
+            ],
 
-        // Collecting unique labels (optional if using a time scale)
-        $labels = collect([
-            $temperatures->pluck('recorded_at_1')->map(fn($date) => Carbon::parse($date)->format('H:i')),
-            $temperatures->pluck('recorded_at_2')->map(fn($date) => Carbon::parse($date)->format('H:i')),
-            $temperatures->pluck('recorded_at_3')->map(fn($date) => Carbon::parse($date)->format('H:i')),
-            $temperatures->pluck('recorded_at_4')->map(fn($date) => Carbon::parse($date)->format('H:i')),
-        ])->flatten()->unique()->sort();
+            [
+                'label' => 'Temperature Limit',
+                'data' => collect($data)->map(function ($point) {
+                    return [
+                        'x' => $point['x'],
+                        'y' => 700,
+                    ];
+                })->toArray(),
+                'borderColor' => 'rgba(54, 162, 235, 0.8)',
+                'borderWidth' => 2,
+                'pointRadius' => 0,
+                'fill' => false,
+                'tension' => 0,
+                'borderDash' => [5, 5],
+            ],
+
+        ];
 
         return [
-            'labels' => $labels,
             'datasets' => $datasets,
         ];
     }
@@ -74,24 +82,42 @@ class MeltTemperatureChart extends ChartWidget
     protected function getOptions(): array
     {
         return [
+            'responsive' => true,
+            'maintainAspectRatio' => false,
             'scales' => [
                 'x' => [
                     'type' => 'time',
                     'time' => [
-                        'unit' => 'minute',
+                        'unit' => 'hour',
                         'displayFormats' => [
-                            'minute' => 'HH:mm'
-                        ]
+                            'hour' => 'HH:mm'
+                        ],
+                        'tooltipFormat' => 'HH:mm'
                     ],
+                    'title' => [
+                        'display' => true,
+                        'text' => 'Time'
+                    ]
                 ],
                 'y' => [
                     'beginAtZero' => false,
+                    'title' => [
+                        'display' => true,
+                        'text' => 'Temperature (°C)'
+                    ]
                 ],
             ],
             'plugins' => [
                 'legend' => [
                     'display' => true,
+                    'position' => 'top',
                 ],
+                'tooltip' => [
+                    'enabled' => true,
+                    'mode' => 'index',
+                    'intersect' => false,
+                ],
+
             ],
         ];
     }

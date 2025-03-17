@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class MeltTemperature extends Model
 {
@@ -14,23 +15,32 @@ class MeltTemperature extends Model
     'user_id',
     'machine_id',
     'product_id',
-    'series_id',
-    'temperature_readings'
+    'series_id'
   ];
 
   protected $casts = [
-    'temperature_readings' => 'array',
+    'recorded_at' => 'datetime',
   ];
 
   protected static function boot()
   {
     parent::boot();
 
-    static::saving(function ($model) {
-      if (Auth::check()) {
-        $model->user_id = Auth::id();
-      }
+    static::creating(function ($model) {
+      $model->user_id = Auth::id();
     });
+  }
+
+  protected $temperature_readings = [];
+
+  public function getTemperatureReadingsAttribute()
+  {
+    return $this->temperature_readings;
+  }
+
+  public function temperatureReadings()
+  {
+    return $this->hasMany(TemperatureReading::class);
   }
 
   public function user()

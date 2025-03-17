@@ -20,7 +20,8 @@ use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\TimePicker;
-use Filament\Forms\Components\Repeater;
+use Awcodes\TableRepeater\Components\TableRepeater;
+use Awcodes\TableRepeater\Header;
 
 class MeltTemperatureResource extends Resource
 {
@@ -51,7 +52,7 @@ class MeltTemperatureResource extends Resource
               ->label(__('messages.series_number'))
               ->options(SeriesTender::all()->pluck('series_number', 'id'))
               ->searchable()
-              ->default(SeriesTender::latest()->first()->id),
+              ->default(fn() => SeriesTender::latest()->first()?->id),
 
             Select::make('product_id')
               ->required()
@@ -59,7 +60,9 @@ class MeltTemperatureResource extends Resource
               ->options(Product::all()->pluck('name', 'id'))
               ->searchable()
               ->default(function (callable $get) {
-                $seriesTender = SeriesTender::find($get('series_id'));
+                $seriesId = $get('series_id');
+                if (!$seriesId) return null;
+                $seriesTender = SeriesTender::find($seriesId);
                 return $seriesTender ? $seriesTender->product_id : null;
               }),
 
@@ -68,40 +71,40 @@ class MeltTemperatureResource extends Resource
               ->label(__('messages.machine'))
               ->options(Machine::all()->pluck('name', 'id'))
               ->searchable()
-              ->default(Machine::first()->id),
+              ->default(fn() => Machine::first()?->id),
           ]),
 
-        // Replace the fixed temperature and time fields with a repeater
-        Repeater::make('temperature_readings')
-          ->label(__('messages.temperature_readings'))
-          ->schema([
-            Grid::make(2)
-              ->schema([
-                TextInput::make('temperature')
-                  ->required()
-                  ->label(__('messages.temperature'))
-                  ->numeric()
-                  ->integer(),
-
-                TimePicker::make('recorded_at')
-                  ->required()
-                  ->default(now()->format('H:i'))
-                  ->format('H:i')
-                  ->withoutSeconds()
-                  ->label(__('messages.recorded_at')),
-              ]),
+        TableRepeater::make('temperature_readings')
+          ->relationship('temperatureReadings')
+          ->headers([
+            Header::make('temperature')->label(__('messages.temperature'))->width('150px'),
+            Header::make('recorded_at')->label(__('messages.recorded_at'))->width('150px'),
           ])
-          ->grid(1)
+          ->schema([
+            TextInput::make('temperature')
+              ->required()
+              ->label(__('messages.temperature'))
+              ->numeric()
+              ->integer()
+              ->extraAttributes(['class' => 'm-3']),
+            TimePicker::make('recorded_at')
+              ->required()
+              ->default(now())
+              ->format('H:i')
+              ->withoutSeconds()
+              ->label(__('messages.recorded_at'))
+              ->extraAttributes(['class' => 'm-3']),
+          ])
           ->defaultItems(1)
           ->createItemButtonLabel(__('messages.add_temperature'))
-          ->collapsible()
           ->columnSpanFull()
-          ->itemLabel(function (array $state): ?string {
-            if (isset($state['temperature']) && isset($state['recorded_at'])) {
-              return __('messages.temperature') . ': ' . $state['temperature'] . ' - ' . $state['recorded_at'];
-            }
-
-            return null;
+          ->emptyLabel(__('messages.no_temperature_readings'))
+          ->streamlined()
+          ->mutateRelationshipDataBeforeCreateUsing(function (array $data): array {
+            return [
+              ...$data,
+              'recorded_at' => now()->setTimeFromTimeString($data['recorded_at']),
+            ];
           }),
       ]);
   }

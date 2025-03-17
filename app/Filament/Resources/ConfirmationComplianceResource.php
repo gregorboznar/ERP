@@ -12,32 +12,13 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Resources\Pages\Page;
+use Filament\Pages\Page;
 
 class ConfirmationComplianceResource extends Resource
 {
     protected static ?string $model = ConfirmationCompliance::class;
 
     protected static ?string $navigationIcon = 'phosphor-check-circle';
-
-    protected static ?string $navigationGroup = 'Quality Control';
-
-    protected static ?int $navigationSort = 2;
-
-    public static function getNavigationLabel(): string
-    {
-        return __('messages.confirmation_compliance');
-    }
-
-    public static function getPluralModelLabel(): string
-    {
-        return __('messages.confirmation_compliance');
-    }
-
-    public static function getNavigationGroup(): ?string
-    {
-        return __('Quality Control');
-    }
 
     public static function form(Form $form): Form
     {
@@ -51,21 +32,13 @@ class ConfirmationComplianceResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('user.name')
-                    ->label(__('messages.user'))
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('product.name')
-                    ->label(__('messages.product'))
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->label(__('messages.created_at'))
-                    ->dateTime()
-                    ->sortable(),
+                //
             ])
             ->filters([
                 //
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
@@ -88,15 +61,18 @@ class ConfirmationComplianceResource extends Resource
             'index' => Pages\ListConfirmationCompliances::route('/'),
             'create' => Pages\CreateConfirmationCompliance::route('/create'),
             'edit' => Pages\EditConfirmationCompliance::route('/{record}/edit'),
+            'view' => Pages\ViewConfirmationCompliance::route('/{record}'),
+            'visual-characteristics' => Pages\VisualCharacteristics::route('/{record}/visual-characteristics'),
+            'measurement-characteristics' => Pages\MeasurementCharacteristics::route('/{record}/measurement-characteristics'),
         ];
     }
 
-    public static function getRecordSubNavigation(Page $page): array
+    public static function getRecordSubNavigation(\Filament\Pages\Page $page): array
     {
-        return $page->generateNavigationItems([
-            Pages\ListConfirmationCompliances::class,
-            Pages\CreateConfirmationCompliance::class,
-            Pages\EditConfirmationCompliance::class,
-        ]);
+        return [
+            'view' => Pages\ViewConfirmationCompliance::class,
+            'visual-characteristics' => Pages\VisualCharacteristics::class,
+            'measurement-characteristics' => Pages\MeasurementCharacteristics::class,
+        ];
     }
 }

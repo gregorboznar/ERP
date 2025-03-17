@@ -83,8 +83,8 @@ return [
   'temperature_3' => 'Temperatura 3',
   'temperature_4' => 'Temperatura 4',
   'operator' => 'Operater',
-  'temp_1' => 'Temp. 1',
-  'temp_2' => 'Temp. 2',
-  'temp_3' => 'Temp. 3',
-  'temp_4' => 'Temp. 4',
+  'temperature_readings' => 'Meritve taljenja',
+  'temperature' => 'Temperatura',
+  'melt_temperature_chart' => 'Graf spremljanja temperature taline',
+  'quality_control' => 'Kontrola kakovosti',
 ];
