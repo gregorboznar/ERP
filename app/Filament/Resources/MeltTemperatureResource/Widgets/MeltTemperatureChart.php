@@ -11,23 +11,45 @@ class MeltTemperatureChart extends ChartWidget
 {
     protected static ?string $heading = 'Melt Temperature Chart';
 
+    // Add filter property
+    public ?string $filter = null;
+
     public function getHeading(): string
     {
         return __('messages.melt_temperature_chart');
     }
 
+    protected function getFilters(): ?array
+    {
+        return [
+            'today' => __('messages.today'),
+            'yesterday' => __('messages.yesterday'),
+            'last_week' => __('messages.last_week'),
+            'last_month' => __('messages.last_month'),
+        ];
+    }
+
     protected function getData(): array
     {
-        $today = Carbon::today();
+        $date = match ($this->filter) {
+            'yesterday' => Carbon::yesterday(),
+            'last_week' => Carbon::today()->subWeek(),
+            'last_month' => Carbon::today()->subMonth(),
+            default => Carbon::today(),
+        };
 
-        // Get today's temperature readings
-        $readings = TemperatureReading::whereHas('meltTemperature', function ($query) use ($today) {
-            $query->whereDate('created_at', $today);
+        $readings = TemperatureReading::whereHas('meltTemperature', function ($query) use ($date) {
+            if ($this->filter === 'last_week') {
+                $query->whereBetween('created_at', [$date, Carbon::today()]);
+            } elseif ($this->filter === 'last_month') {
+                $query->whereBetween('created_at', [$date, Carbon::today()]);
+            } else {
+                $query->whereDate('created_at', $date);
+            }
         })
             ->orderBy('recorded_at')
             ->get();
 
-        // Prepare data for temperature series
         $data = $readings->map(function ($reading) {
             return [
                 'x' => Carbon::parse($reading->recorded_at)->format('H:i'),
@@ -81,19 +103,37 @@ class MeltTemperatureChart extends ChartWidget
 
     protected function getOptions(): array
     {
+        $timeUnit = match ($this->filter) {
+            'last_week' => [
+                'unit' => 'day',
+                'displayFormats' => [
+                    'day' => 'MMM D',
+                ],
+                'tooltipFormat' => 'MMM D, HH:mm',
+            ],
+            'last_month' => [
+                'unit' => 'day',
+                'displayFormats' => [
+                    'day' => 'MMM D',
+                ],
+                'tooltipFormat' => 'MMM D, HH:mm',
+            ],
+            default => [
+                'unit' => 'hour',
+                'displayFormats' => [
+                    'hour' => 'HH:mm'
+                ],
+                'tooltipFormat' => 'HH:mm'
+            ],
+        };
+
         return [
             'responsive' => true,
             'maintainAspectRatio' => false,
             'scales' => [
                 'x' => [
                     'type' => 'time',
-                    'time' => [
-                        'unit' => 'hour',
-                        'displayFormats' => [
-                            'hour' => 'HH:mm'
-                        ],
-                        'tooltipFormat' => 'HH:mm'
-                    ],
+                    'time' => $timeUnit,
                     'title' => [
                         'display' => true,
                         'text' => 'Time'
@@ -117,7 +157,6 @@ class MeltTemperatureChart extends ChartWidget
                     'mode' => 'index',
                     'intersect' => false,
                 ],
-
             ],
         ];
     }

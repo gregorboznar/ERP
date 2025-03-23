@@ -22,6 +22,7 @@ use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\TimePicker;
 use Awcodes\TableRepeater\Components\TableRepeater;
 use Awcodes\TableRepeater\Header;
+use Filament\Forms\Components\Placeholder;
 
 class MeltTemperatureResource extends Resource
 {
@@ -96,9 +97,9 @@ class MeltTemperatureResource extends Resource
               ->extraAttributes(['class' => 'm-3']),
           ])
           ->defaultItems(1)
-          ->createItemButtonLabel(__('messages.add_temperature'))
+          ->createItemButtonLabel(__('messages.add'))
           ->columnSpanFull()
-          ->emptyLabel(__('messages.no_temperature_readings'))
+          ->emptyLabel(__('messages.table_empty'))
           ->streamlined()
           ->mutateRelationshipDataBeforeCreateUsing(function (array $data): array {
             return [

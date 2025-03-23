@@ -87,4 +87,11 @@ return [
   'temperature' => 'Temperatura',
   'melt_temperature_chart' => 'Graf spremljanja temperature taline',
   'quality_control' => 'Kontrola kakovosti',
+  'add' => 'Dodaj',
+  'table_empty' => 'Tabela je prazna',
+  'today' => 'Danes',
+  'yesterday' => 'Včeraj',
+  'last_week' => 'Zadnji teden',
+  'last_month' => 'Zadnji mesec',
+
 ];
