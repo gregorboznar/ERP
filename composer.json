@@ -12,9 +12,11 @@
         "codeat3/blade-carbon-icons": "^2.31",
         "filafly/phosphor-icon-replacement": "^1.0",
         "filament/filament": "*",
+        "filament/notifications": "^3.2",
         "laravel/framework": "^11.31",
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.5",
+        "phpoffice/phpspreadsheet": "^4.1",
         "spatie/laravel-permission": "^6.10"
     },
     "require-dev": {

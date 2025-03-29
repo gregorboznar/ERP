@@ -93,5 +93,14 @@ return [
   'yesterday' => 'Včeraj',
   'last_week' => 'Zadnji teden',
   'last_month' => 'Zadnji mesec',
-
+  'new_scp_measurement' => 'Nova meritev SCP',
+  'enter_details_for_new_scp_measurement' => 'Vnesite podrobnosti za novo meritev SCP',
+  'new_series_tender' => 'Nova serija',
+  'enter_details_for_new_series_tender' => 'Vnesite podrobnosti za novo serijo',
+  'datetime' => 'Datum in čas',
+  'field_number' => 'Gnezdo',
+  'measurement_value' => 'Vrednost meritve',
+  'nest' => 'Gnezdo',
+  'part' => 'Kos',
+  'operator' => 'Operater',
 ];

@@ -14,6 +14,7 @@ use Filament\Tables\Table;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\DeleteAction;
 use App\Models\Product;
+use Filament\Forms\Components\Grid;
 
 class SeriesTenderResource extends Resource
 {
@@ -39,26 +40,27 @@ class SeriesTenderResource extends Resource
   {
     return $form
       ->schema([
-        TextInput::make('series_number')
-          ->required()
-          ->string()
-          ->maxLength(255)
-          ->label(__('messages.series_number')),
+        Grid::make(3)
+          ->schema([
+            TextInput::make('series_number')
+              ->required()
+              ->string()
+              ->maxLength(255)
+              ->label(__('messages.series_number')),
 
+            TextInput::make('company')
+              ->required()->label(__('messages.company')),
 
+            Select::make('product_id')
+              ->required()
+              ->label(__('messages.product'))
+              ->options(Product::all()->pluck('name', 'id'))
+              ->searchable(),
 
-        TextInput::make('company')
-          ->required()->label(__('messages.company')),
-
-        Select::make('product_id')
-          ->required()
-          ->label(__('messages.product'))
-          ->options(Product::all()->pluck('name', 'id'))
-          ->searchable(),
-
-        DatePicker::make('tender_date')
-          ->required()->native(false)
-          ->label(__('messages.tender_date')),
+            DatePicker::make('tender_date')
+              ->required()->native(false)
+              ->label(__('messages.tender_date')),
+          ])
       ]);
   }
 

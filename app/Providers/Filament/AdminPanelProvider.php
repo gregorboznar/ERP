@@ -21,6 +21,8 @@ use Illuminate\Support\Facades\Schema;
 use App\Filament\Pages\MaintenanceChecks;
 use Illuminate\Support\HtmlString;
 use Filafly\PhosphorIconReplacement;
+use Filament\Notifications\Notification;
+use Filament\Notifications\NotificationPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -28,12 +30,11 @@ class AdminPanelProvider extends PanelProvider
     {
         $brandName = 'Admin';
         try {
-            if (class_exists(\App\Models\Settings::class) && \Schema::hasTable('settings')) {
+            if (class_exists(\App\Models\Settings::class) && Schema::hasTable('settings')) {
                 $settings = \App\Models\Settings::first();
                 $brandName = $settings ? $settings->title : 'Admin';
             }
         } catch (\Exception $e) {
-            // Silently continue with default brand name if there's an error
         }
 
         return $panel
@@ -45,11 +46,10 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->viteTheme('resources/css/filament/admin/theme.css')
-
+            ->databaseNotifications()
             ->colors([
                 'primary' => Color::Amber,
             ])
-            ->plugin(PhosphorIconReplacement::make())
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
