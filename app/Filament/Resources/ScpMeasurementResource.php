@@ -37,7 +37,19 @@ class ScpMeasurementResource extends Resource
 {
     protected static ?string $model = ScpMeasurement::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'carbon-intent-request-active';
+
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('messages.scp_measurements');
+    }
+
+
+    public static function getNavigationLabel(): string
+    {
+        return trans('messages.scp_measurements');
+    }
 
     public static function form(Form $form): Form
     {
@@ -147,11 +159,11 @@ class ScpMeasurementResource extends Resource
                         $lowest = $values->first();
                         $highest = $values->last();
 
-                        // Display the lowest and highest values
+
                         return "{$lowest} - {$highest}";
                     })
                     ->tooltip(function ($record) {
-                        // Generate tooltip content with all values
+
                         $values = $record->measurementFields->map(fn($field) => $field->measurement_value);
                         return $values->implode(', ');
                     })
@@ -206,15 +218,10 @@ class ScpMeasurementResource extends Resource
                             ->title('Export started')
                             ->body('Your export has begun and will be processed in the background. You will receive a notification with the download link when it is complete.')
                     ),
-                Action::make('exportToTemplate')
-                    ->label('Export to Template')
-                    ->url(route('scp-measurements.export-to-template'))
-                    ->icon('heroicon-o-document-text')
-                    ->color('success')
-                    ->openUrlInNewTab(false),
+
                 Action::make('downloadLatestExport')
-                    ->label('Download Latest Template')
-                    ->url(route('scp-measurements.direct-download-latest'))
+                    ->label(__('messages.download_excel_template'))
+                    ->url(route('scp-measurements.fresh-export-download'))
                     ->icon('heroicon-o-arrow-down-tray')
                     ->color('primary')
                     ->openUrlInNewTab(true)

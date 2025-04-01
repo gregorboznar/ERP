@@ -101,7 +101,7 @@ class CreateScpMeasurementTemplate extends Command
 
     // Save the template file
     $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
-    $templatePath = storage_path('app/templates/scp_measurements_template.xlsx');
+    $templatePath = storage_path('app/templates/scp-template2.xlsx');
     $writer->save($templatePath);
 
     $this->info('Excel template created successfully at: ' . $templatePath);

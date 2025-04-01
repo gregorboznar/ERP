@@ -10,6 +10,13 @@ class EditMaintenancePoint extends EditRecord
 {
     protected static string $resource = MaintenancePointResource::class;
 
+
+
+    public function getTitle(): string
+    {
+        return __('messages.edit_maintenance_point');
+    }
+
     protected function getHeaderActions(): array
     {
         return [

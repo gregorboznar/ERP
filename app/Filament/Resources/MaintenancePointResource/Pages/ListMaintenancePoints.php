@@ -13,7 +13,14 @@ class ListMaintenancePoints extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()->label(__('messages.new_maintenance_point'))
+                ->modalHeading(__('messages.new_maintenance_point'))
+                ->modalDescription(__('messages.enter_details_for_new_maintenance_point'))
+                ->modalWidth('2xl')
+                ->closeModalByClickingAway(true)
+                ->createAnother(false)
+                ->modalSubmitActionLabel(__('messages.save'))
+                ->modalCancelActionLabel(__('messages.cancel')),
         ];
     }
 }

@@ -15,9 +15,7 @@ class ListScpMeasurements extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            ExportAction::make()
-                ->exporter(ScpMeasurementExporter::class)
-                ->label(__('messages.export')),
+
             Actions\CreateAction::make()->label(__('messages.new_scp_measurement'))
                 ->modalHeading(__('messages.new_scp_measurement'))
                 ->modalDescription(__('messages.enter_details_for_new_scp_measurement'))

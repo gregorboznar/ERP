@@ -9,18 +9,19 @@ use Filament\Notifications\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class ScpMeasurementExportController extends Controller
 {
   public function exportToTemplate()
   {
     // Check if template exists
-    $templatePath = storage_path('app/templates/scp_measurements_template.xlsx');
+    $templatePath = storage_path('app/templates/scp-template2.xlsx');
     if (!file_exists($templatePath)) {
       Notification::make()
         ->danger()
         ->title('Template not found')
-        ->body('Excel template not found. Please run "php artisan app:create-scp-measurement-template" to create it first.')
+        ->body('Excel template not found. Please place your template at: ' . $templatePath)
         ->send();
 
       return redirect()->back();
@@ -32,7 +33,7 @@ class ScpMeasurementExportController extends Controller
     // Create export record
     $export = Export::create([
       'user_id' => Auth::id(),
-      'file_name' => 'scp-measurements-template-' . now()->format('Y-m-d-H-i-s'),
+      'file_name' => 'scp-template-export-' . now()->format('Y-m-d-H-i-s'),
       'exporter' => 'App\\Filament\\Exports\\ScpMeasurementTemplateExporter',
       'file_disk' => 'local',
       'total_rows' => $totalRows,
@@ -197,11 +198,20 @@ class ScpMeasurementExportController extends Controller
 
   public function directDownloadLatest()
   {
-    // Find the latest export
+    // First try to find exports with our new template naming convention
     $latestExport = Export::where('user_id', Auth::id())
       ->where('exporter', 'App\\Filament\\Exports\\ScpMeasurementTemplateExporter')
+      ->where('file_name', 'like', 'scp-template-export-%')
       ->orderBy('created_at', 'desc')
       ->first();
+
+    // If none found with new pattern, fall back to any export from our exporter
+    if (!$latestExport) {
+      $latestExport = Export::where('user_id', Auth::id())
+        ->where('exporter', 'App\\Filament\\Exports\\ScpMeasurementTemplateExporter')
+        ->orderBy('created_at', 'desc')
+        ->first();
+    }
 
     if (!$latestExport) {
       abort(404, 'No export found');
@@ -251,5 +261,125 @@ class ScpMeasurementExportController extends Controller
       'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       'Content-Disposition' => 'attachment; filename="' . $latestExport->file_name . '.xlsx"'
     ]);
+  }
+
+  public function freshExportAndDownload()
+  {
+    try {
+      // Check if template exists
+      $templatePath = storage_path('app/templates/scp-template2.xlsx');
+      if (!file_exists($templatePath)) {
+        Notification::make()
+          ->danger()
+          ->title('Template not found')
+          ->body('Excel template not found. Please place your template at: ' . $templatePath)
+          ->send();
+
+        return redirect()->back();
+      }
+
+      // Log the start of the process
+      Log::info('Starting fresh export and download with template: ' . $templatePath);
+
+      // Count total records
+      $totalRows = ScpMeasurement::count();
+      Log::info('Total records to export: ' . $totalRows);
+
+      // Create export record with fresh timestamp to ensure it's the newest
+      $export = Export::create([
+        'user_id' => Auth::id(),
+        'file_name' => 'scp-template-export-' . now()->format('Y-m-d-H-i-s'),
+        'exporter' => 'App\\Filament\\Exports\\ScpMeasurementTemplateExporter',
+        'file_disk' => 'local',
+        'total_rows' => $totalRows,
+      ]);
+
+      Log::info('Created export record with ID: ' . $export->id);
+
+      // Create and run the exporter directly (don't use the job)
+      $exporter = new \App\Filament\Exports\ScpMeasurementTemplateExporter($export);
+
+      try {
+        $exporter->handle();
+        Log::info('Exporter handled successfully');
+      } catch (\Exception $e) {
+        Log::error('Exception in exporter->handle(): ' . $e->getMessage());
+        Log::error($e->getTraceAsString());
+
+        Notification::make()
+          ->danger()
+          ->title('Export Error')
+          ->body('Error processing the export: ' . $e->getMessage())
+          ->send();
+
+        return redirect()->back();
+      }
+
+      // Now get the path to the newly created file
+      $paths = [
+        'private/filament_exports/' . $export->getKey() . '/' . $export->file_name . '.xlsx',
+        'private/private/filament_exports/' . $export->getKey() . '/' . $export->file_name . '.xlsx',
+        'filament_exports/' . $export->getKey() . '/' . $export->file_name . '.xlsx'
+      ];
+
+      Log::info('Looking for export file in paths: ' . implode(', ', $paths));
+
+      // Find the first existing file
+      $filePath = null;
+      foreach ($paths as $path) {
+        if (Storage::disk('local')->exists($path)) {
+          $filePath = $path;
+          Log::info('Found file at path: ' . $path);
+          break;
+        }
+      }
+
+      // If no file found in standard locations, check directories for any file
+      if (!$filePath) {
+        $directories = [
+          'private/filament_exports/' . $export->getKey(),
+          'private/private/filament_exports/' . $export->getKey(),
+          'filament_exports/' . $export->getKey()
+        ];
+
+        foreach ($directories as $dir) {
+          Log::info('Checking directory: ' . $dir);
+
+          if (Storage::disk('local')->exists($dir)) {
+            $files = Storage::disk('local')->files($dir);
+            Log::info('Files in directory: ' . implode(', ', $files));
+
+            if (!empty($files)) {
+              $filePath = $files[0];
+              Log::info('Using first file: ' . $filePath);
+              break;
+            }
+          } else {
+            Log::info('Directory does not exist: ' . $dir);
+          }
+        }
+      }
+
+      // If still no file found, abort
+      if (!$filePath) {
+        Log::error('No export file found after checking all paths and directories');
+        abort(404, 'Export file not found. The export process failed.');
+      }
+
+      // Get the actual file path
+      $file = Storage::disk('local')->path($filePath);
+      Log::info('Final file path for download: ' . $file);
+
+      // Return the file for download
+      return response()->file($file, [
+        'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'Content-Disposition' => 'attachment; filename="' . $export->file_name . '.xlsx"'
+      ]);
+    } catch (\Exception $e) {
+      Log::error('Unhandled exception in freshExportAndDownload: ' . $e->getMessage());
+      Log::error($e->getTraceAsString());
+
+      abort(500, 'An unexpected error occurred: ' . $e->getMessage());
+    }
   }
 }

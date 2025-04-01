@@ -19,7 +19,7 @@ class ScpMeasurementTemplateExporter extends Exporter
   public function __construct(Export $export, array $columnMap = [], array $options = [])
   {
     parent::__construct($export, $columnMap, $options);
-    $this->templatePath = storage_path('app/templates/scp_measurements_template.xlsx');
+    $this->templatePath = storage_path('app/templates/scp-template2.xlsx');
   }
 
   public static function getColumns(): array
@@ -40,7 +40,13 @@ class ScpMeasurementTemplateExporter extends Exporter
 
   public function getFileName(Export $export): string
   {
-    return $export->file_name;
+    // If the export already has a filename that includes our new pattern, use it
+    if (strpos($export->file_name, 'scp-template-export-') === 0) {
+      return $export->file_name;
+    }
+
+    // Otherwise, ensure we use the new naming pattern
+    return 'scp-template-export-' . now()->format('Y-m-d-H-i-s');
   }
 
   public function getFileExtension(): string
@@ -93,8 +99,17 @@ class ScpMeasurementTemplateExporter extends Exporter
     }
 
     try {
-      // Load the template using fully qualified class name
-      $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($this->templatePath);
+      // Create a temporary directory path for file operations
+      $tempDir = sys_get_temp_dir();
+      $tempFile = $tempDir . '/' . basename($this->templatePath);
+
+      // Copy the template file to the temp location instead of loading it
+      copy($this->templatePath, $tempFile);
+
+      Log::info("Template copied to temp location: " . $tempFile);
+
+      // Now load the copied file for modification
+      $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($tempFile);
       $worksheet = $spreadsheet->getActiveSheet();
 
       // Get SCP measurements
@@ -102,39 +117,82 @@ class ScpMeasurementTemplateExporter extends Exporter
         ->with(['user', 'series', 'product', 'measurementFields'])
         ->get();
 
-      // Starting row in the template where data should be inserted
-      $startRow = 10; // Adjust this based on your template
+      // Define the column ranges for measurements
+      $columnRanges = [
+        'B' => ['start' => 21, 'end' => 45],
+        'D' => ['start' => 21, 'end' => 45],
+        'F' => ['start' => 21, 'end' => 45],
+        'H' => ['start' => 21, 'end' => 45],
+      ];
 
-      // Loop through measurements and insert into specific cells
-      foreach ($measurements as $index => $measurement) {
-        $row = $startRow + $index;
+      // Insert basic info into the sheet
+      if ($measurements->isNotEmpty()) {
+        $firstMeasurement = $measurements->first();
 
-        // Insert data into specific cells - adjust cell references based on your template
-        $worksheet->setCellValue("A{$row}", $measurement->datetime->format('d.m.Y H:i'));
-        $worksheet->setCellValue("B{$row}", $measurement->user->name ?? '');
-        $worksheet->setCellValue("C{$row}", $measurement->series->series_number ?? '');
-        $worksheet->setCellValue("D{$row}", $measurement->product->name ?? '');
-
-        // For measurement fields, you might need a specific approach based on your template
-        $measurementText = $measurement->measurementFields->map(function ($field) {
-          return sprintf(
-            'Part %d: Nest %d = %s',
-            $field->field_number,
-            $field->nest_number,
-            $field->measurement_value
-          );
-        })->join(", ");
-
-        $worksheet->setCellValue("E{$row}", $measurementText);
+        // Insert header information
+        $worksheet->setCellValue('B10', $firstMeasurement->datetime->format('d.m.Y H:i'));
+        $worksheet->setCellValue('B12', $firstMeasurement->user->name ?? '');
+        $worksheet->setCellValue('B14', $firstMeasurement->series->series_number ?? '');
+        $worksheet->setCellValue('B16', $firstMeasurement->product->name ?? '');
       }
 
-      // Save the spreadsheet to the storage using fully qualified class name
+      // Flatten all measurement values into a single array
+      $allMeasurementValues = [];
+      foreach ($measurements as $measurement) {
+        foreach ($measurement->measurementFields as $field) {
+          $allMeasurementValues[] = $field->measurement_value;
+        }
+      }
+
+      // Place the values into the columns in sequence
+      $valueIndex = 0;
+      foreach ($columnRanges as $column => $range) {
+        for ($row = $range['start']; $row <= $range['end']; $row++) {
+          // If we've used all values, stop filling cells
+          if ($valueIndex >= count($allMeasurementValues)) {
+            break 2; // Break out of both loops
+          }
+
+          // Set the cell value - use setCellValueExplicit to ensure it's handled as a number
+          $worksheet->setCellValueExplicit(
+            "{$column}{$row}",
+            $allMeasurementValues[$valueIndex],
+            \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC
+          );
+          $valueIndex++;
+        }
+      }
+
+      // Save the spreadsheet to the storage location
       $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+
+      // Important: Set these options to preserve charts and drawings
+      $writer->setIncludeCharts(true);
+      $writer->setPreCalculateFormulas(true);  // This will handle formula calculation
+
+      // Save the file
       $writer->save(Storage::path($exportPath));
+
+      // Clean up the temp file
+      if (file_exists($tempFile)) {
+        unlink($tempFile);
+      }
+
+      Log::info("Export completed and saved to: " . $exportPath);
     } catch (\Exception $e) {
       // Log the error and rethrow it
       Log::error('Template export error: ' . $e->getMessage());
+      Log::error($e->getTraceAsString());
       throw $e;
     }
+  }
+
+  /**
+   * Fix formula issues in the template
+   */
+  protected function fixFormulaIssues($spreadsheet)
+  {
+    // This method is no longer needed with the copy-based approach
+    // We're leaving charts and formulas intact
   }
 }

@@ -20,12 +20,24 @@ class ProductsResource extends Resource
 
     protected static ?string $navigationIcon = 'phosphor-factory';
 
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('messages.products');
+    }
+
+
+    public static function getNavigationLabel(): string
+    {
+        return trans('messages.products');
+    }
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')->required(),
-
+                Forms\Components\TextInput::make('code')->required(),
             ]);
     }
 
@@ -33,7 +45,9 @@ class ProductsResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name'),
+                Tables\Columns\TextColumn::make('name')->label(__('messages.title')),
+                Tables\Columns\TextColumn::make('code')->label(__('messages.code')),
+
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
@@ -62,7 +76,7 @@ class ProductsResource extends Resource
     {
         return [
             'index' => Pages\ListProducts::route('/'),
-            'create' => Pages\CreateProducts::route('/create'),
+
             'edit' => Pages\EditProducts::route('/{record}/edit'),
             'view' => Pages\ViewProducts::route('/{record}'),
             'technological-regulations' => Pages\TechnologicalRegulations::route('/{record}/technological-regulations'),

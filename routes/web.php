@@ -29,3 +29,8 @@ Route::get('/scp-measurements/direct-download/{id}', [ScpMeasurementExportContro
 Route::get('/scp-measurements/direct-download-latest', [ScpMeasurementExportController::class, 'directDownloadLatest'])
     ->name('scp-measurements.direct-download-latest')
     ->middleware(['auth']);
+
+// Fresh export and immediate download (creates and downloads in one step)
+Route::get('/scp-measurements/fresh-export-download', [ScpMeasurementExportController::class, 'freshExportAndDownload'])
+    ->name('scp-measurements.fresh-export-download')
+    ->middleware(['auth']);

@@ -13,7 +13,15 @@ class ListProducts extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+
+            Actions\CreateAction::make()->label(__('messages.new_product'))
+                ->modalHeading(__('messages.new_product'))
+                ->modalDescription(__('messages.enter_details_for_new_product'))
+                ->modalWidth('xl')
+                ->closeModalByClickingAway(true)
+                ->createAnother(false)
+                ->modalSubmitActionLabel(__('messages.save'))
+                ->modalCancelActionLabel(__('messages.cancel')),
         ];
     }
 }
