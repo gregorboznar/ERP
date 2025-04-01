@@ -10,6 +10,12 @@ class EditScpMeasurement extends EditRecord
 {
     protected static string $resource = ScpMeasurementResource::class;
 
+
+    public function getTitle(): string
+    {
+        return __('messages.edit_scp_measurement');
+    }
+
     protected function getHeaderActions(): array
     {
         return [

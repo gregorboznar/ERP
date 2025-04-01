@@ -20,18 +20,16 @@
               </div>
               <div class="flex space-x-4">
                 <div class="bg-white rounded-lg shadow w-full md:w-1/2">
-                  <div class="p-2 border-b border-gray-200">
-                    @if($machines->count() > 0)
+                  <div class="p-2  ">
+
                     <span class="text-sm font-medium text-gray-900">{{ __('messages.machine') }}:</span>
                     <select wire:model="selectedMachineId" class="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 filament-select">
-                      <option class="text-sm font-medium" value="">Select a machine</option>
+                      <option class="text-sm font-medium" value="">Izberi stroj</option>
                       @foreach($machines as $machine)
                       <option value="{{ $machine->id }}">{{ $machine->name }}</option>
                       @endforeach
                     </select>
-                    @else
-                    <p class="text-sm font-medium text-gray-900">{{ __('messages.no_machines_found') }}</p>
-                    @endif
+
                   </div>
                 </div>
                 <div class="bg-white rounded-lg shadow w-full md:w-1/2">
@@ -76,7 +74,7 @@
                   }
                 }">
                   <div class="flex items-center justify-between">
-                    <div class="flex flex-1">
+                    <div class="flex flex-1 ">
                       <div class="w-40 flex-shrink-0 mr-4">
                         <h4 class="text-sm font-medium text-gray-900">{{ $characteristic->name }}</h4>
                         @if($characteristic->nominal_value)
@@ -187,8 +185,8 @@
                   }">
               <div class="flex items-center justify-between">
                 <div class="flex flex-1">
-                  <div class="flex items-center name-width mr-4">
-                    <h4 class="text-sm font-medium text-gray-900">{{ $characteristic->name }}</h4>
+                  <div class="flex items-center  mr-4 min-w-[24rem]">
+                    <h4 class="text-sm font-medium text-gray-900 min-w-64">{{ $characteristic->name }}</h4>
                     @if($characteristic->nominal_value)
                     <div class="text-xs text-gray-500 ml-2">
                       Nominal: {{ $characteristic->nominal_value }} {{ $characteristic->unit }}

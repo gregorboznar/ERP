@@ -10,6 +10,11 @@ class EditMeltTemperature extends EditRecord
 {
   protected static string $resource = MeltTemperatureResource::class;
 
+  public function getTitle(): string
+  {
+    return __('messages.edit_melt_temperature');
+  }
+
   protected function getHeaderActions(): array
   {
     return [

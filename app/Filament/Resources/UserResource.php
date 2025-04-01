@@ -23,7 +23,7 @@ class UserResource extends Resource
     {
         return __('messages.users');
     }
-
+    protected static ?string $navigationGroup = 'Kadri';
 
     public static function getNavigationLabel(): string
     {
