@@ -11,16 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('confirmation_compliance_measurement_characteristics', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('confirmation_compliance_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('measurement_characteristic_id')->constrained()->cascadeOnDelete();
-            $table->decimal('measured_value', 10, 4);
-            $table->boolean('is_compliant')->default(false);
-            $table->text('notes')->nullable();
-            $table->timestamps();
-            $table->softDeletes();
-        });
+        if (!Schema::hasTable('confirmation_compliance_measurement_characteristics')) {
+            Schema::create('confirmation_compliance_measurement_characteristics', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('confirmation_compliance_id')->constrained()->cascadeOnDelete();
+                $table->foreignId('measurement_characteristic_id')->constrained()->cascadeOnDelete();
+                $table->decimal('measured_value', 10, 4);
+                $table->boolean('is_compliant')->default(false);
+                $table->text('notes')->nullable();
+                $table->timestamps();
+                $table->softDeletes();
+            });
+        }
     }
 
     /**

@@ -25,4 +25,9 @@ class SeriesTender extends Model
   {
     return $this->belongsTo(Product::class);
   }
+
+  public function dieCastings()
+  {
+    return $this->hasMany(DieCasting::class);
+  }
 }

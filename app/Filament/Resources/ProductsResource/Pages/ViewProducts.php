@@ -16,6 +16,11 @@ class ViewProducts extends ViewRecord
 
   protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
 
+  public function getTitle(): string
+  {
+    return $this->record->name;
+  }
+
   public function getSubNavigation(): array
   {
     return [

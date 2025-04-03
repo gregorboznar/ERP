@@ -64,6 +64,8 @@ return [
   'new_product' => 'Nov izdelek',
   'enter_details_for_new_product' => 'Vnesite podrobnosti za novi izdelek',
   'machine' => 'Stroj',
+  'add_new_series' => 'Dodaj nov razpis serije ',
+
   'no_machines_found' => 'Ni strojev',
   'check_date' => 'Čas kontrole',
   'series_tenders' => 'Serije',
@@ -73,6 +75,7 @@ return [
   'visual_characteristic_plural' => 'Vizualne karakteristike',
   'series' => 'Serija',
   'correct_technological_parameters' => 'Pravilna nastavitev tehnoloških parametrov',
+  'correct_technological_parameters_plural' => 'Pravilni parametri',
   'measurement_characteristics' => 'Merilne karakteristike',
   'select_series_tender' => 'Izberi serijo',
   'new_confirmation_compliance' => 'Potrditev ustreznosti prvega kosa pred pričetkom serije',
@@ -122,4 +125,25 @@ return [
   'download_excel_template' => 'Prenesi Excel predlogo',
   'location' => 'Lokacija',
   'description' => 'Opis',
+
+  'new_die_casting' => 'Nova die casting',
+  'enter_details_for_new_die_casting' => 'Vnesite podrobnosti za novo die casting',
+  'edit_die_casting' => 'Uredi die casting',
+  'die_castings' => 'Die castings',
+  'start_datetime' => 'Začetni čas',
+  'end_datetime' => 'Končni čas',
+  'counter_start' => 'Začetni števec',
+  'counter_end' => 'Končni števec',
+  'good_parts_count' => 'Število dobrih kosov',
+  'technological_waste' => 'Tehnološki odpad',
+  'date' => 'Datum',
+  'start_time' => 'Začetni čas',
+  'end_time' => 'Končni čas',
+  'batch_of_material' => 'Sarža materiala',
+  'palet_number' => 'Številka palete',
+  'waste_slag_weight' => 'Odpadna žlindra (kg)',
+  'stopage_reason' => 'Razlog za zastoj',
+  'notes' => 'Opombe',
+
+
 ];

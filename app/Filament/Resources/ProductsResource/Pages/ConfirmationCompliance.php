@@ -96,15 +96,19 @@ class ConfirmationCompliance extends Page implements HasTable
         Tables\Columns\TextColumn::make('user.name')
           ->label(__('messages.user'))
           ->sortable(),
-        Tables\Columns\TextColumn::make('correct_technological_parameters')
-          ->badge()
-          ->color(fn(string $state): string => match ($state) {
-            'true' => 'success',
-            'false' => 'danger',
-            default => 'secondary',
+
+        Tables\Columns\IconColumn::make('correct_technological_parameters')
+          ->label(__('messages.correct_technological_parameters_plural'))
+          ->sortable()
+          ->icon(fn(string $state): string => match ($state) {
+            '0' => 'heroicon-o-x-circle',
+            default => 'heroicon-o-check-circle'
           })
-          ->label(__('messages.correct_technological_parameters'))
-          ->sortable(),
+          ->color(fn(string $state): string => match ($state) {
+            '0' => 'danger',
+            default => 'success'
+          })
+        /*   ->extraAttributes(['class' => '!p-0 !m-0']) */,
         Tables\Columns\TextColumn::make('created_at')
           ->label(__('messages.created_at'))
           ->dateTime('d.m.Y H:i')

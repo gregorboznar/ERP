@@ -13,8 +13,13 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\ViewAction;
 use App\Models\Product;
 use Filament\Forms\Components\Grid;
+use Filament\Pages\SubNavigationPosition;
+use Filament\Pages\Page;
+use App\Filament\Resources\DieCastingResource;
+use App\Filament\Resources\SeriesTenderResource\RelationManagers\DieCastingsRelationManager;
 
 class SeriesTenderResource extends Resource
 {
@@ -34,6 +39,7 @@ class SeriesTenderResource extends Resource
   {
     return __('messages.series_tender');
   }
+  protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Start;
 
 
   public static function form(Form $form): Form
@@ -88,6 +94,7 @@ class SeriesTenderResource extends Resource
           ->sortable(),
       ])
       ->actions([
+        ViewAction::make(),
         EditAction::make(),
         DeleteAction::make()
           ->modalHeading(__('messages.delete_series_tender'))
@@ -99,15 +106,28 @@ class SeriesTenderResource extends Resource
 
   public static function getRelations(): array
   {
-    return [];
+    return [
+      DieCastingsRelationManager::class,
+    ];
   }
 
   public static function getPages(): array
   {
     return [
       'index' => Pages\ListSeriesTenders::route('/'),
+      'view' => Pages\ViewSeriesTender::route('/{record}'),
       'edit' => Pages\EditSeriesTender::route('/{record}/edit'),
+      'die-castings' => Pages\DieCastingsPage::route('/{record}/die-castings'),
     ];
+  }
+
+  public static function getRecordSubNavigation(Page $page): array
+  {
+    return $page->generateNavigationItems([
+      Pages\ViewSeriesTender::class,
+      Pages\DieCastingsPage::class,
+      Pages\EditSeriesTender::class,
+    ]);
   }
 
   public static function getNavigationBadge(): ?string
