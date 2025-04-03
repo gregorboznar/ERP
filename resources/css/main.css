@@ -2,6 +2,8 @@
     display: none;
 }
 
+/* Commenting out as it conflicts with Tailwind min-width classes
 .name-width {
     min-width: 259px !important;
 }
+*/

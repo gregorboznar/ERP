@@ -54,6 +54,76 @@
                   @endif
                 </div>
               </div>
+              <div class="bg-white rounded-lg shadow w-full md:w-1/2">
+                <div class="p-4 border-b border-gray-200 flex justify-between items-center"
+                  x-data="{ 
+                    selected: @entangle('correctTechnologicalParameters').defer,
+                    updateValue(value) {
+                      this.selected = value;
+                      @this.set('correctTechnologicalParameters', value);
+                    }
+                  }">
+                  <p class="text-sm font-medium text-gray-900">{{ __('messages.correct_technological_parameters') }}:</p>
+
+                  <div class="mt-2 flex space-x-3">
+                    <label class="inline-flex items-center">
+                      <input type="radio"
+                        name="correct_technological_parameters"
+                        value="1"
+                        class="sr-only"
+                        x-model="selected">
+                      <span @click.prevent="updateValue(1)"
+                        x-bind:class="{
+                          'cursor-pointer': true
+                        }">
+                        <x-filament::badge
+                          :color="$correctTechnologicalParameters == 1 ? 'success' : 'gray'"
+                          :outline="$correctTechnologicalParameters != 1"
+                          icon="heroicon-m-check-circle">
+                          DA
+                        </x-filament::badge>
+                      </span>
+                    </label>
+                    <label class="inline-flex items-center p-4">
+                      <input type="radio"
+                        name="correct_technological_parameters"
+                        value="2"
+                        class="sr-only"
+                        x-model="selected">
+                      <span @click.prevent="updateValue(2)"
+                        x-bind:class="{
+                          'cursor-pointer': true
+                        }">
+                        <x-filament::badge
+                          :color="$correctTechnologicalParameters == 2 ? 'danger' : 'gray'"
+                          :outline="$correctTechnologicalParameters != 2"
+                          icon="heroicon-m-x-circle">
+                          NE
+                        </x-filament::badge>
+                      </span>
+                    </label>
+                    <label class="inline-flex items-center">
+                      <input type="radio"
+                        name="correct_technological_parameters"
+                        value="3"
+                        class="sr-only"
+                        x-model="selected">
+                      <span @click.prevent="updateValue(3)"
+                        x-bind:class="{
+                          'cursor-pointer': true
+                        }">
+                        <x-filament::badge
+                          :color="$correctTechnologicalParameters == 3 ? 'warning' : 'gray'"
+                          :outline="$correctTechnologicalParameters != 3"
+                          icon="heroicon-m-exclamation-circle">
+                          N.O.
+                        </x-filament::badge>
+                      </span>
+                    </label>
+                  </div>
+
+                </div>
+              </div>
             </div>
           </div>
           <!-- Visual Characteristics -->
@@ -74,8 +144,8 @@
                   }
                 }">
                   <div class="flex items-center justify-between">
-                    <div class="flex flex-1 ">
-                      <div class="w-40 flex-shrink-0 mr-4">
+                    <div class="flex flex-1">
+                      <div class="flex items-center mr-4 min-w-[24rem]">
                         <h4 class="text-sm font-medium text-gray-900">{{ $characteristic->name }}</h4>
                         @if($characteristic->nominal_value)
                         <div class="text-xs text-gray-500 mt-1">
@@ -185,8 +255,8 @@
                   }">
               <div class="flex items-center justify-between">
                 <div class="flex flex-1">
-                  <div class="flex items-center  mr-4 min-w-[24rem]">
-                    <h4 class="text-sm font-medium text-gray-900 min-w-64">{{ $characteristic->name }}</h4>
+                  <div class="flex items-start mr-4 min-w-[24rem]">
+                    <h4 style="min-width: 260px;" class="text-sm font-medium text-gray-900 ">{{ $characteristic->name }}</h4>
                     @if($characteristic->nominal_value)
                     <div class="text-xs text-gray-500 ml-2">
                       Nominal: {{ $characteristic->nominal_value }} {{ $characteristic->unit }}
@@ -197,11 +267,11 @@
                     @endif
                   </div>
                   @if($product->nest_number > 0)
-                  <div class=" flex items-center space-x-2 overflow-x-auto pb-2">
+                  <div class=" flex items-center space-x-2  pb-2">
                     @for($i = 1; $i <= $product->nest_number; $i++)
                       <div class="flex-none w-20">
                         <div class="relative p-2">
-                          <input
+                          <input style="width: 80px;"
                             type="text"
                             step="0.0001"
                             wire:model="measurementValues.{{ $characteristic->id }}.{{ $i }}"

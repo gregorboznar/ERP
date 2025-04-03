@@ -72,6 +72,7 @@ return [
   'visual_characteristic' => 'Vizualna karakteristika',
   'visual_characteristic_plural' => 'Vizualne karakteristike',
   'series' => 'Serija',
+  'correct_technological_parameters' => 'Pravilna nastavitev tehnoloških parametrov',
   'measurement_characteristics' => 'Merilne karakteristike',
   'select_series_tender' => 'Izberi serijo',
   'new_confirmation_compliance' => 'Potrditev ustreznosti prvega kosa pred pričetkom serije',

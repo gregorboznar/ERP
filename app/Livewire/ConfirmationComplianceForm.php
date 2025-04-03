@@ -26,6 +26,7 @@ class ConfirmationComplianceForm extends Component
   public $machines;
   public $selectedSeriesTenderId;
   public $selectedDate;
+  public $correctTechnologicalParameters;
 
   public function mount($productId)
   {
@@ -109,6 +110,7 @@ class ConfirmationComplianceForm extends Component
         'product_id' => $this->productId,
         'series_tender_id' => $this->selectedSeriesTenderId,
         'user_id' => $userId,
+        'correct_technological_parameters' => $this->correctTechnologicalParameters,
       ]);
 
       // Save visual characteristics

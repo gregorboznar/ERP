@@ -17,6 +17,7 @@ class ConfirmationCompliance extends Model
     'product_id',
     'series_tender_id',
     'user_id',
+    'correct_technological_parameters',
   ];
 
   public function product(): BelongsTo
