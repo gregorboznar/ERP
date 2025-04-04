@@ -13,25 +13,44 @@ use Filament\Tables\Columns\TextColumn;
 use App\Models\DieCasting;
 use Filament\Actions\CreateAction;
 use App\Models\SeriesTender;
+use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Support\Facades\Route;
+use Filament\Resources\Pages\Concerns\HasRecordBreadcrumb;
 
 class DieCastingsPage extends ListRecords
 {
+  use HasRecordBreadcrumb;
+
   protected static string $resource = SeriesTenderResource::class;
 
-  public function getTitle(): string
+  public ?SeriesTender $record = null;
+
+  public function mount(): void
+  {
+    $recordId = request()->route('record');
+    $this->record = SeriesTender::findOrFail($recordId);
+    static::authorizeResourceAccess();
+  }
+
+  public function getBreadcrumb(): string
   {
     return __('messages.die_castings');
   }
 
-  protected function getTableQuery(): \Illuminate\Database\Eloquent\Builder
+  public function getTitle(): string|Htmlable
   {
-    $seriesTenderId = request()->route('record');
-    return DieCasting::query()->where('series_tender_id', $seriesTenderId);
+    return $this->getBreadcrumb();
   }
 
-  protected function configureTable(Table $table): Table
+  protected function getTableQuery(): \Illuminate\Database\Eloquent\Builder
+  {
+    return DieCasting::query()->where('series_tender_id', $this->record->id)->reorder();
+  }
+
+  public function table(Table $table): Table
   {
     return $table
+      ->query($this->getTableQuery())
       ->defaultSort('date', 'desc')
       ->columns([
         TextColumn::make('date')

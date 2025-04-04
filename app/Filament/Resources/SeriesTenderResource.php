@@ -19,7 +19,6 @@ use Filament\Forms\Components\Grid;
 use Filament\Pages\SubNavigationPosition;
 use Filament\Pages\Page;
 use App\Filament\Resources\DieCastingResource;
-use App\Filament\Resources\SeriesTenderResource\RelationManagers\DieCastingsRelationManager;
 
 class SeriesTenderResource extends Resource
 {
@@ -101,13 +100,14 @@ class SeriesTenderResource extends Resource
           ->modalDescription(__('messages.delete_series_tender_confirmation'))
           ->successNotificationTitle(__('messages.deleted')),
       ])
-      ->defaultSort('series_number');
+      ->defaultSort('series_number')
+      ->modifyQueryUsing(fn($query) => $query->getModel() instanceof SeriesTender ? $query : $query->reorder());
   }
 
   public static function getRelations(): array
   {
     return [
-      DieCastingsRelationManager::class,
+      // DieCastingsRelationManager removed
     ];
   }
 
