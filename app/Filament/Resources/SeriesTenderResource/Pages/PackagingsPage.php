@@ -10,7 +10,7 @@ use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Columns\TextColumn;
-use App\Models\DieCasting;
+use App\Models\Packagings;
 use Filament\Actions\CreateAction;
 use App\Models\SeriesTender;
 use Illuminate\Database\Eloquent\Builder;
@@ -24,7 +24,7 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Forms;
 use Filament\Forms\Form;
 
-class DieCastingsPage extends Page implements HasTable, HasForms
+class PackagingsPage extends Page implements HasTable, HasForms
 {
   use InteractsWithTable;
   use InteractsWithForms;
@@ -32,13 +32,13 @@ class DieCastingsPage extends Page implements HasTable, HasForms
 
   protected static string $resource = SeriesTenderResource::class;
 
-  protected static string $view = 'filament.resources.series-tender-resource.pages.die-castings';
+  protected static string $view = 'filament.resources.series-tender-resource.pages.packaging';
 
   public ?string $record = null;
 
   public function getTitle(): string
   {
-    return __('messages.die_castings');
+    return __('messages.packaging');
   }
 
   public function mount(int|string $record): void
@@ -54,7 +54,7 @@ class DieCastingsPage extends Page implements HasTable, HasForms
   public function table(Table $table): Table
   {
     return $table
-      ->query(DieCasting::query()->where('series_tender_id', $this->record))
+      ->query(Packagings::query()->where('series_tender_id', $this->record))
       ->defaultSort('date', 'desc')
       ->columns([
         TextColumn::make('date')
@@ -81,12 +81,13 @@ class DieCastingsPage extends Page implements HasTable, HasForms
         TextColumn::make('technological_waste')
           ->label(__('messages.technological_waste'))
           ->sortable(),
-        TextColumn::make('batch_of_material')
-          ->label(__('messages.batch_of_material'))
+        TextColumn::make('waste')
+          ->label(__('messages.waste'))
           ->sortable(),
         TextColumn::make('palet_number')
           ->label(__('messages.palet_number'))
           ->sortable(),
+
       ])
       ->actions([
         EditAction::make()
@@ -156,7 +157,7 @@ class DieCastingsPage extends Page implements HasTable, HasForms
         ->label(__('messages.new_input'))
         ->modalHeading(__('messages.new_input'))
         ->modalDescription(__('messages.enter_details_for_new_input'))
-        ->modalWidth('4xl')
+        ->modalWidth('5xl')
         ->closeModalByClickingAway(true)
         ->createAnother(false)
         ->form([
@@ -223,10 +224,7 @@ class DieCastingsPage extends Page implements HasTable, HasForms
                       ->label(__('messages.batch_of_material')),
                     Forms\Components\TextInput::make('palet_number')
                       ->label(__('messages.palet_number')),
-                    Forms\Components\TextInput::make('waste_slag_weight')
-                      ->label(__('messages.waste_slag_weight'))
 
-                      ->numeric(),
                   ])
                   ->columns(2)
                   ->columnSpan(['lg' => 2]),
@@ -248,7 +246,7 @@ class DieCastingsPage extends Page implements HasTable, HasForms
         ])
         ->using(function (array $data) {
           $data['series_tender_id'] = $this->record;
-          return DieCasting::create($data);
+          return Packagings::create($data);
         }),
     ];
   }

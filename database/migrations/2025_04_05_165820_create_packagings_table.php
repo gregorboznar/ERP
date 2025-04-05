@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('die_castings', function (Blueprint $table) {
+        Schema::create('packagings', function (Blueprint $table) {
             $table->id();
             $table->date('date');
             $table->time('start_time');
@@ -20,9 +20,9 @@ return new class extends Migration
             $table->integer('counter_end')->nullable();
             $table->integer('good_parts_count');
             $table->decimal('technological_waste', 10, 2);
-            $table->string('batch_of_material');
+            $table->decimal('waste', 10, 2);
             $table->string('palet_number');
-            $table->decimal('waste_slag_weight', 10, 2);
+            $table->string('series_tender_id');
             $table->text('stopage_reason')->nullable();
             $table->text('notes')->nullable();
             $table->timestamps();
@@ -35,6 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('die_castings');
+        Schema::dropIfExists('packagings');
     }
 };

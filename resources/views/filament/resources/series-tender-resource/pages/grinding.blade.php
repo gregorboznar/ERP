@@ -1,5 +1,5 @@
 @php
-$heading = 'Confirmation Compliances';
+$heading = __('messages.grinding');
 @endphp
 
 <x-filament-panels::page>

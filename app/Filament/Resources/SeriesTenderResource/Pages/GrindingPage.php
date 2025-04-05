@@ -10,7 +10,7 @@ use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Columns\TextColumn;
-use App\Models\DieCasting;
+use App\Models\Grinding;
 use Filament\Actions\CreateAction;
 use App\Models\SeriesTender;
 use Illuminate\Database\Eloquent\Builder;
@@ -24,7 +24,7 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Forms;
 use Filament\Forms\Form;
 
-class DieCastingsPage extends Page implements HasTable, HasForms
+class GrindingPage extends Page implements HasTable, HasForms
 {
   use InteractsWithTable;
   use InteractsWithForms;
@@ -32,13 +32,13 @@ class DieCastingsPage extends Page implements HasTable, HasForms
 
   protected static string $resource = SeriesTenderResource::class;
 
-  protected static string $view = 'filament.resources.series-tender-resource.pages.die-castings';
+  protected static string $view = 'filament.resources.series-tender-resource.pages.grinding';
 
   public ?string $record = null;
 
   public function getTitle(): string
   {
-    return __('messages.die_castings');
+    return __('messages.grinding');
   }
 
   public function mount(int|string $record): void
@@ -54,7 +54,7 @@ class DieCastingsPage extends Page implements HasTable, HasForms
   public function table(Table $table): Table
   {
     return $table
-      ->query(DieCasting::query()->where('series_tender_id', $this->record))
+      ->query(Grinding::query()->where('series_tender_id', $this->record))
       ->defaultSort('date', 'desc')
       ->columns([
         TextColumn::make('date')
@@ -78,14 +78,18 @@ class DieCastingsPage extends Page implements HasTable, HasForms
         TextColumn::make('good_parts_count')
           ->label(__('messages.good_parts_count'))
           ->sortable(),
-        TextColumn::make('technological_waste')
-          ->label(__('messages.technological_waste'))
-          ->sortable(),
-        TextColumn::make('batch_of_material')
-          ->label(__('messages.batch_of_material'))
+
+        TextColumn::make('waste')
+          ->label(__('messages.waste'))
           ->sortable(),
         TextColumn::make('palet_number')
           ->label(__('messages.palet_number'))
+          ->sortable(),
+        TextColumn::make('palet_number')
+          ->label(__('messages.palet_number'))
+          ->sortable(),
+        TextColumn::make('box_from_to')
+          ->label(__('messages.box_from_to'))
           ->sortable(),
       ])
       ->actions([
@@ -156,14 +160,13 @@ class DieCastingsPage extends Page implements HasTable, HasForms
         ->label(__('messages.new_input'))
         ->modalHeading(__('messages.new_input'))
         ->modalDescription(__('messages.enter_details_for_new_input'))
-        ->modalWidth('4xl')
+        ->modalWidth('5xl')
         ->closeModalByClickingAway(true)
         ->createAnother(false)
         ->form([
           Forms\Components\Grid::make()
             ->schema([
               Forms\Components\Grid::make()->schema([
-
                 Forms\Components\Grid::make()
                   ->schema([
                     Forms\Components\DatePicker::make('date')
@@ -219,18 +222,15 @@ class DieCastingsPage extends Page implements HasTable, HasForms
                       ->label(__('messages.technological_waste'))
                       ->required()
                       ->numeric(),
-                    Forms\Components\TextInput::make('batch_of_material')
-                      ->label(__('messages.batch_of_material')),
+                    Forms\Components\TextInput::make('waste')
+                      ->label(__('messages.waste'))
+                      ->required()
+                      ->numeric(),
                     Forms\Components\TextInput::make('palet_number')
                       ->label(__('messages.palet_number')),
-                    Forms\Components\TextInput::make('waste_slag_weight')
-                      ->label(__('messages.waste_slag_weight'))
-
-                      ->numeric(),
                   ])
                   ->columns(2)
                   ->columnSpan(['lg' => 2]),
-
 
                 Forms\Components\Grid::make()
                   ->schema([
@@ -248,7 +248,7 @@ class DieCastingsPage extends Page implements HasTable, HasForms
         ])
         ->using(function (array $data) {
           $data['series_tender_id'] = $this->record;
-          return DieCasting::create($data);
+          return Grinding::create($data);
         }),
     ];
   }

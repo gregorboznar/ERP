@@ -19,6 +19,7 @@ use Filament\Forms\Components\Grid;
 use Filament\Pages\SubNavigationPosition;
 use Filament\Pages\Page;
 use App\Filament\Resources\DieCastingResource;
+use Filament\Navigation\NavigationItem;
 
 class SeriesTenderResource extends Resource
 {
@@ -104,12 +105,7 @@ class SeriesTenderResource extends Resource
       ->modifyQueryUsing(fn($query) => $query->getModel() instanceof SeriesTender ? $query : $query->reorder());
   }
 
-  public static function getRelations(): array
-  {
-    return [
-      // DieCastingsRelationManager removed
-    ];
-  }
+
 
   public static function getPages(): array
   {
@@ -118,20 +114,54 @@ class SeriesTenderResource extends Resource
       'view' => Pages\ViewSeriesTender::route('/{record}'),
       'edit' => Pages\EditSeriesTender::route('/{record}/edit'),
       'die-castings' => Pages\DieCastingsPage::route('/{record}/die-castings'),
+      'packaging' => Pages\PackagingsPage::route('/{record}/packaging'),
+      'grinding' => Pages\GrindingPage::route('/{record}/grinding'),
     ];
   }
 
   public static function getRecordSubNavigation(Page $page): array
   {
-    return $page->generateNavigationItems([
-      Pages\ViewSeriesTender::class,
-      Pages\DieCastingsPage::class,
-      Pages\EditSeriesTender::class,
-    ]);
+    return static::generateNavigation($page->getRecord());
   }
 
   public static function getNavigationBadge(): ?string
   {
     return static::getModel()::count();
+  }
+
+  /**
+   * Generate consistent sub-navigation for all pages to use
+   */
+  public static function generateNavigation($record): array
+  {
+    return [
+      NavigationItem::make('view')
+        ->label(__('messages.view_series_tender'))
+        ->icon('heroicon-o-eye')
+        ->url(fn() => static::getUrl('view', ['record' => $record])),
+
+      NavigationItem::make('die-castings')
+        ->label(__('messages.die_castings'))
+        ->icon('heroicon-o-rectangle-stack')
+        ->url(fn() => static::getUrl('die-castings', ['record' => $record]))
+        ->isActiveWhen(fn() => request()->routeIs('filament.admin.resources.series-tenders.die-castings')),
+
+      NavigationItem::make('packaging')
+        ->label(__('messages.packaging'))
+        ->icon('heroicon-o-archive-box')
+        ->url(fn() => static::getUrl('packaging', ['record' => $record]))
+        ->isActiveWhen(fn() => request()->routeIs('filament.admin.resources.series-tenders.packaging')),
+
+      NavigationItem::make('grinding')
+        ->label(__('messages.grinding'))
+        ->icon('heroicon-o-adjustments-vertical')
+        ->url(fn() => static::getUrl('grinding', ['record' => $record]))
+        ->isActiveWhen(fn() => request()->routeIs('filament.admin.resources.series-tenders.grinding')),
+
+      NavigationItem::make('edit')
+        ->label(__('messages.edit_series_tender'))
+        ->icon('heroicon-o-pencil')
+        ->url(fn() => static::getUrl('edit', ['record' => $record])),
+    ];
   }
 }

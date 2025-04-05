@@ -30,4 +30,9 @@ class SeriesTender extends Model
   {
     return $this->hasMany(DieCasting::class);
   }
+
+  public function packagings()
+  {
+    return $this->hasMany(Packagings::class);
+  }
 }

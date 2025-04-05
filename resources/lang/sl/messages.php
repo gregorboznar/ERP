@@ -125,8 +125,9 @@ return [
   'download_excel_template' => 'Prenesi Excel predlogo',
   'location' => 'Lokacija',
   'description' => 'Opis',
-
+  'packaging' => 'Pakiranje',
   'new_die_casting' => 'Nova die casting',
+  'new_input' => 'Nov vnos',
   'enter_details_for_new_die_casting' => 'Vnesite podrobnosti za novo die casting',
   'edit_die_casting' => 'Uredi die casting',
   'die_castings' => 'Die castings',
@@ -135,7 +136,8 @@ return [
   'counter_start' => 'Začetni števec',
   'counter_end' => 'Končni števec',
   'good_parts_count' => 'Število dobrih kosov',
-  'technological_waste' => 'Tehnološki odpad',
+  'technological_waste' => 'Tehnološki izmet',
+  'waste' => 'Izmet',
   'date' => 'Datum',
   'start_time' => 'Začetni čas',
   'end_time' => 'Končni čas',
@@ -144,6 +146,11 @@ return [
   'waste_slag_weight' => 'Odpadna žlindra (kg)',
   'stopage_reason' => 'Razlog za zastoj',
   'notes' => 'Opombe',
-
+  'die_castings' => 'Litje',
+  'view_series_tender' => 'Ogled serije',
+  'edit_series_tender' => 'Uredi serijo',
+  'enter_details_for_new_input' => 'Vnesite podrobnosti za novi vnos',
+  'grinding' => 'Brušenje',
+  'box_from_to' => 'Škatle od - do',
 
 ];
