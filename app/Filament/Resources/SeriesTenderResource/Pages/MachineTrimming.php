@@ -24,7 +24,7 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Forms;
 use Filament\Forms\Form;
 
-class PackagingsPage extends Page implements HasTable, HasForms
+class MachineTrimming extends Page implements HasTable, HasForms
 {
   use InteractsWithTable;
   use InteractsWithForms;
@@ -32,13 +32,13 @@ class PackagingsPage extends Page implements HasTable, HasForms
 
   protected static string $resource = SeriesTenderResource::class;
 
-  protected static string $view = 'filament.resources.series-tender-resource.pages.packaging';
+  protected static string $view = 'filament.resources.series-tender-resource.pages.machine-trimming';
 
   public ?string $record = null;
 
   public function getTitle(): string
   {
-    return __('messages.packaging');
+    return __('messages.machine_trimming');
   }
 
   public function mount(int|string $record): void
@@ -57,7 +57,7 @@ class PackagingsPage extends Page implements HasTable, HasForms
       ->query(
         ProductionOperation::query()
           ->where('series_tender_id', $this->record)
-          ->where('operation_type', ProductionOperation::TYPE_PACKAGING)
+          ->where('operation_type', ProductionOperation::TYPE_MACHINE_TRIMMING)
       )
       ->defaultSort('date', 'desc')
       ->columns([
@@ -85,13 +85,10 @@ class PackagingsPage extends Page implements HasTable, HasForms
         TextColumn::make('technological_waste')
           ->label(__('messages.technological_waste'))
           ->sortable(),
-        TextColumn::make('batch_of_material')
-          ->label(__('messages.batch_of_material'))
-          ->sortable(),
+
         TextColumn::make('palet_number')
           ->label(__('messages.palet_number'))
           ->sortable(),
-
       ])
       ->actions([
         EditAction::make()
@@ -129,13 +126,10 @@ class PackagingsPage extends Page implements HasTable, HasForms
                   ->label(__('messages.technological_waste'))
                   ->required()
                   ->numeric(),
-                Forms\Components\TextInput::make('batch_of_material')
-                  ->label(__('messages.batch_of_material')),
+
                 Forms\Components\TextInput::make('palet_number')
                   ->label(__('messages.palet_number')),
-                Forms\Components\TextInput::make('batch_of_material')
-                  ->label(__('messages.batch_of_material'))
-                  ->numeric(),
+
                 Forms\Components\Textarea::make('stopage_reason')
                   ->label(__('messages.stopage_reason'))
                   ->rows(3),
@@ -143,7 +137,7 @@ class PackagingsPage extends Page implements HasTable, HasForms
                   ->label(__('messages.notes'))
                   ->rows(3),
                 Forms\Components\Hidden::make('operation_type')
-                  ->default(ProductionOperation::TYPE_PACKAGING),
+                  ->default(ProductionOperation::TYPE_MACHINE_TRIMMING),
               ])
               ->columns(2)
           ]),
@@ -170,7 +164,6 @@ class PackagingsPage extends Page implements HasTable, HasForms
           Forms\Components\Grid::make()
             ->schema([
               Forms\Components\Grid::make()->schema([
-
                 Forms\Components\Grid::make()
                   ->schema([
                     Forms\Components\DatePicker::make('date')
@@ -226,17 +219,14 @@ class PackagingsPage extends Page implements HasTable, HasForms
                       ->label(__('messages.technological_waste'))
                       ->required()
                       ->numeric(),
-                    Forms\Components\TextInput::make('batch_of_material')
-                      ->label(__('messages.batch_of_material'))
-                      ->numeric(),
+
                     Forms\Components\TextInput::make('palet_number')
                       ->label(__('messages.palet_number')),
                     Forms\Components\Hidden::make('operation_type')
-                      ->default(ProductionOperation::TYPE_PACKAGING),
+                      ->default(ProductionOperation::TYPE_MACHINE_TRIMMING),
                   ])
                   ->columns(2)
                   ->columnSpan(['lg' => 2]),
-
 
                 Forms\Components\Grid::make()
                   ->schema([

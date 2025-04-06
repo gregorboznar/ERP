@@ -152,5 +152,7 @@ return [
   'enter_details_for_new_input' => 'Vnesite podrobnosti za novi vnos',
   'grinding' => 'Brušenje',
   'box_from_to' => 'Škatle od - do',
-
+  'waste_slag_weight' => 'Odpadna žlindra (kg)',
+  'machine_trimming' => 'Strojno obrezovanje',
+  'turning_washing' => 'Struženje in pranje',
 ];

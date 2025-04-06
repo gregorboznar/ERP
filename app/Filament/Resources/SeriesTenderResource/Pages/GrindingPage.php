@@ -10,7 +10,7 @@ use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Columns\TextColumn;
-use App\Models\Grinding;
+use App\Models\ProductionOperation;
 use Filament\Actions\CreateAction;
 use App\Models\SeriesTender;
 use Illuminate\Database\Eloquent\Builder;
@@ -54,7 +54,11 @@ class GrindingPage extends Page implements HasTable, HasForms
   public function table(Table $table): Table
   {
     return $table
-      ->query(Grinding::query()->where('series_tender_id', $this->record))
+      ->query(
+        ProductionOperation::query()
+          ->where('series_tender_id', $this->record)
+          ->where('operation_type', ProductionOperation::TYPE_GRINDING)
+      )
       ->defaultSort('date', 'desc')
       ->columns([
         TextColumn::make('date')
@@ -78,18 +82,14 @@ class GrindingPage extends Page implements HasTable, HasForms
         TextColumn::make('good_parts_count')
           ->label(__('messages.good_parts_count'))
           ->sortable(),
-
+        TextColumn::make('technological_waste')
+          ->label(__('messages.technological_waste'))
+          ->sortable(),
         TextColumn::make('waste')
           ->label(__('messages.waste'))
           ->sortable(),
         TextColumn::make('palet_number')
           ->label(__('messages.palet_number'))
-          ->sortable(),
-        TextColumn::make('palet_number')
-          ->label(__('messages.palet_number'))
-          ->sortable(),
-        TextColumn::make('box_from_to')
-          ->label(__('messages.box_from_to'))
           ->sortable(),
       ])
       ->actions([
@@ -141,6 +141,8 @@ class GrindingPage extends Page implements HasTable, HasForms
                 Forms\Components\Textarea::make('notes')
                   ->label(__('messages.notes'))
                   ->rows(3),
+                Forms\Components\Hidden::make('operation_type')
+                  ->default(ProductionOperation::TYPE_GRINDING),
               ])
               ->columns(2)
           ]),
@@ -228,6 +230,8 @@ class GrindingPage extends Page implements HasTable, HasForms
                       ->numeric(),
                     Forms\Components\TextInput::make('palet_number')
                       ->label(__('messages.palet_number')),
+                    Forms\Components\Hidden::make('operation_type')
+                      ->default(ProductionOperation::TYPE_GRINDING),
                   ])
                   ->columns(2)
                   ->columnSpan(['lg' => 2]),
@@ -248,7 +252,7 @@ class GrindingPage extends Page implements HasTable, HasForms
         ])
         ->using(function (array $data) {
           $data['series_tender_id'] = $this->record;
-          return Grinding::create($data);
+          return ProductionOperation::create($data);
         }),
     ];
   }

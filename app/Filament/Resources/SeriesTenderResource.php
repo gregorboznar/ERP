@@ -116,6 +116,8 @@ class SeriesTenderResource extends Resource
       'die-castings' => Pages\DieCastingsPage::route('/{record}/die-castings'),
       'packaging' => Pages\PackagingsPage::route('/{record}/packaging'),
       'grinding' => Pages\GrindingPage::route('/{record}/grinding'),
+      'machine-trimming' => Pages\MachineTrimming::route('/{record}/machine-trimming'),
+      'turning-washing' => Pages\TurningWashing::route('/{record}/turning-washing'),
     ];
   }
 
@@ -146,17 +148,29 @@ class SeriesTenderResource extends Resource
         ->url(fn() => static::getUrl('die-castings', ['record' => $record]))
         ->isActiveWhen(fn() => request()->routeIs('filament.admin.resources.series-tenders.die-castings')),
 
-      NavigationItem::make('packaging')
-        ->label(__('messages.packaging'))
-        ->icon('heroicon-o-archive-box')
-        ->url(fn() => static::getUrl('packaging', ['record' => $record]))
-        ->isActiveWhen(fn() => request()->routeIs('filament.admin.resources.series-tenders.packaging')),
-
       NavigationItem::make('grinding')
         ->label(__('messages.grinding'))
         ->icon('heroicon-o-adjustments-vertical')
         ->url(fn() => static::getUrl('grinding', ['record' => $record]))
         ->isActiveWhen(fn() => request()->routeIs('filament.admin.resources.series-tenders.grinding')),
+
+      NavigationItem::make('machine-trimming')
+        ->label(__('messages.machine_trimming'))
+        ->icon('heroicon-o-cog')
+        ->url(fn() => static::getUrl('machine-trimming', ['record' => $record]))
+        ->isActiveWhen(fn() => request()->routeIs('filament.admin.resources.series-tenders.machine-trimming')),
+
+      NavigationItem::make('turning-washing')
+        ->label(__('messages.turning_washing'))
+        ->icon('heroicon-o-arrow-path')
+        ->url(fn() => static::getUrl('turning-washing', ['record' => $record]))
+        ->isActiveWhen(fn() => request()->routeIs('filament.admin.resources.series-tenders.turning-washing')),
+
+      NavigationItem::make('packaging')
+        ->label(__('messages.packaging'))
+        ->icon('heroicon-o-archive-box')
+        ->url(fn() => static::getUrl('packaging', ['record' => $record]))
+        ->isActiveWhen(fn() => request()->routeIs('filament.admin.resources.series-tenders.packaging')),
 
       NavigationItem::make('edit')
         ->label(__('messages.edit_series_tender'))

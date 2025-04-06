@@ -10,7 +10,7 @@ use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Columns\TextColumn;
-use App\Models\DieCasting;
+use App\Models\ProductionOperation;
 use Filament\Actions\CreateAction;
 use App\Models\SeriesTender;
 use Illuminate\Database\Eloquent\Builder;
@@ -54,7 +54,11 @@ class DieCastingsPage extends Page implements HasTable, HasForms
   public function table(Table $table): Table
   {
     return $table
-      ->query(DieCasting::query()->where('series_tender_id', $this->record))
+      ->query(
+        ProductionOperation::query()
+          ->where('series_tender_id', $this->record)
+          ->where('operation_type', ProductionOperation::TYPE_DIE_CASTING)
+      )
       ->defaultSort('date', 'desc')
       ->columns([
         TextColumn::make('date')
@@ -137,6 +141,8 @@ class DieCastingsPage extends Page implements HasTable, HasForms
                 Forms\Components\Textarea::make('notes')
                   ->label(__('messages.notes'))
                   ->rows(3),
+                Forms\Components\Hidden::make('operation_type')
+                  ->default(ProductionOperation::TYPE_DIE_CASTING),
               ])
               ->columns(2)
           ]),
@@ -156,7 +162,7 @@ class DieCastingsPage extends Page implements HasTable, HasForms
         ->label(__('messages.new_input'))
         ->modalHeading(__('messages.new_input'))
         ->modalDescription(__('messages.enter_details_for_new_input'))
-        ->modalWidth('4xl')
+        ->modalWidth('5xl')
         ->closeModalByClickingAway(true)
         ->createAnother(false)
         ->form([
@@ -225,8 +231,9 @@ class DieCastingsPage extends Page implements HasTable, HasForms
                       ->label(__('messages.palet_number')),
                     Forms\Components\TextInput::make('waste_slag_weight')
                       ->label(__('messages.waste_slag_weight'))
-
                       ->numeric(),
+                    Forms\Components\Hidden::make('operation_type')
+                      ->default(ProductionOperation::TYPE_DIE_CASTING),
                   ])
                   ->columns(2)
                   ->columnSpan(['lg' => 2]),
@@ -248,7 +255,7 @@ class DieCastingsPage extends Page implements HasTable, HasForms
         ])
         ->using(function (array $data) {
           $data['series_tender_id'] = $this->record;
-          return DieCasting::create($data);
+          return ProductionOperation::create($data);
         }),
     ];
   }
