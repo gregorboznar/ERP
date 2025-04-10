@@ -14,7 +14,9 @@ class SeriesTender extends Model
     'series_number',
     'company',
     'product_id',
-    'tender_date'
+    'tender_date',
+    'series_size',
+    'series_code'
   ];
 
   protected $casts = [

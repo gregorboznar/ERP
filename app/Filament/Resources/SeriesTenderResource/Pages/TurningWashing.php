@@ -23,6 +23,7 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms;
 use Filament\Forms\Form;
+use App\Filament\Widgets\TurningWashingStatsWidget;
 
 class TurningWashing extends Page implements HasTable, HasForms
 {
@@ -38,7 +39,7 @@ class TurningWashing extends Page implements HasTable, HasForms
 
   public function getTitle(): string
   {
-    return __('messages.turning_washing');
+    return __('messages.series_turning_washing') . ' ' . SeriesTender::find($this->record)->series_number;
   }
 
   public function mount(int|string $record): void
@@ -254,6 +255,15 @@ class TurningWashing extends Page implements HasTable, HasForms
           $data['series_tender_id'] = $this->record;
           return ProductionOperation::create($data);
         }),
+    ];
+  }
+
+  protected function getHeaderWidgets(): array
+  {
+    return [
+      TurningWashingStatsWidget::make([
+        'record' => SeriesTender::find($this->record)
+      ]),
     ];
   }
 }

@@ -23,6 +23,7 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms;
 use Filament\Forms\Form;
+use App\Filament\Widgets\PackagingStatsWidget;
 
 class PackagingsPage extends Page implements HasTable, HasForms
 {
@@ -38,7 +39,7 @@ class PackagingsPage extends Page implements HasTable, HasForms
 
   public function getTitle(): string
   {
-    return __('messages.packaging');
+    return __('messages.series_packaging') . ' ' . SeriesTender::find($this->record)->series_number;
   }
 
   public function mount(int|string $record): void
@@ -256,6 +257,15 @@ class PackagingsPage extends Page implements HasTable, HasForms
           $data['series_tender_id'] = $this->record;
           return ProductionOperation::create($data);
         }),
+    ];
+  }
+
+  protected function getHeaderWidgets(): array
+  {
+    return [
+      PackagingStatsWidget::make([
+        'record' => SeriesTender::find($this->record)
+      ]),
     ];
   }
 }

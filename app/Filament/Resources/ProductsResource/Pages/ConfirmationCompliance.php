@@ -24,6 +24,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use App\Livewire\ConfirmationComplianceForm;
 use Filament\Support\Enums\Alignment;
+use App\Models\Product;
+use Illuminate\Support\Facades\URL;
 
 class ConfirmationCompliance extends Page implements HasTable
 {
@@ -40,6 +42,12 @@ class ConfirmationCompliance extends Page implements HasTable
   public function mount(int|string $record): void
   {
     $this->record = $record;
+  }
+
+
+  public function getTitle(): string
+  {
+    return __('messages.confirmation_compliance_for') . ' ' . Product::find($this->record)->name;
   }
 
   protected function getVisualCharacteristics(): Collection
@@ -66,22 +74,16 @@ class ConfirmationCompliance extends Page implements HasTable
 
   public function getSubNavigation(): array
   {
+    return ProductsResource::generateNavigation($this->record);
+  }
+
+  public function getBreadcrumbs(): array
+  {
+    $product = Product::find($this->record);
+
     return [
-      NavigationItem::make('view')
-        ->label('Details')
-        ->icon('heroicon-o-eye')
-        ->url(fn() => ProductsResource::getUrl('view', ['record' => $this->record])),
-
-      NavigationItem::make('technological-regulations')
-        ->label('Technological Regulations')
-        ->icon('heroicon-o-document-text')
-        ->url(fn() => ProductsResource::getUrl('technological-regulations', ['record' => $this->record])),
-
-      NavigationItem::make('confirmation-compliance')
-        ->label('Confirmation Compliance')
-        ->icon('heroicon-o-check-circle')
-        ->url(fn() => ProductsResource::getUrl('confirmation-compliance', ['record' => $this->record]))
-        ->isActiveWhen(fn() => request()->routeIs('filament.admin.resources.products.confirmation-compliance', ['record' => $this->record])),
+      ProductsResource::getUrl() => __('messages.products'),
+      URL::current() => __('messages.confirmation_compliance'),
     ];
   }
 
@@ -107,8 +109,7 @@ class ConfirmationCompliance extends Page implements HasTable
           ->color(fn(string $state): string => match ($state) {
             '0' => 'danger',
             default => 'success'
-          })
-        /*   ->extraAttributes(['class' => '!p-0 !m-0']) */,
+          }),
         Tables\Columns\TextColumn::make('created_at')
           ->label(__('messages.created_at'))
           ->dateTime('d.m.Y H:i')

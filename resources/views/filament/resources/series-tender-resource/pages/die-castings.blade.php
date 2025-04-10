@@ -1,5 +1,5 @@
 @php
-$heading = 'Confirmation Compliances';
+$heading = __('messages.die_casting');
 @endphp
 
 <x-filament-panels::page>

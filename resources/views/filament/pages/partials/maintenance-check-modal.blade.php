@@ -19,7 +19,7 @@
             </div>
         </div>
 
-        <!-- Check Date -->
+
         <div class="col-span-1">
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">{{ __('messages.check_date') }}</label>
             <input type="datetime-local" wire:model="data.check_date"

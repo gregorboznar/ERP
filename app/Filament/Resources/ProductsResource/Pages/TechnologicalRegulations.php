@@ -27,27 +27,11 @@ class TechnologicalRegulations extends Page
     $this->record = $record;
   }
 
+
   public function getSubNavigation(): array
   {
-    return [
-      NavigationItem::make('view')
-        ->label('Details')
-        ->icon('heroicon-o-eye')
-        ->url(fn() => ProductsResource::getUrl('view', ['record' => $this->record])),
-
-      NavigationItem::make('technological-regulations')
-        ->label('Technological Regulations')
-        ->icon('heroicon-o-document-text')
-        ->url(fn() => ProductsResource::getUrl('technological-regulations', ['record' => $this->record]))
-        ->isActiveWhen(fn() => request()->routeIs('filament.admin.resources.products.technological-regulations', ['record' => $this->record])),
-
-      NavigationItem::make('confirmation-compliance')
-        ->label('Confirmation Compliance')
-        ->icon('heroicon-o-check-circle')
-        ->url(fn() => ProductsResource::getUrl('confirmation-compliance', ['record' => $this->record])),
-    ];
+    return ProductsResource::generateNavigation($this->record);
   }
-
   public function infolist(Infolist $infolist): Infolist
   {
     return $infolist

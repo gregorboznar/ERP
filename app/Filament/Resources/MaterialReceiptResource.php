@@ -58,15 +58,6 @@ class MaterialReceiptResource extends Resource
                     ->numeric(),
                 Forms\Components\TextInput::make('total')
                     ->label(__('messages.total_packages'))
-                    ->required()
-                    ->numeric(),
-                Forms\Components\Select::make('material_id')
-                    ->label(__('messages.material'))
-                    ->relationship('material', 'title')
-                    ->native(false)
-                    ->required(),
-                Forms\Components\Hidden::make('user_id')
-                    ->default(fn() => Auth::id())
                     ->required(),
             ]);
     }
@@ -121,7 +112,7 @@ class MaterialReceiptResource extends Resource
                     ->modalButton(__('messages.save_changes'))
                     ->modalWidth('3xl')
                     ->form([
-                        Forms\Components\Grid::make(2) // 2 columns in a row
+                        Forms\Components\Grid::make(2)
                             ->schema([
 
                                 Forms\Components\DatePicker::make('delivery_date')

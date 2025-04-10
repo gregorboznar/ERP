@@ -13,6 +13,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Models\Product;
+use Filament\Navigation\NavigationItem;
 
 class ProductsResource extends Resource
 {
@@ -47,14 +48,44 @@ class ProductsResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')->label(__('messages.title')),
                 Tables\Columns\TextColumn::make('code')->label(__('messages.code')),
+                Tables\Columns\TextColumn::make('nest_number')->label(__('messages.nest_number')),
 
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->icon('heroicon-o-pencil-square')
+                    ->label('')
+                    ->modalHeading(__('messages.edit_product'))
+                    ->modalButton(__('messages.save_changes'))
+                    ->modalWidth('3xl')
+                    ->form([
+                        Forms\Components\Grid::make(2)
+                            ->schema([
+                                Forms\Components\TextInput::make('name')
+                                    ->label(__('messages.name'))
+                                    ->required(),
+                                Forms\Components\TextInput::make('code')
+                                    ->label(__('messages.code'))
+                                    ->required()
+                                    ->maxLength(255),
+                                Forms\Components\TextInput::make('nest_number')
+                                    ->label(__('messages.nest_number'))
+                                    ->required()
+                                    ->maxLength(255),
+                            ]),
+
+                    ]),
+                Tables\Actions\DeleteAction::make()
+                    ->icon('heroicon-o-trash')
+                    ->label('')
+                    ->modalHeading(__('messages.delete_material_receipt'))
+                    ->modalDescription(__('messages.delete_material_receipt_confirmation'))
+                    ->modalSubmitActionLabel(__('messages.confirm'))
+                    ->modalCancelActionLabel(__('messages.cancel'))
+                    ->modalWidth('md'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -76,8 +107,6 @@ class ProductsResource extends Resource
     {
         return [
             'index' => Pages\ListProducts::route('/'),
-
-            'edit' => Pages\EditProducts::route('/{record}/edit'),
             'view' => Pages\ViewProducts::route('/{record}'),
             'technological-regulations' => Pages\TechnologicalRegulations::route('/{record}/technological-regulations'),
             'confirmation-compliance' => Pages\ConfirmationCompliance::route('/{record}/confirmation-compliance'),
@@ -90,5 +119,28 @@ class ProductsResource extends Resource
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);
+    }
+
+    public static function generateNavigation($record): array
+    {
+        return [
+            NavigationItem::make('view')
+                ->label(__('messages.view'))
+                ->icon('heroicon-o-eye')
+                ->url(fn() => static::getUrl('view', ['record' => $record])),
+
+            NavigationItem::make('technological-regulations')
+                ->label(__('messages.technological_regulations'))
+                ->icon('heroicon-o-document-text')
+                ->url(fn() => static::getUrl('technological-regulations', ['record' => $record]))
+                ->isActiveWhen(fn() => request()->routeIs('filament.admin.resources.products.technological-regulations')),
+
+            NavigationItem::make('confirmation-compliance')
+                ->label(__('messages.confirmation_compliance'))
+                ->icon('heroicon-o-check-circle')
+                ->url(fn() => static::getUrl('confirmation-compliance', ['record' => $record]))
+                ->isActiveWhen(fn() => request()->routeIs('filament.admin.resources.products.confirmation-compliance')),
+
+        ];
     }
 }

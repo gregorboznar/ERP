@@ -23,6 +23,7 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms;
 use Filament\Forms\Form;
+use App\Filament\Widgets\DieCastingStatsWidget;
 
 class DieCastingsPage extends Page implements HasTable, HasForms
 {
@@ -38,7 +39,7 @@ class DieCastingsPage extends Page implements HasTable, HasForms
 
   public function getTitle(): string
   {
-    return __('messages.die_castings');
+    return __('messages.series_die_castings') . ' ' . SeriesTender::find($this->record)->series_number;
   }
 
   public function mount(int|string $record): void
@@ -257,6 +258,15 @@ class DieCastingsPage extends Page implements HasTable, HasForms
           $data['series_tender_id'] = $this->record;
           return ProductionOperation::create($data);
         }),
+    ];
+  }
+
+  protected function getHeaderWidgets(): array
+  {
+    return [
+      DieCastingStatsWidget::make([
+        'record' => SeriesTender::find($this->record)
+      ]),
     ];
   }
 }

@@ -23,34 +23,21 @@ class ViewProducts extends ViewRecord
 
   public function getSubNavigation(): array
   {
-    return [
-      NavigationItem::make('view')
-        ->label('Details')
-        ->icon('heroicon-o-eye')
-        ->url(fn() => ProductsResource::getUrl('view', ['record' => $this->record]))
-        ->isActiveWhen(fn() => request()->routeIs('filament.admin.resources.products.view', ['record' => $this->record])),
-
-      NavigationItem::make('technological-regulations')
-        ->label('Technological Regulations')
-        ->icon('heroicon-o-document-text')
-        ->url(fn() => ProductsResource::getUrl('technological-regulations', ['record' => $this->record])),
-
-      NavigationItem::make('confirmation-compliance')
-        ->label('Confirmation Compliance')
-        ->icon('heroicon-o-check-circle')
-        ->url(fn() => ProductsResource::getUrl('confirmation-compliance', ['record' => $this->record])),
-    ];
+    return ProductsResource::generateNavigation($this->record);
   }
 
-  public function confirmationComplianceInfolist(Infolist $infolist): Infolist
+  public function infolist(Infolist $infolist): Infolist
   {
     return $infolist
       ->schema([
-        Section::make('Confirmation Compliance Details')
+        Section::make('Details')
           ->schema([
             TextEntry::make('name')
-              ->label('Product Name'),
-            // Add more confirmation-compliance related fields here
+              ->label(__('messages.name')),
+            TextEntry::make('code')
+              ->label(__('messages.code')),
+            TextEntry::make('nest_number')
+              ->label(__('messages.nest_number')),
           ])
       ]);
   }

@@ -18,7 +18,7 @@ use App\Models\Product;
 use Filament\Forms\Components\Grid;
 use Filament\Pages\SubNavigationPosition;
 use Filament\Pages\Page;
-use App\Filament\Resources\DieCastingResource;
+
 use Filament\Navigation\NavigationItem;
 
 class SeriesTenderResource extends Resource
@@ -46,7 +46,7 @@ class SeriesTenderResource extends Resource
   {
     return $form
       ->schema([
-        Grid::make(3)
+        Grid::make(2)
           ->schema([
             TextInput::make('series_number')
               ->required()
@@ -64,8 +64,19 @@ class SeriesTenderResource extends Resource
               ->searchable(),
 
             DatePicker::make('tender_date')
-              ->required()->native(false)
+              ->required()
+              ->native(false)
+              ->default(now())
               ->label(__('messages.tender_date')),
+            TextInput::make('series_size')
+              ->string()
+              ->maxLength(255)
+              ->label(__('messages.series_size')),
+            TextInput::make('series_code')
+
+              ->string()
+              ->maxLength(255)
+              ->label(__('messages.series_code')),
           ])
       ]);
   }
@@ -88,9 +99,14 @@ class SeriesTenderResource extends Resource
           ->label(__('messages.product'))
           ->sortable()
           ->searchable(),
+        TextColumn::make('series_size')
+          ->label(__('messages.series_size'))
+          ->sortable()
+          ->searchable(),
+
         TextColumn::make('tender_date')
           ->label(__('messages.tender_date'))
-          ->date()
+          ->date('d.m.Y')
           ->sortable(),
       ])
       ->actions([
@@ -131,9 +147,7 @@ class SeriesTenderResource extends Resource
     return static::getModel()::count();
   }
 
-  /**
-   * Generate consistent sub-navigation for all pages to use
-   */
+
   public static function generateNavigation($record): array
   {
     return [

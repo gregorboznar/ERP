@@ -12,5 +12,8 @@ return [
   'new_maintenance_check' => 'New Maintenance Check',
   'enter_details_for_new_maintenance_check' => 'Enter details for new maintenance check',
   'field_number_duplicate' => 'This field number has already been used in this measurement.',
-  'edit_maintenance_point' => 'Edit Maintenance Point'
+  'edit_maintenance_point' => 'Edit Maintenance Point',
+
+
+
 ];

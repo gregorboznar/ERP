@@ -233,13 +233,13 @@
           <div class="divide-y divide-gray-200 ">
             <div class="flex justify-between p-4">
               <div class="">
-                <span class="text-sm font-medium text-gray-900">Mere po QKXXX</span>
+                <span class="text-sm font-medium text-gray-900">{{ __('messages.measurement_characteristics_qkxxx') }}</span>
               </div>
               <div class="">
-                <span class="text-sm font-medium text-gray-900">Izmerjene vrednosti</span>
+                <span class="text-sm font-medium text-gray-900">{{ __('messages.measured_values') }}</span>
               </div>
               <div class="">
-                <span class="text-sm font-medium text-gray-900">Status</span>
+                <span class="text-sm font-medium text-gray-900">{{ __('messages.status') }}</span>
               </div>
             </div>
 

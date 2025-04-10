@@ -11,6 +11,7 @@ use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables;
+use App\Filament\Widgets\ProductionStatsWidget;
 
 class ViewSeriesTender extends ViewRecord
 {
@@ -18,7 +19,7 @@ class ViewSeriesTender extends ViewRecord
 
   public function getTitle(): string
   {
-    return __('messages.view_series_tender');
+    return __('messages.view_series_tender') . ' ' . $this->record->series_number;
   }
 
   public function table(Table $table): Table
@@ -58,5 +59,14 @@ class ViewSeriesTender extends ViewRecord
           DeleteBulkAction::make(),
         ]),
       ]);
+  }
+
+  protected function getHeaderWidgets(): array
+  {
+    return [
+      ProductionStatsWidget::make([
+        'record' => $this->record
+      ]),
+    ];
   }
 }
