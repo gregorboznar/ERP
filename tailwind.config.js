@@ -20,12 +20,11 @@ export default {
             fontFamily: {
                 sans: ["Figtree", ...defaultTheme.fontFamily.sans],
             },
-            colors: {
+            /*   colors: {
                 danger: colors.rose,
-                primary: colors.blue,
+                primary: colors.indigo,
                 success: colors.green,
                 warning: colors.yellow,
-                // You can add your custom colors here
                 custom: {
                     50: "#f8fafc",
                     100: "#f1f5f9",
@@ -38,7 +37,7 @@ export default {
                     800: "#1e293b",
                     900: "#0f172a",
                 },
-            },
+            }, */
         },
     },
     plugins: [
