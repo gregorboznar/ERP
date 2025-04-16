@@ -39,6 +39,7 @@ class ProductsResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('name')->required(),
                 Forms\Components\TextInput::make('code')->required(),
+                Forms\Components\TextInput::make('nest_number')->required(),
             ]);
     }
 
