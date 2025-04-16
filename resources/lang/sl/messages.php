@@ -131,7 +131,6 @@ return [
   'new_input' => 'Nov vnos',
   'enter_details_for_new_die_casting' => 'Vnesite podrobnosti za novo die casting',
   'edit_die_casting' => 'Uredi die casting',
-
   'start_datetime' => 'Začetni čas',
   'end_datetime' => 'Končni čas',
   'counter_start' => 'Začetni števec',
