@@ -57,6 +57,7 @@ return [
   'title' => 'Naziv',
   'edit_product' => 'Uredi izdelek',
   'edit_user' => 'Uredi uporabnika',
+  'add_user' => 'Dodaj uporabnika',
   'edit_series_tender' => 'Uredi serijo',
   'edit_melt_temperature' => 'Uredi meritev taljenja',
   'view_user' => 'Ogled uporabnika',
