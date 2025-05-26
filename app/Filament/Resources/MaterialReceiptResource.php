@@ -106,8 +106,8 @@ class MaterialReceiptResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
-                    ->icon('heroicon-o-pencil-square')
-                    ->label('')
+                    ->label(__('messages.edit'))
+
                     ->modalHeading(__('messages.edit_material_receipt'))
                     ->modalButton(__('messages.save_changes'))
                     ->modalWidth('3xl')
@@ -147,11 +147,10 @@ class MaterialReceiptResource extends Resource
                             ->required(),
                     ]),
                 Tables\Actions\DeleteAction::make()
-                    ->icon('heroicon-o-trash')
-                    ->label('')
+                    ->label(__('messages.delete'))
                     ->modalHeading(__('messages.delete_material_receipt'))
                     ->modalDescription(__('messages.delete_material_receipt_confirmation'))
-                    ->modalSubmitActionLabel(__('messages.confirm'))
+                    ->modalSubmitActionLabel(__('messages.confirm_delete'))
                     ->modalCancelActionLabel(__('messages.cancel'))
                     ->modalWidth('md'),
             ])

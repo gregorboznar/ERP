@@ -2,6 +2,7 @@
 <?php
 
 return [
+  'Quality Control' => 'Vodenje kakovosti',
   'resources' => [
     'material-receipts' => [
       'label' => 'Prevzemnice materiala',

@@ -131,10 +131,19 @@ class MeltTemperatureResource extends Resource
           ->dateTime('d.m.Y H:i')
           ->sortable(),
       ])
+
       ->actions([
-        Tables\Actions\EditAction::make(),
-        Tables\Actions\DeleteAction::make(),
+        Tables\Actions\EditAction::make()
+          ->label(__('messages.edit')),
+        Tables\Actions\DeleteAction::make()
+          ->label(__('messages.delete'))
+          ->modalHeading(__('messages.delete_melt_temperature'))
+          ->modalDescription(__('messages.delete_melt_temperature_confirmation'))
+          ->modalSubmitActionLabel(__('messages.confirm_delete'))
+          ->modalCancelActionLabel(__('messages.cancel'))
+          ->successNotificationTitle(__('messages.deleted')),
       ])
+
       ->bulkActions([
         Tables\Actions\BulkActionGroup::make([
           Tables\Actions\DeleteBulkAction::make(),

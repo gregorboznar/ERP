@@ -41,7 +41,7 @@ class UserResource extends Resource
                     ->email()
                     ->required()
                     ->maxLength(255),
-                Forms\Components\DateTimePicker::make('email_verified_at'),
+                /*   Forms\Components\DateTimePicker::make('email_verified_at'), */
                 Forms\Components\TextInput::make('password')
                     ->password()
                     ->required()
@@ -64,17 +64,14 @@ class UserResource extends Resource
                     ->date()
                     ->sortable()
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->label(trans('messages.edit')),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -82,6 +79,7 @@ class UserResource extends Resource
                 ]),
             ]);
     }
+
     public static function getRelations(): array
     {
         return [

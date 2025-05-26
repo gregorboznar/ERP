@@ -110,11 +110,15 @@ class SeriesTenderResource extends Resource
           ->sortable(),
       ])
       ->actions([
-        ViewAction::make(),
-        EditAction::make(),
+
+        EditAction::make()
+          ->label(__('messages.edit')),
         DeleteAction::make()
+          ->label(__('messages.delete'))
           ->modalHeading(__('messages.delete_series_tender'))
           ->modalDescription(__('messages.delete_series_tender_confirmation'))
+          ->modalSubmitActionLabel(__('messages.confirm_delete'))
+          ->modalCancelActionLabel(__('messages.cancel'))
           ->successNotificationTitle(__('messages.deleted')),
       ])
       ->defaultSort('series_number')

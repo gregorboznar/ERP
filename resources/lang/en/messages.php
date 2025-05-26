@@ -14,7 +14,16 @@ return [
   'field_number_duplicate' => 'This field number has already been used in this measurement.',
   'edit_maintenance_point' => 'Edit Maintenance Point',
   'edit_user' => 'Edit User',
-
+  'previous_week' => 'Previous Week',
+  'next_week' => 'Next Week',
+  'mon' => 'Mon',
+  'tue' => 'Tue',
+  'wed' => 'Wed',
+  'thu' => 'Thu',
+  'fri' => 'Fri',
+  'sat' => 'Sat',
+  'sun' => 'Sun',
+  'no_maintenance_points_defined_for' => 'No maintenance points defined for :machine',
 
 
 ];
