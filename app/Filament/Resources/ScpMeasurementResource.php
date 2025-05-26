@@ -3,15 +3,12 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ScpMeasurementResource\Pages;
-use App\Filament\Resources\ScpMeasurementResource\RelationManagers;
 use App\Models\ScpMeasurement;
-use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DateTimePicker;
 use App\Models\SeriesTender;
@@ -19,19 +16,15 @@ use Filament\Forms\Components\Select;
 use App\Models\Product;
 use Filament\Forms\Components\Grid;
 use Awcodes\TableRepeater\Components\TableRepeater;
-use Filament\Forms\Components\TimePicker;
 use Awcodes\TableRepeater\Header;
 use Filament\Tables\Columns\TextColumn;
-use Closure;
-use App\Rules\UniqueFieldNumber;
+
 use Filament\Tables\Actions\ExportAction;
 use App\Filament\Exports\ScpMeasurementExporter;
 use Filament\Notifications\Notification;
 use Filament\Tables\Actions\Action;
-use Filament\Tables\Columns\Layout\Panel;
-use Filament\Tables\Columns\Layout\Split;
-use Filament\Tables\Columns\Layout\Stack;
-use Filament\Tables\Columns\Layout\Alignment;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\DeleteAction;
 
 class ScpMeasurementResource extends Resource
 {
@@ -200,14 +193,17 @@ class ScpMeasurementResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                EditAction::make()
+                    ->label(__('messages.edit')),
+                DeleteAction::make()
+                    ->label(__('messages.delete'))
+                    ->modalHeading(__('messages.delete_melt_temperature'))
+                    ->modalDescription(__('messages.delete_melt_temperature_confirmation'))
+                    ->modalSubmitActionLabel(__('messages.confirm_delete'))
+                    ->modalCancelActionLabel(__('messages.cancel'))
+                    ->successNotificationTitle(__('messages.deleted')),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ])
+
             ->headerActions([
                 ExportAction::make()
                     ->exporter(ScpMeasurementExporter::class)
@@ -239,7 +235,6 @@ class ScpMeasurementResource extends Resource
     {
         return [
             'index' => Pages\ListScpMeasurements::route('/'),
-
             'edit' => Pages\EditScpMeasurement::route('/{record}/edit'),
         ];
     }

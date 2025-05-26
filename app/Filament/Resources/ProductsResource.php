@@ -3,17 +3,25 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductsResource\Pages;
-use App\Filament\Resources\ProductsResource\RelationManagers;
-use App\Models\Products;
+use App\Models\Product;
 use Filament\Forms;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Navigation\NavigationItem;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\ForceDeleteBulkAction;
+use Filament\Tables\Actions\RestoreBulkAction;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Models\Product;
-use Filament\Navigation\NavigationItem;
 
 class ProductsResource extends Resource
 {
@@ -21,12 +29,10 @@ class ProductsResource extends Resource
 
     protected static ?string $navigationIcon = 'phosphor-factory';
 
-
     public static function getPluralModelLabel(): string
     {
         return __('messages.products');
     }
-
 
     public static function getNavigationLabel(): string
     {
@@ -37,9 +43,9 @@ class ProductsResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')->required(),
-                Forms\Components\TextInput::make('code')->required(),
-                Forms\Components\TextInput::make('nest_number')->required(),
+                TextInput::make('name')->required(),
+                TextInput::make('code')->required(),
+                TextInput::make('nest_number')->required(),
             ]);
     }
 
@@ -47,52 +53,48 @@ class ProductsResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')->label(__('messages.title')),
-                Tables\Columns\TextColumn::make('code')->label(__('messages.code')),
-                Tables\Columns\TextColumn::make('nest_number')->label(__('messages.nest_number')),
-
+                TextColumn::make('name')->label(__('messages.title')),
+                TextColumn::make('code')->label(__('messages.code')),
+                TextColumn::make('nest_number')->label(__('messages.nest_number')),
             ])
             ->filters([
-                Tables\Filters\TrashedFilter::make(),
+                TrashedFilter::make(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make()
-                    ->icon('heroicon-o-pencil-square')
-                    ->label('')
+                EditAction::make()
+                    ->label(trans('messages.edit'))
                     ->modalHeading(__('messages.edit_product'))
                     ->modalButton(__('messages.save_changes'))
                     ->modalWidth('3xl')
                     ->form([
-                        Forms\Components\Grid::make(2)
+                        Grid::make(2)
                             ->schema([
-                                Forms\Components\TextInput::make('name')
+                                TextInput::make('name')
                                     ->label(__('messages.name'))
                                     ->required(),
-                                Forms\Components\TextInput::make('code')
+                                TextInput::make('code')
                                     ->label(__('messages.code'))
                                     ->required()
                                     ->maxLength(255),
-                                Forms\Components\TextInput::make('nest_number')
+                                TextInput::make('nest_number')
                                     ->label(__('messages.nest_number'))
                                     ->required()
                                     ->maxLength(255),
                             ]),
-
                     ]),
-                Tables\Actions\DeleteAction::make()
-                    ->icon('heroicon-o-trash')
-                    ->label('')
+                DeleteAction::make()
+                    ->label(__('messages.delete'))
                     ->modalHeading(__('messages.delete_material_receipt'))
                     ->modalDescription(__('messages.delete_material_receipt_confirmation'))
-                    ->modalSubmitActionLabel(__('messages.confirm'))
+                    ->modalSubmitActionLabel(__('messages.confirm_delete'))
                     ->modalCancelActionLabel(__('messages.cancel'))
                     ->modalWidth('md'),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                    Tables\Actions\ForceDeleteBulkAction::make(),
-                    Tables\Actions\RestoreBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                    ForceDeleteBulkAction::make(),
+                    RestoreBulkAction::make(),
                 ]),
             ]);
     }
@@ -141,7 +143,6 @@ class ProductsResource extends Resource
                 ->icon('heroicon-o-check-circle')
                 ->url(fn() => static::getUrl('confirmation-compliance', ['record' => $record]))
                 ->isActiveWhen(fn() => request()->routeIs('filament.admin.resources.products.confirmation-compliance')),
-
         ];
     }
 }

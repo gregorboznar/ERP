@@ -3,21 +3,22 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\MaterialReceiptResource\Pages;
-use App\Models\MaterialReceipt;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Table;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\NumberColumn;
-use Filament\Tables\Columns\DateColumn;
+use Filament\Tables\Filters\TrashedFilter;
 use Illuminate\Support\Facades\Auth;
 
 class MaterialReceiptResource extends Resource
 {
-
-
-
     protected static ?string $navigationIcon = 'carbon-receipt';
 
     public static function getNavigationLabel(): string
@@ -34,29 +35,29 @@ class MaterialReceiptResource extends Resource
     {
         return 'Operativa';
     }
+
     public static function form(Forms\Form $form): Forms\Form
     {
         return $form
             ->schema([
-
-                Forms\Components\DatePicker::make('delivery_date')
+                DatePicker::make('delivery_date')
                     ->label(__('messages.delivery_date'))
                     ->native(false)
                     ->closeOnDateSelection()
                     ->required(),
-                Forms\Components\TextInput::make('delivery_note_number')
+                TextInput::make('delivery_note_number')
                     ->label(__('messages.delivery_note_number'))
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('batch_number')
+                TextInput::make('batch_number')
                     ->label(__('messages.batch_number'))
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('weight')
+                TextInput::make('weight')
                     ->label(__('messages.weight'))
                     ->required()
                     ->numeric(),
-                Forms\Components\TextInput::make('total')
+                TextInput::make('total')
                     ->label(__('messages.total_packages'))
                     ->required(),
             ]);
@@ -94,7 +95,6 @@ class MaterialReceiptResource extends Resource
                     ->label(__('messages.user'))
                     ->sortable()
                     ->searchable(),
-
                 TextColumn::make('created_at')
                     ->label(__('messages.created_at'))
                     ->dateTime('d.m.Y H:i')
@@ -102,51 +102,49 @@ class MaterialReceiptResource extends Resource
             ])
             ->recordCheckboxPosition(null)
             ->filters([
-                Tables\Filters\TrashedFilter::make(),
+                TrashedFilter::make(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make()
+                EditAction::make()
                     ->label(__('messages.edit'))
-
                     ->modalHeading(__('messages.edit_material_receipt'))
                     ->modalButton(__('messages.save_changes'))
                     ->modalWidth('3xl')
                     ->form([
-                        Forms\Components\Grid::make(2)
+                        Grid::make(2)
                             ->schema([
-
-                                Forms\Components\DatePicker::make('delivery_date')
+                                DatePicker::make('delivery_date')
                                     ->label(__('messages.delivery_date'))
                                     ->native(false)
                                     ->closeOnDateSelection()
                                     ->required(),
-                                Forms\Components\TextInput::make('delivery_note_number')
+                                TextInput::make('delivery_note_number')
                                     ->label(__('messages.delivery_note_number'))
                                     ->required()
                                     ->maxLength(255),
-                                Forms\Components\TextInput::make('batch_number')
+                                TextInput::make('batch_number')
                                     ->label(__('messages.batch_number'))
                                     ->required()
                                     ->maxLength(255),
-                                Forms\Components\TextInput::make('weight')
+                                TextInput::make('weight')
                                     ->label(__('messages.weight'))
                                     ->required()
                                     ->numeric(),
-                                Forms\Components\TextInput::make('total')
+                                TextInput::make('total')
                                     ->label(__('messages.total_packages'))
                                     ->required()
                                     ->numeric(),
-                                Forms\Components\Select::make('material_id')
+                                Select::make('material_id')
                                     ->label(__('messages.material'))
                                     ->relationship('material', 'title')
                                     ->native(false)
                                     ->required(),
                             ]),
-                        Forms\Components\Hidden::make('user_id')
+                        Hidden::make('user_id')
                             ->default(fn() => Auth::id())
                             ->required(),
                     ]),
-                Tables\Actions\DeleteAction::make()
+                DeleteAction::make()
                     ->label(__('messages.delete'))
                     ->modalHeading(__('messages.delete_material_receipt'))
                     ->modalDescription(__('messages.delete_material_receipt_confirmation'))

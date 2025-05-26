@@ -9,8 +9,8 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
 
 class MeasurementCharacteristicResource extends Resource
 {
@@ -46,7 +46,7 @@ class MeasurementCharacteristicResource extends Resource
   {
     return $form
       ->schema([
-        Forms\Components\TextInput::make('name')
+        TextInput::make('name')
           ->required()
           ->maxLength(255),
 
@@ -57,7 +57,7 @@ class MeasurementCharacteristicResource extends Resource
   {
     return $table
       ->columns([
-        Tables\Columns\TextColumn::make('name')
+        TextColumn::make('name')
           ->label(__('messages.name'))
           ->searchable(),
 

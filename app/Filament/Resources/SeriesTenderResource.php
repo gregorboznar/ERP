@@ -13,7 +13,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\ViewAction;
 use App\Models\Product;
 use Filament\Forms\Components\Grid;
 use Filament\Pages\SubNavigationPosition;
