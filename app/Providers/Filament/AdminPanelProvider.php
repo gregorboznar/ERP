@@ -32,7 +32,7 @@ class AdminPanelProvider extends PanelProvider
         try {
             if (class_exists(\App\Models\Settings::class) && Schema::hasTable('settings')) {
                 $settings = \App\Models\Settings::first();
-                $brandName = $settings ? $settings->title : 'Admin';
+                $brandName = $settings ? $settings->title : $brandName;
             }
         } catch (\Exception $e) {
         }
@@ -43,6 +43,9 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->brandName($brandName)
+            ->brandLogo(asset('images/vkp-logo.png'))
+            ->darkModeBrandLogo(asset('images/vkp-logo.png'))
+            ->brandlogoHeight('3rem')
             ->path('admin')
             ->login()
             ->viteTheme('resources/css/filament/admin/theme.css')
