@@ -1,7 +1,7 @@
 @php
-$heading = 'Confirmation Compliances';
+    $heading = 'Confirmation Compliances';
 @endphp
 
 <x-filament-panels::page>
-  {{ $this->table }}
+    {{ $this->table }}
 </x-filament-panels::page>

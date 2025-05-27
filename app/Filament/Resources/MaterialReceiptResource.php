@@ -109,6 +109,7 @@ class MaterialReceiptResource extends Resource
                     ->label(__('messages.edit'))
                     ->modalHeading(__('messages.edit_material_receipt'))
                     ->modalButton(__('messages.save_changes'))
+                    ->modalCancelActionLabel(__('messages.cancel'))
                     ->modalWidth('3xl')
                     ->form([
                         Grid::make(2)

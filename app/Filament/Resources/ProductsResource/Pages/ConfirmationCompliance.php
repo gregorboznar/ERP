@@ -7,23 +7,27 @@ use Filament\Resources\Pages\Page;
 use Filament\Navigation\NavigationItem;
 use Filament\Pages\SubNavigationPosition;
 use Filament\Tables\Table;
-use Filament\Tables;
+use Filament\Tables\Concerns\InteractsWithTable;
+use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\DeleteAction;
 use App\Models\ConfirmationCompliance as ConfirmationComplianceModel;
 use App\Models\VisualCharacteristic;
 use App\Models\MeasurementCharacteristic;
 use Illuminate\Database\Eloquent\Builder;
-use Filament\Tables\Concerns\InteractsWithTable;
-use Filament\Tables\Contracts\HasTable;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Components\View;
 use Filament\Actions\CreateAction;
 use Filament\Support\Enums\ActionSize;
+use Filament\Support\Enums\Alignment;
 use Illuminate\Support\Collection;
-use Filament\Forms\Components\View;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use App\Livewire\ConfirmationComplianceForm;
-use Filament\Support\Enums\Alignment;
 use App\Models\Product;
 use Illuminate\Support\Facades\URL;
 
@@ -95,11 +99,11 @@ class ConfirmationCompliance extends Page implements HasTable
           ->where('product_id', $this->record)
       )
       ->columns([
-        Tables\Columns\TextColumn::make('user.name')
+        TextColumn::make('user.name')
           ->label(__('messages.user'))
           ->sortable(),
 
-        Tables\Columns\IconColumn::make('correct_technological_parameters')
+        IconColumn::make('correct_technological_parameters')
           ->label(__('messages.correct_technological_parameters_plural'))
           ->sortable()
           ->icon(fn(string $state): string => match ($state) {
@@ -110,7 +114,7 @@ class ConfirmationCompliance extends Page implements HasTable
             '0' => 'danger',
             default => 'success'
           }),
-        Tables\Columns\TextColumn::make('created_at')
+        TextColumn::make('created_at')
           ->label(__('messages.created_at'))
           ->dateTime('d.m.Y H:i')
           ->sortable(),
@@ -119,21 +123,24 @@ class ConfirmationCompliance extends Page implements HasTable
         //
       ])
       ->actions([
-        Tables\Actions\EditAction::make(),
-        Tables\Actions\DeleteAction::make(),
+        EditAction::make()
+          ->label(__('messages.edit')),
+        DeleteAction::make()
+          ->label(__('messages.delete'))
+          ->modalHeading(__('messages.delete_confirmation_compliance'))
+          ->modalDescription(__('messages.delete_confirmation_compliance_confirmation'))
+          ->modalSubmitActionLabel(__('messages.confirm_delete'))
+          ->modalCancelActionLabel(__('messages.cancel'))
+          ->successNotificationTitle(__('messages.deleted')),
       ])
-      ->bulkActions([
-        Tables\Actions\BulkActionGroup::make([
-          Tables\Actions\DeleteBulkAction::make(),
-        ]),
-      ])
+
       ->headerActions([
-        Tables\Actions\Action::make('new')
+        Action::make('new')
           ->label(__('messages.new_confirmation_compliance_button'))
           ->modalHeading(__('messages.new_confirmation_compliance_title'))
           ->icon('heroicon-m-plus')
           ->form([
-            Forms\Components\View::make('filament.pages.partials.confirmation-compliance-modal')
+            View::make('filament.pages.partials.confirmation-compliance-modal')
               ->viewData(['record' => $this->record])
           ])
           ->modalSubmitAction(false)

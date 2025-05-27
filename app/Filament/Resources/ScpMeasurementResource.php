@@ -148,15 +148,11 @@ class ScpMeasurementResource extends Resource
                         if ($values->isEmpty()) {
                             return '';
                         }
-
                         $lowest = $values->first();
                         $highest = $values->last();
-
-
                         return "{$lowest} - {$highest}";
                     })
                     ->tooltip(function ($record) {
-
                         $values = $record->measurementFields->map(fn($field) => $field->measurement_value);
                         return $values->implode(', ');
                     })
@@ -164,10 +160,6 @@ class ScpMeasurementResource extends Resource
                     ->searchable()
                     ->html()
                     ->wrap(),
-
-
-
-
                 TextColumn::make('series.series_number')
                     ->label(__('messages.series_number'))
                     ->sortable()
@@ -197,15 +189,15 @@ class ScpMeasurementResource extends Resource
                     ->label(__('messages.edit')),
                 DeleteAction::make()
                     ->label(__('messages.delete'))
-                    ->modalHeading(__('messages.delete_melt_temperature'))
-                    ->modalDescription(__('messages.delete_melt_temperature_confirmation'))
+                    ->modalHeading(__('messages.delete_scp_measurement'))
+                    ->modalDescription(__('messages.delete_scp_confirmation'))
                     ->modalSubmitActionLabel(__('messages.confirm_delete'))
                     ->modalCancelActionLabel(__('messages.cancel'))
                     ->successNotificationTitle(__('messages.deleted')),
             ])
 
             ->headerActions([
-                ExportAction::make()
+                /*  ExportAction::make()
                     ->exporter(ScpMeasurementExporter::class)
                     ->label(__('messages.export'))
                     ->successNotification(
@@ -213,15 +205,14 @@ class ScpMeasurementResource extends Resource
                             ->success()
                             ->title('Export started')
                             ->body('Your export has begun and will be processed in the background. You will receive a notification with the download link when it is complete.')
-                    ),
+                    ), */
 
-                Action::make('downloadLatestExport')
+                /*   Action::make('downloadLatestExport')
                     ->label(__('messages.download_excel_template'))
                     ->url(route('scp-measurements.fresh-export-download'))
                     ->icon('heroicon-o-arrow-down-tray')
                     ->color('primary')
-                    ->openUrlInNewTab(true)
-            ]);
+                    ->openUrlInNewTab(true) */]);
     }
 
     public static function getRelations(): array

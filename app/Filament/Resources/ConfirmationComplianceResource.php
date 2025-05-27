@@ -3,16 +3,13 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ConfirmationComplianceResource\Pages;
-use App\Filament\Resources\ConfirmationComplianceResource\RelationManagers;
 use App\Models\ConfirmationCompliance;
-use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Pages\Page;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\DeleteAction;
+
 
 class ConfirmationComplianceResource extends Resource
 {
@@ -38,13 +35,15 @@ class ConfirmationComplianceResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                EditAction::make()
+                    ->label(__('messages.edit')),
+                DeleteAction::make()
+                    ->label(__('messages.delete'))
+                    ->modalHeading(__('messages.delete_confirmation_compliance'))
+                    ->modalDescription(__('messages.delete_confirmation_compliance_confirmation'))
+                    ->modalSubmitActionLabel(__('messages.confirm_delete'))
+                    ->modalCancelActionLabel(__('messages.cancel'))
+                    ->successNotificationTitle(__('messages.deleted')),
             ]);
     }
 

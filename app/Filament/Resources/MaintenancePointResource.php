@@ -16,6 +16,10 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Textarea;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
 
 class MaintenancePointResource extends Resource
 {
@@ -27,7 +31,6 @@ class MaintenancePointResource extends Resource
     {
         return __('messages.daily_maintenance_activity');
     }
-
 
     public static function getNavigationLabel(): string
     {
@@ -53,7 +56,6 @@ class MaintenancePointResource extends Resource
                             ->required()
                             ->label(__('messages.location'))
                             ->maxLength(255),
-
                     ]),
             ]);
     }
@@ -79,14 +81,16 @@ class MaintenancePointResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-            ])
-            ->bulkActions([
-
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                EditAction::make()
+                    ->label(__('messages.edit')),
+                DeleteAction::make()
+                    ->label(__('messages.delete'))
+                    ->modalHeading(__('messages.delete_maintenance_point'))
+                    ->modalDescription(__('messages.delete_maintenance_point_confirmation'))
+                    ->modalDescription(__('messages.delete_maintenance_point_confirmation'))
+                    ->modalSubmitActionLabel(__('messages.confirm_delete'))
+                    ->modalCancelActionLabel(__('messages.cancel'))
+                    ->successNotificationTitle(__('messages.deleted')),
             ]);
     }
 

@@ -65,6 +65,7 @@ class ProductsResource extends Resource
                     ->label(trans('messages.edit'))
                     ->modalHeading(__('messages.edit_product'))
                     ->modalButton(__('messages.save_changes'))
+                    ->modalCancelActionLabel(__('messages.cancel'))
                     ->modalWidth('3xl')
                     ->form([
                         Grid::make(2)
@@ -84,18 +85,12 @@ class ProductsResource extends Resource
                     ]),
                 DeleteAction::make()
                     ->label(__('messages.delete'))
-                    ->modalHeading(__('messages.delete_material_receipt'))
-                    ->modalDescription(__('messages.delete_material_receipt_confirmation'))
+                    ->modalHeading(__('messages.delete_product'))
+
+                    ->modalDescription(__('messages.delete_product_confirmation'))
                     ->modalSubmitActionLabel(__('messages.confirm_delete'))
                     ->modalCancelActionLabel(__('messages.cancel'))
                     ->modalWidth('md'),
-            ])
-            ->bulkActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                    ForceDeleteBulkAction::make(),
-                    RestoreBulkAction::make(),
-                ]),
             ]);
     }
 
