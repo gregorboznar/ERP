@@ -4,7 +4,7 @@ return [
 
     'title' => 'Prijava',
 
-    'heading' => 'Prijava',
+    'heading' => 'Prijava - demo',
 
     'actions' => [
 

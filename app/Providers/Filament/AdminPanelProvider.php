@@ -19,10 +19,6 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Illuminate\Support\Facades\Schema;
 use App\Filament\Pages\MaintenanceChecks;
-use Illuminate\Support\HtmlString;
-use Filafly\PhosphorIconReplacement;
-use Filament\Notifications\Notification;
-use Filament\Notifications\NotificationPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {

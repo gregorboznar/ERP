@@ -145,7 +145,7 @@ class ConfirmationCompliance extends Page implements HasTable
           ])
           ->modalSubmitAction(false)
           ->modalCancelAction(false)
-          ->modalWidth('7xl')
+          ->modalWidth('95rem')
           ->modalAlignment(Alignment::Center),
       ]);
   }

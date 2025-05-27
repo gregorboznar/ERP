@@ -27,12 +27,14 @@
                                         <span
                                             class="text-sm font-medium text-gray-900">{{ __('messages.machine') }}:</span>
                                         <select wire:model="selectedMachineId"
-                                            class="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 filament-select">
+                                            class="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 filament-select text-sm font-medium">
                                             <option class="text-sm font-medium" value="">Izberi stroj</option>
                                             @foreach ($machines as $machine)
-                                                <option value="{{ $machine->id }}">{{ $machine->name }}</option>
+                                                <option class="text-sm font-medium" value="{{ $machine->id }}">
+                                                    {{ $machine->name }}</option>
                                             @endforeach
                                         </select>
+
 
                                     </div>
                                 </div>
@@ -42,7 +44,7 @@
                                             class="text-sm font-medium text-gray-900">{{ __('messages.check_date') }}:</label>
                                         <input value="{{ $selectedDate }}" type="date" wire:model="selectedDate"
                                             id="date"
-                                            class="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500">
+                                            class="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 text-sm font-medium">
                                     </div>
                                 </div>
                             </div>
@@ -51,10 +53,11 @@
                                     @if ($seriesTenders->count() > 0)
                                         <p class="text-sm font-medium text-gray-900">{{ __('messages.series') }}:</p>
                                         <select wire:model="selectedSeriesTenderId"
-                                            class="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 filament-select">
-                                            <option value="">{{ __('messages.select_series_tender') }}</option>
+                                            class="mt-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 filament-select text-sm font-medium">
+                                            <option class="text-sm font-medium" value="">
+                                                {{ __('messages.select_series_tender') }}</option>
                                             @foreach ($seriesTenders as $seriesTender)
-                                                <option value="{{ $seriesTender->id }}">
+                                                <option class="text-sm font-medium" value="{{ $seriesTender->id }}">
                                                     {{ $seriesTender->series_number }}</option>
                                             @endforeach
                                         </select>
@@ -64,7 +67,7 @@
                                     @endif
                                 </div>
                             </div>
-                            <div class="bg-white rounded-lg shadow w-full md:w-1/2">
+                            <div class="bg-white rounded-lg shadow w-full ">
                                 <div class="p-4 border-b border-gray-200 flex justify-between items-center"
                                     x-data="{
                                         selected: @entangle('correctTechnologicalParameters').defer,
@@ -85,7 +88,8 @@
                                                     'cursor-pointer': true
                                                 }">
                                                 <x-filament::badge :color="$correctTechnologicalParameters == 1 ? 'success' : 'gray'" :outline="$correctTechnologicalParameters != 1"
-                                                    icon="heroicon-m-check-circle">
+                                                    icon="heroicon-m-check-circle"
+                                                    class="!min-w-[4.375rem] justify-center">
                                                     DA
                                                 </x-filament::badge>
                                             </span>
@@ -98,7 +102,7 @@
                                                     'cursor-pointer': true
                                                 }">
                                                 <x-filament::badge :color="$correctTechnologicalParameters == 2 ? 'danger' : 'gray'" :outline="$correctTechnologicalParameters != 2"
-                                                    icon="heroicon-m-x-circle">
+                                                    icon="heroicon-m-x-circle" class="!min-w-[4.375rem] justify-center">
                                                     NE
                                                 </x-filament::badge>
                                             </span>
@@ -111,7 +115,8 @@
                                                     'cursor-pointer': true
                                                 }">
                                                 <x-filament::badge :color="$correctTechnologicalParameters == 3 ? 'warning' : 'gray'" :outline="$correctTechnologicalParameters != 3"
-                                                    icon="heroicon-m-exclamation-circle">
+                                                    icon="heroicon-m-exclamation-circle"
+                                                    class="!min-w-[4.375rem] justify-center">
                                                     N.O.
                                                 </x-filament::badge>
                                             </span>
@@ -129,7 +134,8 @@
                                 <h3 class="text-sm font-medium text-gray-900">
                                     {{ __('messages.visual_characteristics') }} </h3>
                             </div>
-                            <div class="divide-y divide-gray-200">
+                            <!-- Added overflow-x-auto to make content horizontally scrollable when needed -->
+                            <div class="divide-y divide-gray-200 overflow-x-auto">
                                 @foreach ($characteristics as $characteristic)
                                     <div class="px-2 hover:bg-gray-50" wire:key="visual-{{ $characteristic->id }}"
                                         x-data="{
@@ -139,7 +145,8 @@
                                                 @this.updateCharacteristic('visual', {{ $characteristic->id }}, value);
                                             }
                                         }">
-                                        <div class="flex items-center justify-between">
+                                        <!-- Using min-width to ensure proper spacing and prevent squeezing -->
+                                        <div class="flex items-center justify-between min-w-max">
                                             <div class="flex flex-1">
                                                 <div class="flex items-center mr-4 min-w-[24rem]">
                                                     <h4 class="text-sm font-medium text-gray-900">
@@ -155,7 +162,8 @@
                                                     @endif
                                                 </div>
                                             </div>
-                                            <div class="ml-4 flex space-x-3">
+                                            <!-- Ensuring buttons stay properly aligned and don't shrink too much -->
+                                            <div class="ml-4 flex space-x-3 flex-shrink-0">
                                                 <label class="inline-flex items-center ">
                                                     <input type="radio" name="visual_{{ $characteristic->id }}"
                                                         value="1" class="sr-only" x-model="selected">
@@ -169,7 +177,8 @@
                                                             ? 'success'
                                                             : 'gray'" :outline="$this->visualCharacteristics[$characteristic->id] !=
                                                             1"
-                                                            icon="heroicon-m-check-circle">
+                                                            icon="heroicon-m-check-circle"
+                                                            class="!min-w-[4.375rem] justify-center">
                                                             DA
                                                         </x-filament::badge>
                                                     </span>
@@ -186,7 +195,8 @@
                                                             ? 'danger'
                                                             : 'gray'" :outline="$this->visualCharacteristics[$characteristic->id] !=
                                                             2"
-                                                            icon="heroicon-m-x-circle">
+                                                            icon="heroicon-m-x-circle"
+                                                            class="!min-w-[4.375rem] justify-center">
                                                             NE
                                                         </x-filament::badge>
                                                     </span>
@@ -203,7 +213,8 @@
                                                             ? 'warning'
                                                             : 'gray'" :outline="$this->visualCharacteristics[$characteristic->id] !=
                                                             3"
-                                                            icon="heroicon-m-exclamation-circle">
+                                                            icon="heroicon-m-exclamation-circle"
+                                                            class="!min-w-[4.375rem] justify-center">
                                                             N.O.
                                                         </x-filament::badge>
                                                     </span>
@@ -292,7 +303,8 @@
                                                 <x-filament::badge :color="$this->measurementCharacteristics[$characteristic->id] == 1
                                                     ? 'success'
                                                     : 'gray'" :outline="$this->measurementCharacteristics[$characteristic->id] != 1"
-                                                    icon="heroicon-m-check-circle">
+                                                    icon="heroicon-m-check-circle"
+                                                    class="!min-w-[4.375rem] justify-center">
                                                     DA
                                                 </x-filament::badge>
                                             </span>
@@ -307,7 +319,8 @@
                                                 <x-filament::badge :color="$this->measurementCharacteristics[$characteristic->id] == 2
                                                     ? 'danger'
                                                     : 'gray'" :outline="$this->measurementCharacteristics[$characteristic->id] != 2"
-                                                    icon="heroicon-m-x-circle">
+                                                    icon="heroicon-m-x-circle"
+                                                    class="!min-w-[4.375rem] justify-center">
                                                     NE
                                                 </x-filament::badge>
                                             </span>
@@ -322,7 +335,8 @@
                                                 <x-filament::badge :color="$this->measurementCharacteristics[$characteristic->id] == 3
                                                     ? 'warning'
                                                     : 'gray'" :outline="$this->measurementCharacteristics[$characteristic->id] != 3"
-                                                    icon="heroicon-m-exclamation-circle">
+                                                    icon="heroicon-m-exclamation-circle"
+                                                    class="!min-w-[4.375rem] justify-center">
                                                     N.O.
                                                 </x-filament::badge>
                                             </span>
