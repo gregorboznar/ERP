@@ -6,9 +6,7 @@ use App\Filament\Resources\ScpMeasurementResource\Pages;
 use App\Models\ScpMeasurement;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Table;
-
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DateTimePicker;
 use App\Models\SeriesTender;
@@ -18,11 +16,6 @@ use Filament\Forms\Components\Grid;
 use Awcodes\TableRepeater\Components\TableRepeater;
 use Awcodes\TableRepeater\Header;
 use Filament\Tables\Columns\TextColumn;
-
-use Filament\Tables\Actions\ExportAction;
-use App\Filament\Exports\ScpMeasurementExporter;
-use Filament\Notifications\Notification;
-use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\DeleteAction;
 
@@ -129,9 +122,7 @@ class ScpMeasurementResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-
             ->columns([
-
                 TextColumn::make('scpMeasurementFields.nest_number')
                     ->label(__('messages.nest'))
                     ->sortable()

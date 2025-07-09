@@ -17,7 +17,6 @@ use App\Models\Product;
 use Filament\Forms\Components\Grid;
 use Filament\Pages\SubNavigationPosition;
 use Filament\Pages\Page;
-
 use Filament\Navigation\NavigationItem;
 
 class SeriesTenderResource extends Resource
