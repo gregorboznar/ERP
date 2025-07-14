@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use Spatie\Permission\Models\Role;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -21,6 +22,10 @@ class DatabaseSeeder extends Seeder
             MeltTemperatureSeeder::class,
         ]);
         */
+
+        // Create roles first
+        Role::firstOrCreate(['name' => 'admin']);
+        Role::firstOrCreate(['name' => 'user']);
 
         // Create multiple random users
         User::factory(5)->create()->each(function ($user) {
