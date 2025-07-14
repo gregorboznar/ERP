@@ -17,7 +17,7 @@ return new class extends Migration
         $table->timestamps();
         $table->softDeletes();
 
-        $table->foreign('confirmation_compliance_measurement_characteristic_id')
+        $table->foreign('confirmation_compliance_measurement_characteristic_id', 'fk_ccmnv_ccmc_id')
           ->references('id')
           ->on('confirmation_compliance_measurement_characteristics')
           ->onDelete('cascade');

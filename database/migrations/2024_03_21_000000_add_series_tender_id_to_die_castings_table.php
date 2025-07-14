@@ -8,9 +8,7 @@ return new class extends Migration
 {
   public function up(): void
   {
-    Schema::table('die_castings', function (Blueprint $table) {
-      $table->foreignId('series_tender_id')->nullable();
-    });
+    // No operation needed, column already exists in table creation
   }
 
   public function down(): void
