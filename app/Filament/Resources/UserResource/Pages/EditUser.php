@@ -18,8 +18,27 @@ class EditUser extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\ViewAction::make(),
             Actions\DeleteAction::make(),
+        ];
+    }
+
+    protected function afterSave(): void
+    {
+        $role = $this->data['role'] ?? 'user';
+        $this->record->syncRoles([$role]);
+    }
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
+
+    protected function getFormActions(): array
+    {
+        return [
+            $this->getCancelFormAction()
+                ->extraAttributes(['class' => 'ml-auto']),
+            $this->getSaveFormAction(),
         ];
     }
 }

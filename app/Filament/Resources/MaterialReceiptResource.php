@@ -60,6 +60,14 @@ class MaterialReceiptResource extends Resource
                 TextInput::make('total')
                     ->label(__('messages.total_packages'))
                     ->required(),
+                Select::make('material_id')
+                    ->label(__('messages.material'))
+                    ->relationship('material', 'title')
+                    ->native(false)
+                    ->required(),
+                Hidden::make('user_id')
+                    ->default(fn() => Auth::id())
+                    ->required(),
             ]);
     }
 
@@ -110,41 +118,7 @@ class MaterialReceiptResource extends Resource
                     ->modalHeading(__('messages.edit_material_receipt'))
                     ->modalButton(__('messages.save_changes'))
                     ->modalCancelActionLabel(__('messages.cancel'))
-                    ->modalWidth('3xl')
-                    ->form([
-                        Grid::make(2)
-                            ->schema([
-                                DatePicker::make('delivery_date')
-                                    ->label(__('messages.delivery_date'))
-                                    ->native(false)
-                                    ->closeOnDateSelection()
-                                    ->required(),
-                                TextInput::make('delivery_note_number')
-                                    ->label(__('messages.delivery_note_number'))
-                                    ->required()
-                                    ->maxLength(255),
-                                TextInput::make('batch_number')
-                                    ->label(__('messages.batch_number'))
-                                    ->required()
-                                    ->maxLength(255),
-                                TextInput::make('weight')
-                                    ->label(__('messages.weight'))
-                                    ->required()
-                                    ->numeric(),
-                                TextInput::make('total')
-                                    ->label(__('messages.total_packages'))
-                                    ->required()
-                                    ->numeric(),
-                                Select::make('material_id')
-                                    ->label(__('messages.material'))
-                                    ->relationship('material', 'title')
-                                    ->native(false)
-                                    ->required(),
-                            ]),
-                        Hidden::make('user_id')
-                            ->default(fn() => Auth::id())
-                            ->required(),
-                    ]),
+                    ->modalWidth('3xl'),
                 DeleteAction::make()
                     ->label(__('messages.delete'))
                     ->modalHeading(__('messages.delete_material_receipt'))

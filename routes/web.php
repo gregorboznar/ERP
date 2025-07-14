@@ -1,12 +1,17 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\MachineController;
 use App\Http\Controllers\ScpMeasurementExportController;
 
 
 Route::get('/', function () {
-    return view('welcome');
+    if (Auth::check()) {
+        return redirect('/admin');
+    }
+
+    return redirect('/admin/login');
 });
 Route::resource('machines', MachineController::class);
 

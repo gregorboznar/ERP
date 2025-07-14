@@ -13,6 +13,8 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 
+use App\Models\MaintenanceCheck;
+
 
 class MaintenanceChecks extends Page
 {
@@ -74,7 +76,7 @@ class MaintenanceChecks extends Page
                 ->modalContent(view('filament.pages.partials.maintenance-check-modal', [
                     'data' => $this->data,
                 ]))
-                ->modalSubmitActionLabel('Save Maintenance Check')
+                ->modalSubmitActionLabel(__('messages.save_maintenance_check'))
                 ->modalWidth('3xl')
                 ->action(function (array $data): void {
                     $this->validate([
@@ -84,7 +86,7 @@ class MaintenanceChecks extends Page
                         'data.notes' => 'nullable|string',
                     ]);
 
-                    $maintenanceCheck = \App\Models\MaintenanceCheck::create([
+                    $maintenanceCheck = MaintenanceCheck::create([
                         'machine_id' => $this->data['machine_id'],
                         'date' => $this->data['check_date'],
                         'notes' => $this->data['notes'],
@@ -100,8 +102,8 @@ class MaintenanceChecks extends Page
 
                     Notification::make()
                         ->success()
-                        ->title('Success')
-                        ->body('Maintenance check saved successfully')
+                        ->title(__('messages.saved'))
+                        ->body(__('messages.maintenance_check_saved_successfully'))
                         ->send();
                 })
         ];

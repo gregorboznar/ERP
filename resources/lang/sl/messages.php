@@ -83,6 +83,7 @@ return [
   'new_confirmation_compliance_button' => 'Nova potrditev ustreznosti',
   'new_confirmation_compliance_title' => 'Potrditev ustreznosti prvega kosa pred pričetkom serije',
   'user' => 'Uporabnik',
+  'user_accusative' => 'uporabnika',
   'confirmation_compliance' => 'Potrditev ustreznosti',
   'confirmation_compliance_for' => 'Potrditev ustreznosti za',
   'confirmation_compliance_plural' => 'Potrditve ustreznosti',
@@ -207,5 +208,11 @@ return [
   'delete_confirmation_compliance' => 'Izbriši potrditev ustreznosti',
   'delete_confirmation_compliance_confirmation' => 'Ali ste prepričani, da želite izbrisati to potrditev ustreznosti?',
   'deleted_confirmation_compliance' => 'Potrditev ustreznosti izbrisana',
+  'delete_user' => 'Izbriši uporabnika',
+  'delete_user_confirmation' => 'Ali ste prepričani, da želite izbrisati tega uporabnika?',
+  'deleted_user' => 'Uporabnik izbrisan',
+  'saved' => 'Shranjeno',
+  'maintenance_check_saved_successfully' => 'Kontrola stroja je bila uspešno shranjena',
+  'save_maintenance_check' => 'Shrani kontrolo stroja',
 
 ];

@@ -21,9 +21,11 @@ class DatabaseSeeder extends Seeder
             MeltTemperatureSeeder::class,
         ]);
 
-        User::factory()->create([
+        $testUser = User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
+
+        $testUser->assignRole('user');
     }
 }

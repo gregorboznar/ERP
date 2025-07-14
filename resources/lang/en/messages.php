@@ -24,6 +24,8 @@ return [
   'sat' => 'Sat',
   'sun' => 'Sun',
   'no_maintenance_points_defined_for' => 'No maintenance points defined for :machine',
+  'success' => 'Success',
+  'maintenance_check_saved_successfully' => 'Maintenance check saved successfully',
 
 
 ];

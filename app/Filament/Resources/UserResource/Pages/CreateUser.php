@@ -14,4 +14,15 @@ class CreateUser extends CreateRecord
     {
         return __('messages.add_user');
     }
+
+    protected function afterCreate(): void
+    {
+        $role = $this->data['role'] ?? 'user';
+        $this->record->syncRoles([$role]);
+    }
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }

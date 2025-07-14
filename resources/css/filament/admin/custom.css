@@ -1,3 +1,29 @@
 .name-width {
 min-width: 250px;
 }
+
+/* TableRepeater Header Dark Theme Fix */
+.dark [data-table-repeater] .table-repeater-header {
+    background-color: rgb(31 41 55) !important;
+    border-color: rgb(75 85 99) !important;
+    color: rgb(209 213 219) !important;
+}
+
+.dark [data-table-repeater] .table-repeater-header th {
+    background-color: rgb(31 41 55) !important;
+    border-color: rgb(75 85 99) !important;
+    color: rgb(209 213 219) !important;
+    font-weight: 600;
+}
+
+/* General TableRepeater styling improvements */
+[data-table-repeater] .table-repeater-header {
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+[data-table-repeater] .table-repeater-header th {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid;
+}
