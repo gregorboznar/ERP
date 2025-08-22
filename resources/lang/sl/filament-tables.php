@@ -1,5 +1,4 @@
 <?php
-<?php
 
 return [
     'pagination' => [
@@ -25,12 +24,12 @@ return [
             ],
         ],
     ],
-    
+
     'empty' => [
         'heading' => 'Ni zapisov',
         'description' => 'Ustvarite svoj prvi zapis za začetek.',
     ],
-    
+
     'filters' => [
         'actions' => [
             'remove' => 'Odstrani filter',
