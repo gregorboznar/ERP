@@ -39,9 +39,9 @@ class ProductsResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name')->required(),
-                TextInput::make('code')->required(),
-                TextInput::make('nest_number')->required(),
+                TextInput::make('name')->label(__('messages.name'))->required(),
+                TextInput::make('code')->label(__('messages.code'))->required(),
+                TextInput::make('nest_number')->label(__('messages.nest_number'))->required(),
             ]);
     }
 
