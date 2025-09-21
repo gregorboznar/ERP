@@ -17,3 +17,8 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
   return $request->user();
 });
+
+// GraphQL 
+Route::post('/graphql', function () {
+    return \Nuwave\Lighthouse\Http\GraphQLController::class;
+})->middleware(['api']);

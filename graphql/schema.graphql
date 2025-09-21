@@ -1,0 +1,122 @@
+scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
+
+type Query {
+    # Avtentikacija
+    me: User @guard(with: ["sanctum"])
+    
+    # Stroji
+    machines: [Machine!]! @guard(with: ["sanctum"])
+    machine(id: ID!): Machine @guard(with: ["sanctum"])
+    
+    # Produkti
+    products: [Product!]! @guard(with: ["sanctum"])
+    product(id: ID!): Product @guard(with: ["sanctum"])
+    
+    # Serijski naročila
+    seriesTenders: [SeriesTender!]! @guard(with: ["sanctum"])
+    seriesTender(id: ID!): SeriesTender @guard(with: ["sanctum"])
+}
+
+type Mutation {
+    # Avtentikacija
+    login(input: LoginInput!): AuthPayload!
+    logout: LogoutResponse! @guard(with: ["sanctum"])
+    
+    # CRUD operacije za stroje
+    createMachine(input: CreateMachineInput!): Machine! @guard(with: ["sanctum"])
+    updateMachine(id: ID!, input: UpdateMachineInput!): Machine! @guard(with: ["sanctum"])
+    deleteMachine(id: ID!): DeleteResponse! @guard(with: ["sanctum"])
+}
+
+# Tipi
+type User {
+    id: ID!
+    name: String!
+    email: String!
+    roles: [Role!]!
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+type Machine {
+    id: ID!
+    machine_type: String
+    type: String
+    year_of_manufacture: Int
+    manufacturer: String
+    inventory_number: String
+    control_period: Date
+    title: String
+    maintenance_points: [MaintenancePoint!]!
+    maintenance_checks: [MaintenanceCheck!]!
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+type Product {
+    id: ID!
+    name: String!
+    nest_number: String
+    nest_start_number: String
+    code: String
+    series_tenders: [SeriesTender!]!
+    visual_characteristics: [VisualCharacteristic!]!
+    measurement_characteristics: [MeasurementCharacteristic!]!
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+type SeriesTender {
+    id: ID!
+    # Dodajte polja glede na vaš model
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+type Role {
+    id: ID!
+    name: String!
+    guard_name: String!
+}
+
+# Avtentikacija
+type AuthPayload {
+    access_token: String!
+    token_type: String!
+    expires_in: Int!
+    user: User!
+}
+
+type LogoutResponse {
+    message: String!
+}
+
+# Input tipi
+input LoginInput {
+    email: String! @rules(apply: ["required", "email"])
+    password: String! @rules(apply: ["required"])
+}
+
+input CreateMachineInput {
+    machine_type: String
+    type: String
+    year_of_manufacture: Int
+    manufacturer: String
+    inventory_number: String
+    control_period: Date
+    title: String
+}
+
+input UpdateMachineInput {
+    machine_type: String
+    type: String
+    year_of_manufacture: Int
+    manufacturer: String
+    inventory_number: String
+    control_period: Date
+    title: String
+}
+
+type DeleteResponse {
+    message: String!
+}
