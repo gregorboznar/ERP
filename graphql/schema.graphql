@@ -21,11 +21,21 @@ type Mutation {
     # Avtentikacija
     login(input: LoginInput!): AuthPayload!
     logout: LogoutResponse! @guard(with: ["sanctum"])
-    
+
     # CRUD operacije za stroje
     createMachine(input: CreateMachineInput!): Machine! @guard(with: ["sanctum"])
     updateMachine(id: ID!, input: UpdateMachineInput!): Machine! @guard(with: ["sanctum"])
     deleteMachine(id: ID!): DeleteResponse! @guard(with: ["sanctum"])
+
+    # CRUD operacije za produkte
+    createProduct(input: CreateProductInput!): Product! @guard(with: ["sanctum"])
+    updateProduct(id: ID!, input: UpdateProductInput!): Product! @guard(with: ["sanctum"])
+    deleteProduct(id: ID!): DeleteResponse! @guard(with: ["sanctum"])
+
+    # CRUD operacije za serijske naročila
+    createSeriesTender(input: CreateSeriesTenderInput!): SeriesTender! @guard(with: ["sanctum"])
+    updateSeriesTender(id: ID!, input: UpdateSeriesTenderInput!): SeriesTender! @guard(with: ["sanctum"])
+    deleteSeriesTender(id: ID!): DeleteResponse! @guard(with: ["sanctum"])
 }
 
 # Tipi
@@ -68,7 +78,15 @@ type Product {
 
 type SeriesTender {
     id: ID!
-    # Dodajte polja glede na vaš model
+    series_number: String!
+    company: String!
+    product_id: ID!
+    tender_date: Date!
+    series_size: Int
+    series_code: String
+    product: Product!
+    die_castings: [DieCasting!]!
+    packagings: [Packagings!]!
     created_at: DateTime!
     updated_at: DateTime!
 }
@@ -115,6 +133,38 @@ input UpdateMachineInput {
     inventory_number: String
     control_period: Date
     title: String
+}
+
+input CreateProductInput {
+    name: String!
+    nest_number: String
+    nest_start_number: String
+    code: String
+}
+
+input UpdateProductInput {
+    name: String
+    nest_number: String
+    nest_start_number: String
+    code: String
+}
+
+input CreateSeriesTenderInput {
+    series_number: String!
+    company: String!
+    product_id: ID!
+    tender_date: Date!
+    series_size: Int
+    series_code: String
+}
+
+input UpdateSeriesTenderInput {
+    series_number: String
+    company: String
+    product_id: ID
+    tender_date: Date
+    series_size: Int
+    series_code: String
 }
 
 type DeleteResponse {

@@ -228,10 +228,14 @@ return [
             // Query resolvers
             \App\GraphQL\Queries\UserQuery::class,
             \App\GraphQL\Queries\MachineQuery::class,
+            \App\GraphQL\Queries\ProductQuery::class,
+            \App\GraphQL\Queries\SeriesTenderQuery::class,
 
             // Mutation resolvers
-            \App\GraphQL\Mutations\AuthMutation::class,
+            \App\GraphQL\Mutations\Login::class,
             \App\GraphQL\Mutations\MachineMutation::class,
+            \App\GraphQL\Mutations\ProductMutation::class,
+            \App\GraphQL\Mutations\SeriesTenderMutation::class,
         ],
     ],
 
@@ -246,8 +250,8 @@ return [
     */
 
     'security' => [
-        'max_query_complexity' => env('LIGHTHOUSE_MAX_QUERY_COMPLEXITY', 100),
-        'max_query_depth' => env('LIGHTHOUSE_MAX_QUERY_DEPTH', 10),
+        'max_query_complexity' => (int) env('LIGHTHOUSE_MAX_QUERY_COMPLEXITY', 100),
+        'max_query_depth' => (int) env('LIGHTHOUSE_MAX_QUERY_DEPTH', 10),
         'disable_introspection' => (bool) env('LIGHTHOUSE_SECURITY_DISABLE_INTROSPECTION', false)
             ? GraphQL\Validator\Rules\DisableIntrospection::ENABLED
             : GraphQL\Validator\Rules\DisableIntrospection::DISABLED,
