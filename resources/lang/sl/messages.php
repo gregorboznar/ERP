@@ -214,5 +214,13 @@ return [
   'saved' => 'Shranjeno',
   'maintenance_check_saved_successfully' => 'Kontrola stroja je bila uspešno shranjena',
   'save_maintenance_check' => 'Shrani kontrolo stroja',
+  'machines' => 'Stroji',
+  'machine_type' => 'Tip stroja',
+  'type' => 'Tip',
+  'year_of_manufacture' => 'Leto izdelave',
+  'manufacturer' => 'Proizvajalec',
+  'inventory_number' => 'Številka inventarja',
+  'location' => 'Lokacija',
+  'edit_machine' => 'Uredi stroj',
 
 ];

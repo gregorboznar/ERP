@@ -12,7 +12,7 @@ return new class extends Migration
       $table->id();
       $table->string('machine_type');
       $table->string('type');
-      $table->year('year_of_manufacture');
+      $table->date('year_of_manufacture');
       $table->string('manufacturer');
       $table->string('inventory_number')->unique();
       $table->date('control_period');

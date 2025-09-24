@@ -17,7 +17,7 @@ class Machine extends Model
     'manufacturer',
     'inventory_number',
     'control_period',
-    'title',
+    'name',
   ];
 
   public function getName(): string
@@ -46,7 +46,7 @@ class Machine extends Model
   }
 
   protected $casts = [
-    'year_of_manufacture' => 'integer',
+    'year_of_manufacture' => 'date',
     'control_period' => 'date',
   ];
 }

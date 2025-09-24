@@ -3,18 +3,18 @@ scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date
 type Query {
     # Avtentikacija
     me: User @guard(with: ["sanctum"])
-    
+
     # Stroji
-    machines: [Machine!]! @guard(with: ["sanctum"])
-    machine(id: ID!): Machine @guard(with: ["sanctum"])
-    
+    machines: [Machine!]! @all @guard(with: ["sanctum"])
+    machine(id: ID! @eq): Machine @find @guard(with: ["sanctum"])
+
     # Produkti
-    products: [Product!]! @guard(with: ["sanctum"])
-    product(id: ID!): Product @guard(with: ["sanctum"])
-    
+    products: [Product!]! @all @guard(with: ["sanctum"])
+    product(id: ID! @eq): Product @find @guard(with: ["sanctum"])
+
     # Serijski naročila
-    seriesTenders: [SeriesTender!]! @guard(with: ["sanctum"])
-    seriesTender(id: ID!): SeriesTender @guard(with: ["sanctum"])
+    seriesTenders: [SeriesTender!]! @all @guard(with: ["sanctum"])
+    seriesTender(id: ID! @eq): SeriesTender @find @guard(with: ["sanctum"])
 }
 
 type Mutation {
@@ -23,19 +23,19 @@ type Mutation {
     logout: LogoutResponse! @guard(with: ["sanctum"])
 
     # CRUD operacije za stroje
-    createMachine(input: CreateMachineInput!): Machine! @guard(with: ["sanctum"])
-    updateMachine(id: ID!, input: UpdateMachineInput!): Machine! @guard(with: ["sanctum"])
-    deleteMachine(id: ID!): DeleteResponse! @guard(with: ["sanctum"])
+    createMachine(input: CreateMachineInput!): Machine! @create @guard(with: ["sanctum"])
+    updateMachine(id: ID!, input: UpdateMachineInput!): Machine! @update @guard(with: ["sanctum"])
+    deleteMachine(id: ID!): Machine! @delete @guard(with: ["sanctum"])
 
     # CRUD operacije za produkte
-    createProduct(input: CreateProductInput!): Product! @guard(with: ["sanctum"])
-    updateProduct(id: ID!, input: UpdateProductInput!): Product! @guard(with: ["sanctum"])
-    deleteProduct(id: ID!): DeleteResponse! @guard(with: ["sanctum"])
+    createProduct(input: CreateProductInput!): Product! @create @guard(with: ["sanctum"])
+    updateProduct(id: ID!, input: UpdateProductInput!): Product! @update @guard(with: ["sanctum"])
+    deleteProduct(id: ID!): Product! @delete @guard(with: ["sanctum"])
 
     # CRUD operacije za serijske naročila
-    createSeriesTender(input: CreateSeriesTenderInput!): SeriesTender! @guard(with: ["sanctum"])
-    updateSeriesTender(id: ID!, input: UpdateSeriesTenderInput!): SeriesTender! @guard(with: ["sanctum"])
-    deleteSeriesTender(id: ID!): DeleteResponse! @guard(with: ["sanctum"])
+    createSeriesTender(input: CreateSeriesTenderInput!): SeriesTender! @create @guard(with: ["sanctum"])
+    updateSeriesTender(id: ID!, input: UpdateSeriesTenderInput!): SeriesTender! @update @guard(with: ["sanctum"])
+    deleteSeriesTender(id: ID!): SeriesTender! @delete @guard(with: ["sanctum"])
 }
 
 # Tipi
@@ -57,8 +57,8 @@ type Machine {
     inventory_number: String
     control_period: Date
     title: String
-    maintenance_points: [MaintenancePoint!]!
-    maintenance_checks: [MaintenanceCheck!]!
+    maintenance_points: [MaintenancePoint]
+    maintenance_checks: [MaintenanceCheck]
     created_at: DateTime!
     updated_at: DateTime!
 }
@@ -69,9 +69,9 @@ type Product {
     nest_number: String
     nest_start_number: String
     code: String
-    series_tenders: [SeriesTender!]!
-    visual_characteristics: [VisualCharacteristic!]!
-    measurement_characteristics: [MeasurementCharacteristic!]!
+    series_tenders: [SeriesTender]
+    visual_characteristics: [VisualCharacteristic]
+    measurement_characteristics: [MeasurementCharacteristic]
     created_at: DateTime!
     updated_at: DateTime!
 }
@@ -84,9 +84,9 @@ type SeriesTender {
     tender_date: Date!
     series_size: Int
     series_code: String
-    product: Product!
-    die_castings: [DieCasting!]!
-    packagings: [Packagings!]!
+    product: Product
+    die_castings: [DieCasting]
+    packagings: [Packagings]
     created_at: DateTime!
     updated_at: DateTime!
 }
@@ -95,6 +95,72 @@ type Role {
     id: ID!
     name: String!
     guard_name: String!
+}
+
+type MaintenancePoint {
+    id: ID!
+    name: String!
+    description: String
+    location: String
+    frequency: String
+    last_check: Date
+    machines: [Machine]
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+type MaintenanceCheck {
+    id: ID!
+    maintenance_point_id: ID!
+    machine_id: ID!
+    check_date: Date!
+    status: String!
+    notes: String
+    maintenance_point: MaintenancePoint
+    machine: Machine
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+type VisualCharacteristic {
+    id: ID!
+    name: String!
+    description: String
+    products: [Product]
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+type MeasurementCharacteristic {
+    id: ID!
+    name: String!
+    description: String
+    unit: String
+    products: [Product]
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+type DieCasting {
+    id: ID!
+    series_tender_id: ID!
+    casting_date: Date!
+    status: String!
+    quantity: Int!
+    series_tender: SeriesTender
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+type Packagings {
+    id: ID!
+    series_tender_id: ID!
+    packaging_date: Date!
+    status: String!
+    quantity: Int!
+    series_tender: SeriesTender
+    created_at: DateTime!
+    updated_at: DateTime!
 }
 
 # Avtentikacija

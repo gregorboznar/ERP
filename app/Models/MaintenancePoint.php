@@ -4,13 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Machine;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class MaintenancePoint extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = [
         'name',
         'description',
-        'frequency'
+        'location'
     ];
 
     protected $casts = [
