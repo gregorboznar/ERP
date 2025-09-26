@@ -16,6 +16,7 @@ class ListMeltTemperatures extends ListRecords
   {
     return [
       Actions\CreateAction::make()->label(__('messages.create_new_melt_temperature'))
+        ->icon('heroicon-m-plus')
         ->modalWidth('3xl')
         ->modalHeading(__('messages.create_new_melt_temperature'))
         ->modalDescription(__('messages.enter_details_for_new_melt_temperature'))

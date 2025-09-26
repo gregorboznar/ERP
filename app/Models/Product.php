@@ -27,11 +27,11 @@ class Product extends Model
 
   public function visualCharacteristics()
   {
-    return $this->belongsToMany(VisualCharacteristic::class, 'product_visual_characteristic');
+    return $this->belongsToMany(VisualCharacteristic::class, 'product_visual_characteristics');
   }
 
   public function measurementCharacteristics()
   {
-    return $this->belongsToMany(MeasurementCharacteristic::class, 'product_measurement_characteristic');
+    return $this->belongsToMany(MeasurementCharacteristic::class, 'product_measurement_characteristics');
   }
 }

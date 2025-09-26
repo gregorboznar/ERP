@@ -14,6 +14,7 @@ class ListSeriesTenders extends ListRecords
   {
     return [
       Actions\CreateAction::make()->label(__('messages.new_series_tender'))
+        ->icon('heroicon-m-plus')
         ->modalHeading(__('messages.new_series_tender'))
         ->modalDescription(__('messages.enter_details_for_new_series_tender'))
         ->modalWidth('lg')

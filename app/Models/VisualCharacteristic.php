@@ -13,4 +13,9 @@ class VisualCharacteristic extends Model
   protected $fillable = [
     'name',
   ];
+
+  public function products()
+  {
+    return $this->belongsToMany(Product::class, 'product_visual_characteristics');
+  }
 }

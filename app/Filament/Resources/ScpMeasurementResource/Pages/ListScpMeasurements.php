@@ -17,6 +17,7 @@ class ListScpMeasurements extends ListRecords
         return [
 
             Actions\CreateAction::make()->label(__('messages.new_scp_measurement'))
+                ->icon('heroicon-m-plus')
                 ->modalHeading(__('messages.new_scp_measurement'))
                 ->modalDescription(__('messages.enter_details_for_new_scp_measurement'))
                 ->modalWidth('3xl')

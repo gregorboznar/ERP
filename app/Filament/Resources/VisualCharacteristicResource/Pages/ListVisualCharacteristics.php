@@ -13,7 +13,8 @@ class ListVisualCharacteristics extends ListRecords
   protected function getHeaderActions(): array
   {
     return [
-      Actions\CreateAction::make(),
+      Actions\CreateAction::make()
+        ->label(__('messages.add_visual_characteristic'))->icon('heroicon-m-plus'),
     ];
   }
 }

@@ -104,6 +104,8 @@ class ProductsResource extends Resource
             'view' => Pages\ViewProducts::route('/{record}'),
             'technological-regulations' => Pages\TechnologicalRegulations::route('/{record}/technological-regulations'),
             'confirmation-compliance' => Pages\ConfirmationCompliance::route('/{record}/confirmation-compliance'),
+            'measurement-characteristics' => Pages\ProductMeasurementCharacteristics::route('/{record}/measurement-characteristics'),
+            'visual-characteristics' => Pages\ProductVisualCharacteristics::route('/{record}/visual-characteristics'),
         ];
     }
 
@@ -134,6 +136,18 @@ class ProductsResource extends Resource
                 ->icon('heroicon-o-check-circle')
                 ->url(fn() => static::getUrl('confirmation-compliance', ['record' => $record]))
                 ->isActiveWhen(fn() => request()->routeIs('filament.admin.resources.products.confirmation-compliance')),
+
+            NavigationItem::make('measurement-characteristics')
+                ->label(__('messages.measurement_characteristics'))
+                ->icon('heroicon-o-calculator')
+                ->url(fn() => static::getUrl('measurement-characteristics', ['record' => $record]))
+                ->isActiveWhen(fn() => request()->routeIs('filament.admin.resources.products.measurement-characteristics')),
+
+            NavigationItem::make('visual-characteristics')
+                ->label(__('messages.visual_characteristics'))
+                ->icon('heroicon-o-eye')
+                ->url(fn() => static::getUrl('visual-characteristics', ['record' => $record]))
+                ->isActiveWhen(fn() => request()->routeIs('filament.admin.resources.products.visual-characteristics')),
         ];
     }
 }

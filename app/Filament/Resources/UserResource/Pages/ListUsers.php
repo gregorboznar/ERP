@@ -13,7 +13,7 @@ class ListUsers extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make()->label(__('messages.new_user'))
+            Actions\CreateAction::make()->label(__('messages.new_user'))->icon('heroicon-m-plus')
 
         ];
     }

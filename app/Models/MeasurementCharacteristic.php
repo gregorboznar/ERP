@@ -17,8 +17,10 @@ class MeasurementCharacteristic  extends Model
     'tolerance',
   ];
 
-  protected $casts = [
-    'nominal_value' => 'float',
-    'tolerance' => 'float',
-  ];
+
+
+  public function products()
+  {
+    return $this->belongsToMany(Product::class, 'product_measurement_characteristics');
+  }
 }

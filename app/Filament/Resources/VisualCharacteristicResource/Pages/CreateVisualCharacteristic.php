@@ -8,4 +8,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateVisualCharacteristic extends CreateRecord
 {
   protected static string $resource = VisualCharacteristicResource::class;
+
+  public function getHeading(): string
+  {
+    return __('messages.create_visual_characteristic');
+  }
 }

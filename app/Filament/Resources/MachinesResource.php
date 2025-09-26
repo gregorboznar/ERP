@@ -61,7 +61,7 @@ class MachinesResource extends Resource
                 TextColumn::make('name') ->label(__('messages.name')),
                 TextColumn::make('machine_type') ->label(__('messages.machine_type')),
                 TextColumn::make('type') ->label(__('messages.type')),
-                TextColumn::make('year_of_manufacture')->date('Y'),
+                TextColumn::make('year_of_manufacture')->label(__('messages.year_of_manufacture'))->date('Y'),
                 TextColumn::make('manufacturer') ->label(__('messages.manufacturer')),
                 TextColumn::make('inventory_number') ->label(__('messages.inventory_number')),
             ])

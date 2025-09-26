@@ -13,7 +13,8 @@ class ListMachines extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+                ->label(__('messages.add_machine'))->icon('heroicon-m-plus'),
         ];
     }
 }
