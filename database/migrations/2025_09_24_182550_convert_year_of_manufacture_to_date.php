@@ -12,8 +12,15 @@ return new class extends Migration
      */
     public function up(): void
     {
+        
         DB::statement('ALTER TABLE machines MODIFY COLUMN year_of_manufacture VARCHAR(10) NULL');
-        DB::statement("UPDATE machines SET year_of_manufacture = CONCAT(year_of_manufacture, '-01-01') WHERE year_of_manufacture IS NOT NULL AND year_of_manufacture REGEXP '^[0-9]{4}$'");
+
+        
+        DB::statement("UPDATE machines SET year_of_manufacture = CONCAT(year_of_manufacture, '-01-01')
+                      WHERE year_of_manufacture IS NOT NULL
+                      AND (year_of_manufacture REGEXP '^[0-9]{4}$' OR year_of_manufacture REGEXP '^[0-9]+$')");
+
+      
         DB::statement('ALTER TABLE machines MODIFY COLUMN year_of_manufacture DATE NULL');
     }
 

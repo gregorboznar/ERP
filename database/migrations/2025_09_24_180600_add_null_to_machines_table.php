@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('machines', function (Blueprint $table) {
             $table->date('control_period')->nullable()->change();
-            $table->date('year_of_manufacture')->nullable()->change();
+           
             $table->string('manufacturer')->nullable()->change();
             $table->string('inventory_number')->nullable()->change();
             $table->string('machine_type')->nullable()->change();
@@ -28,7 +28,7 @@ return new class extends Migration
     {
         Schema::table('machines', function (Blueprint $table) {
             $table->date('control_period')->nullable(false)->change();
-            $table->date('year_of_manufacture')->nullable(false)->change();
+            
             $table->string('manufacturer')->nullable(false)->change();
             $table->string('inventory_number')->nullable(false)->change();
             $table->string('machine_type')->nullable(false)->change();
