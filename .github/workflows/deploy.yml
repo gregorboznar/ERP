@@ -26,6 +26,8 @@ jobs:
 
             # Pull latest changes from GitHub
             git pull origin main
+            git reset --hard origin/main
+
 
             # Install PHP dependencies
             composer install --no-dev --optimize-autoloader

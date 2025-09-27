@@ -9,6 +9,7 @@ cd /home/jost/web/vkp.glab.si/public_html
 
 echo "📥 Pulling latest changes from GitHub..."
 git pull origin main
+git reset --hard origin/main
 
 echo "📦 Installing PHP dependencies..."
 composer install --no-dev --optimize-autoloader
