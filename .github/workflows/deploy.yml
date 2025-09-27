@@ -24,7 +24,7 @@ jobs:
             # Navigate to project directory
             cd /home/jost/web/vkp.glab.si/public_html
 
-            # Pull latest changes from GitHub
+            
             git pull origin main
             git reset --hard origin/main
 
