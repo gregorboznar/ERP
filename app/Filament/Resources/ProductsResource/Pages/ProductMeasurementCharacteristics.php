@@ -98,8 +98,8 @@ class ProductMeasurementCharacteristics extends Page implements HasTable
             ])
             ->headerActions([
                 Action::make('attach')
-                    ->label(__('messages.attach_measurement_characteristic'))
-                    ->modalHeading(__('messages.attach_measurement_characteristic'))
+                    ->label(__('messages.add_measurement_characteristic'))
+                    ->modalHeading(__('messages.add_measurement_characteristic'))
                     ->icon('heroicon-m-plus')
                     ->form([
                         Select::make('measurement_characteristic_id')

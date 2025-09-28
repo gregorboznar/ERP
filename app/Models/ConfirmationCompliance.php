@@ -16,6 +16,7 @@ class ConfirmationCompliance extends Model
   protected $fillable = [
     'product_id',
     'series_tender_id',
+    'machine_id',
     'user_id',
     'correct_technological_parameters',
   ];
@@ -43,5 +44,10 @@ class ConfirmationCompliance extends Model
   public function user(): BelongsTo
   {
     return $this->belongsTo(User::class);
+  }
+
+  public function machine(): BelongsTo
+  {
+    return $this->belongsTo(Machine::class);
   }
 }

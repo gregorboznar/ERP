@@ -89,8 +89,8 @@ class ProductVisualCharacteristics extends Page implements HasTable
             ])
             ->headerActions([
                 Action::make('attach')
-                    ->label(__('messages.attach_visual_characteristic'))
-                    ->modalHeading(__('messages.attach_visual_characteristic'))
+                    ->label(__('messages.add_visual_characteristic'))
+                    ->modalHeading(__('messages.add_visual_characteristic'))
                     ->icon('heroicon-m-plus')
                     ->form([
                         Select::make('visual_characteristic_id')

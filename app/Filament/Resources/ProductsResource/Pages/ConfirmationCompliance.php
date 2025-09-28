@@ -99,8 +99,12 @@ class ConfirmationCompliance extends Page implements HasTable
           ->where('product_id', $this->record)
       )
       ->columns([
-        TextColumn::make('user.name')
+        TextColumn::make('user.name' )
           ->label(__('messages.user'))
+          ->sortable(),
+
+        TextColumn::make('machine.name')
+          ->label(__('messages.machine'))
           ->sortable(),
 
         IconColumn::make('correct_technological_parameters')
@@ -124,7 +128,21 @@ class ConfirmationCompliance extends Page implements HasTable
       ])
       ->actions([
         EditAction::make()
-          ->label(__('messages.edit')),
+          ->label(__('messages.edit'))
+          ->modalHeading(__('messages.edit_confirmation_compliance'))
+          ->form(function ($record) {
+            return [
+              View::make('filament.pages.partials.confirmation-compliance-modal')
+                ->viewData([
+                  'record' => $this->record,
+                  'editingRecord' => $record
+                ])
+            ];
+          })
+          ->modalSubmitAction(false)
+          ->modalCancelAction(false)
+          ->modalWidth('6xl')
+          ->modalAlignment(Alignment::Center),
         DeleteAction::make()
           ->label(__('messages.delete'))
           ->modalHeading(__('messages.delete_confirmation_compliance'))
@@ -137,7 +155,7 @@ class ConfirmationCompliance extends Page implements HasTable
       ->headerActions([
         Action::make('new')
           ->label(__('messages.new_confirmation_compliance_button'))
-          ->modalHeading(__('messages.new_confirmation_compliance_title'))
+          ->modalHeading(__('messages.new_confirmation_compliance'))
           ->icon('heroicon-m-plus')
           ->form([
             View::make('filament.pages.partials.confirmation-compliance-modal')
@@ -145,7 +163,7 @@ class ConfirmationCompliance extends Page implements HasTable
           ])
           ->modalSubmitAction(false)
           ->modalCancelAction(false)
-          ->modalWidth('95rem')
+          ->modalWidth('6xl') 
           ->modalAlignment(Alignment::Center),
       ]);
   }

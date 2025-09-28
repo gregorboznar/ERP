@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ConfirmationComplianceMeasurementCharacteristic extends Model
 {
@@ -32,5 +33,10 @@ class ConfirmationComplianceMeasurementCharacteristic extends Model
     public function measurementCharacteristic(): BelongsTo
     {
         return $this->belongsTo(MeasurementCharacteristic::class);
+    }
+
+    public function measurementNestValues(): HasMany
+    {
+        return $this->hasMany(ConfirmationComplianceMeasurementNestValue::class);
     }
 }
