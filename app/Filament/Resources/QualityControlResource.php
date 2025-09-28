@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\QualityControlResource\Pages;
 use App\Models\MeasurementCharacteristic;
+use App\Models\MaintenancePoint;
 use Filament\Resources\Resource;
 
 class QualityControlResource extends Resource

@@ -31,6 +31,12 @@ class MeltTemperature extends Model
     });
   }
 
+  protected $temperature_readings = [];
+
+  public function getTemperatureReadingsAttribute()
+  {
+    return $this->temperature_readings;
+  }
 
   public function temperatureReadings()
   {
@@ -55,5 +61,28 @@ class MeltTemperature extends Model
   public function series()
   {
     return $this->belongsTo(SeriesTender::class);
+  }
+
+  public function getChartData()
+  {
+    $readings = $this->temperatureReadings()
+      ->orderBy('recorded_at')
+      ->get();
+
+    if ($readings->isEmpty()) {
+      return [
+        'id' => $this->id,
+        'labels' => [],
+        'values' => []
+      ];
+    }
+
+    return [
+      'id' => $this->id,
+      'labels' => $readings->map(function ($reading) {
+        return $reading->recorded_at->format('H:i');
+      })->toArray(),
+      'values' => $readings->pluck('temperature')->toArray()
+    ];
   }
 }

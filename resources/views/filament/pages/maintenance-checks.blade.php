@@ -1,5 +1,10 @@
 <x-filament-panels::page>
     <div class="space-y-6">
+        <!-- Maintenance Checks Table -->
+        <div class="p-6 bg-white rounded-lg shadow dark:bg-gray-800">
+            <h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">{{ __('messages.maintenance_checks_history') }}</h2>
+            {{ $this->table }}
+        </div>
         <div class="p-6 bg-white rounded-lg shadow dark:bg-gray-800" x-data="{ activeTab: {{ $machines->first()->id ?? 'null' }} }">
             <x-filament::tabs>
                 @foreach ($machines as $machine)

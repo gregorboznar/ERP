@@ -9,10 +9,13 @@ class MachineSelector extends Component
 {
     public $machines;
     public $selectedMachine = '';
+    public $selectedMachineId = null;
 
-    public function mount()
+    public function mount($selectedMachineId = null)
     {
         $this->machines = Machine::all();
+        $this->selectedMachineId = $selectedMachineId;
+        $this->selectedMachine = $selectedMachineId ?? '';
     }
 
     public function updatedSelectedMachine($value)

@@ -20,8 +20,7 @@ use Awcodes\TableRepeater\Header;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Columns\TextColumn;
-use LaraZeus\InlineChart\Tables\Columns\InlineChart;
-use App\Filament\Resources\MeltTemperatureResource\Widgets\TemperatureReadingsChart;
+use Filament\Tables\Columns\ViewColumn;
 
 
 class MeltTemperatureResource extends Resource
@@ -130,11 +129,10 @@ class MeltTemperatureResource extends Resource
           ->label(__('messages.created_at'))
           ->dateTime('d.m.Y H:i')
           ->sortable(),
-        InlineChart::make('temperature_readings')
+        ViewColumn::make('temperature_chart')
           ->label(__('messages.melt_temperature_chart'))
-          ->chart(TemperatureReadingsChart::class)
-          ->maxWidth(300)
-          ->maxHeight(150),
+          ->view('filament.tables.columns.temperature-chart')
+          ->width('300px'),
       ])
 
       ->actions([

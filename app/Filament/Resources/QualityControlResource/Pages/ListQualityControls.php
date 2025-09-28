@@ -5,6 +5,7 @@ namespace App\Filament\Resources\QualityControlResource\Pages;
 use App\Filament\Resources\QualityControlResource;
 use App\Models\MeasurementCharacteristic;
 use App\Models\VisualCharacteristic;
+use App\Models\MaintenancePoint;
 use Filament\Actions;
 use Filament\Forms;
 use Filament\Resources\Pages\ListRecords;
@@ -12,10 +13,29 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Resources\Components\Tab;
 use Illuminate\Database\Eloquent\Builder;
+use Livewire\Attributes\Url;
 
 class ListQualityControls extends ListRecords
 {
     protected static string $resource = QualityControlResource::class;
+
+    #[Url]
+    public ?string $activeTab = 'measurement';
+
+    public function updatedActiveTab(): void
+    {
+        $this->resetTable();
+        $this->cachedHeaderActions = [];
+    }
+
+    public function getCachedHeaderActions(): array
+    {
+        if (empty($this->cachedHeaderActions)) {
+            $this->cachedHeaderActions = $this->getHeaderActions();
+        }
+        
+        return $this->cachedHeaderActions;
+    }
 
     public function getTabs(): array
     {
@@ -26,6 +46,9 @@ class ListQualityControls extends ListRecords
             'visual' => Tab::make(__('messages.visual_characteristics'))
                 ->icon('heroicon-m-eye')
                 ->badge(VisualCharacteristic::count()),
+            'maintenance' => Tab::make(__('messages.daily_maintenance_activity'))
+                ->icon('heroicon-m-wrench-screwdriver')
+                ->badge(MaintenancePoint::count()),
         ];
     }
 
@@ -49,6 +72,7 @@ class ListQualityControls extends ListRecords
         
         return match($activeTab) {
             'visual' => VisualCharacteristic::query(),
+            'maintenance' => MaintenancePoint::query(),
             default => MeasurementCharacteristic::query(),
         };
     }
@@ -66,6 +90,28 @@ class ListQualityControls extends ListRecords
                 Tables\Columns\TextColumn::make('created_at')
                     ->label(__('messages.created_at'))
                     ->dateTime()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->label(__('messages.updated_at'))
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+            ];
+        }
+
+        if ($activeTab === 'maintenance') {
+            return [
+                Tables\Columns\TextColumn::make('name')
+                    ->label(__('messages.name'))
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('description')
+                    ->label(__('messages.description'))
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('location')
+                    ->label(__('messages.location'))
+                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->label(__('messages.updated_at'))
@@ -116,6 +162,34 @@ class ListQualityControls extends ListRecords
             ];
         }
 
+        if ($activeTab === 'maintenance') {
+            return [
+                Tables\Actions\EditAction::make()
+                    ->label(__('messages.edit'))
+                    ->modalHeading(__('messages.edit_maintenance_point'))
+                    ->form([
+                        Forms\Components\TextInput::make('name')
+                            ->label(__('messages.name'))
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('description')
+                            ->label(__('messages.description'))
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('location')
+                            ->label(__('messages.location'))
+                            ->maxLength(255),
+                    ]),
+                Tables\Actions\DeleteAction::make()
+                    ->label(__('messages.delete'))
+                    ->modalHeading(__('messages.delete_maintenance_point'))
+                    ->modalDescription(__('messages.delete_maintenance_point_confirmation'))
+                    ->modalSubmitActionLabel(__('messages.confirm_delete'))
+                    ->modalCancelActionLabel(__('messages.cancel'))
+                    ->successNotificationTitle(__('messages.deleted')),
+            ];
+        }
+
         return [
             Tables\Actions\EditAction::make()
                 ->modalHeading(__('messages.edit_measurement_characteristic'))
@@ -154,6 +228,37 @@ class ListQualityControls extends ListRecords
                     ->form([
                         Forms\Components\TextInput::make('name')
                             ->label(__('messages.name'))
+                            ->required()
+                            ->maxLength(255),
+                    ])
+                    ->mutateFormDataUsing(function (array $data): array {
+                        return $data;
+                    }),
+            ];
+        }
+
+        if ($activeTab === 'maintenance') {
+            return [
+                Actions\CreateAction::make()
+                    ->label(__('messages.create_maintenance_point'))
+                    ->icon('heroicon-m-plus')
+                    ->modalWidth('xl')
+                    ->createAnother(false)
+                    ->modalSubmitActionLabel(__('messages.save'))
+                    ->modalCancelActionLabel(__('messages.cancel'))
+                    ->model(MaintenancePoint::class)
+                    ->modalHeading(__('messages.create_maintenance_point'))
+                    ->form([
+                        Forms\Components\TextInput::make('name')
+                            ->label(__('messages.name'))
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('description')
+                            ->label(__('messages.description'))
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('location')
+                            ->label(__('messages.location'))
                             ->required()
                             ->maxLength(255),
                     ])

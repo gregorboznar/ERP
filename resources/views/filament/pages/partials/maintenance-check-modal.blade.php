@@ -13,11 +13,11 @@
                     })
                 }
             }" class="w-full">
-                <livewire:machine-selector />
-                @error('data.machine_id')
-                    <p class="mt-1 text-sm text-danger-500">{{ $message }}</p>
-                @enderror
+                <livewire:machine-selector :selected-machine-id="$data['machine_id'] ?? null" />
             </div>
+            @error('data.machine_id')
+                <p class="mt-1 text-sm text-danger-500">{{ $message }}</p>
+            @enderror
         </div>
 
 
