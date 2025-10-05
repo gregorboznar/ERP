@@ -3,14 +3,15 @@
 namespace App\Filament\Pages;
 
 use Filament\Pages\Page;
-use Filament\Support\Facades\FilamentView;
 use App\Models\Machine;
 use Filament\Actions\Action;
-use Livewire\Attributes\Computed;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Get;
 use Filament\Notifications\Notification;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -60,26 +61,7 @@ class MaintenanceChecks extends Page implements HasTable
         return static::$slug ?? 'maintenance-checks';
     }
 
-    public $data = [
-        'machine_id' => null,
-        'check_date' => null,
-        'maintenance_points' => [],
-        'notes' => null,
-    ];
-
-    public $editingRecord = null;
-
     public $currentWeek = 0;
-
-    public function mount()
-    {
-        $this->data = [
-            'machine_id' => null,
-            'check_date' => null,
-            'maintenance_points' => [],
-            'notes' => null,
-        ];
-    }
 
     protected function getHeaderActions(): array
     {
@@ -87,31 +69,80 @@ class MaintenanceChecks extends Page implements HasTable
             Action::make('createMaintenanceCheck')
                 ->label(__('messages.new_maintenance_check'))
                 ->icon('heroicon-m-plus')
-                ->modalContent(view('filament.pages.partials.maintenance-check-modal', [
-                    'data' => $this->data,
-                ]))
+                ->form([
+                    Grid::make(2)
+                        ->schema([
+                            Select::make('machine_id')
+                                ->label(__('messages.select_machine'))
+                                ->options(Machine::all()->pluck('name', 'id'))
+                                ->searchable()
+                                ->required()
+                                ->reactive()
+                                ->afterStateUpdated(fn ($state, callable $set) => $set('maintenance_points', [])),
+                            
+                            DateTimePicker::make('check_date')
+                                ->label(__('messages.check_date'))
+                                ->native(false)
+                                ->required()
+                                ->default(now()),
+                        ]),
+                    
+                    CheckboxList::make('maintenance_points')
+                        ->label(__('messages.maintenance_points'))
+                        ->options(function (Get $get) {
+                            $machineId = $get('machine_id');
+                            if (!$machineId) {
+                                return [];
+                            }
+                            
+                            $machine = Machine::with('maintenancePoints')->find($machineId);
+                            if (!$machine) {
+                                return [];
+                            }
+                            
+                            return $machine->maintenancePoints->pluck('name', 'id')->toArray();
+                        })
+                        ->descriptions(function (Get $get) {
+                            $machineId = $get('machine_id');
+                            if (!$machineId) {
+                                return [];
+                            }
+                            
+                            $machine = Machine::with('maintenancePoints')->find($machineId);
+                            if (!$machine) {
+                                return [];
+                            }
+                            
+                            return $machine->maintenancePoints->pluck('description', 'id')->toArray();
+                        })
+                        ->columns(1)
+                        ->required()
+                        ->helperText(function (Get $get) {
+                            $machineId = $get('machine_id');
+                            if (!$machineId) {
+                                return __('messages.select_machine_to_view_maintenance_points');
+                            }
+                            return null;
+                        }),
+                    
+                    Textarea::make('notes')
+                        ->label(__('messages.notes'))
+                        ->placeholder(__('messages.add_any_additional_notes_here'))
+                        ->rows(3),
+                ])
                 ->modalSubmitActionLabel(__('messages.save_maintenance_check'))
                 ->modalWidth('3xl')
                 ->action(function (array $data): void {
-                    $this->validate([
-                        'data.machine_id' => 'required|exists:machines,id',
-                        'data.check_date' => 'required|date',
-                        'data.maintenance_points' => 'required|array',
-                        'data.notes' => 'nullable|string',
-                    ]);
-
                     $maintenanceCheck = MaintenanceCheck::create([
-                        'machine_id' => $this->data['machine_id'],
-                        'date' => $this->data['check_date'],
-                        'notes' => $this->data['notes'],
+                        'machine_id' => $data['machine_id'],
+                        'date' => $data['check_date'],
+                        'notes' => $data['notes'],
                     ]);
 
-                    foreach ($this->data['maintenance_points'] as $pointId => $checked) {
-                        if ($checked) {
-                            $maintenanceCheck->maintenancePoints()->attach($pointId, [
-                                'checked' => true
-                            ]);
-                        }
+                    foreach ($data['maintenance_points'] as $pointId) {
+                        $maintenanceCheck->maintenancePoints()->attach($pointId, [
+                            'checked' => true
+                        ]);
                     }
 
                     Notification::make()
@@ -119,45 +150,10 @@ class MaintenanceChecks extends Page implements HasTable
                         ->title(__('messages.saved'))
                         ->body(__('messages.maintenance_check_saved_successfully'))
                         ->send();
-
-                    $this->resetData();
                 })
         ];
     }
 
-    #[Computed]
-    public function selectedMachine()
-    {
-        if (!isset($this->data['machine_id'])) {
-            return null;
-        }
-        return Machine::with('maintenancePoints')->find($this->data['machine_id']);
-    }
-
-    public function updatedDataMachineId($value)
-    {
-     
-        if (!$this->editingRecord || $this->editingRecord->machine_id != $value) {
-            $this->data['maintenance_points'] = [];
-            $this->reset(['data.maintenance_points']);
-        }
-        $this->dispatch('$refresh');
-    }
-
-    protected function getListeners()
-    {
-        return [
-            'maintenance-points-updated' => '$refresh',
-            'machine-selected' => 'handleMachineSelected',
-        ];
-    }
-
-    public function handleMachineSelected($event)
-    {
-        $this->data['machine_id'] = $event['machineId'];
-        $this->data['maintenance_points'] = [];
-        $this->dispatch('$refresh');
-    }
 
     public function nextWeek()
     {
@@ -178,38 +174,6 @@ class MaintenanceChecks extends Page implements HasTable
         ];
     }
 
-    public function loadRecordData(MaintenanceCheck $record)
-    {
-        $this->editingRecord = $record;
-        
-        // Handle date conversion safely
-        $dateValue = $record->date;
-        if (is_string($dateValue)) {
-            $dateValue = \Carbon\Carbon::parse($dateValue);
-        }
-        
-        $this->data = [
-            'machine_id' => $record->machine_id,
-            'check_date' => $dateValue ? $dateValue->format('Y-m-d\TH:i') : null,
-            'maintenance_points' => [],
-            'notes' => $record->notes,
-        ];
-
-        foreach ($record->maintenancePoints as $point) {
-            $this->data['maintenance_points'][$point->id] = $point->pivot->checked;
-        }
-    }
-
-    public function resetData()
-    {
-        $this->editingRecord = null;
-        $this->data = [
-            'machine_id' => null,
-            'check_date' => null,
-            'maintenance_points' => [],
-            'notes' => null,
-        ];
-    }
 
     public function table(Table $table): Table
     {
@@ -291,36 +255,93 @@ class MaintenanceChecks extends Page implements HasTable
                     })
                     ->modalWidth('3xl'),
                 EditAction::make()
-                    ->modalContent(function (MaintenanceCheck $record) {
-                        $this->loadRecordData($record);
-                        return view('filament.pages.partials.maintenance-check-modal', [
-                            'data' => $this->data,
-                        ]);
+                    ->form([
+                        Grid::make(2)
+                            ->schema([
+                                Select::make('machine_id')
+                                    ->label(__('messages.select_machine'))
+                                    ->options(Machine::all()->pluck('name', 'id'))
+                                    ->searchable()
+                                    ->required()
+                                    ->reactive()
+                                    ->afterStateUpdated(fn ($state, callable $set) => $set('maintenance_points', [])),
+                                
+                                DateTimePicker::make('date')
+                                    ->label(__('messages.check_date'))
+                                    ->required(),
+                            ]),
+                        
+                        CheckboxList::make('maintenance_points')
+                            ->label(__('messages.maintenance_points'))
+                            ->options(function (Get $get) {
+                                $machineId = $get('machine_id');
+                                if (!$machineId) {
+                                    return [];
+                                }
+                                
+                                $machine = Machine::with('maintenancePoints')->find($machineId);
+                                if (!$machine) {
+                                    return [];
+                                }
+                                
+                                return $machine->maintenancePoints->pluck('name', 'id')->toArray();
+                            })
+                            ->descriptions(function (Get $get) {
+                                $machineId = $get('machine_id');
+                                if (!$machineId) {
+                                    return [];
+                                }
+                                
+                                $machine = Machine::with('maintenancePoints')->find($machineId);
+                                if (!$machine) {
+                                    return [];
+                                }
+                                
+                                return $machine->maintenancePoints->pluck('description', 'id')->toArray();
+                            })
+                            ->columns(1)
+                            ->required()
+                            ->helperText(function (Get $get) {
+                                $machineId = $get('machine_id');
+                                if (!$machineId) {
+                                    return __('messages.select_machine_to_view_maintenance_points');
+                                }
+                                return null;
+                            }),
+                        
+                        Textarea::make('notes')
+                            ->label(__('messages.notes'))
+                            ->placeholder(__('messages.add_any_additional_notes_here'))
+                            ->rows(3),
+                    ])
+                    ->fillForm(function (MaintenanceCheck $record): array {
+                        $checkedPoints = $record->maintenancePoints()
+                            ->wherePivot('checked', true)
+                            ->pluck('maintenance_points.id')
+                            ->toArray();
+                        
+                        return [
+                            'machine_id' => $record->machine_id,
+                            'date' => $record->date,
+                            'maintenance_points' => $checkedPoints,
+                            'notes' => $record->notes,
+                        ];
                     })
                     ->modalSubmitActionLabel(__('messages.update_maintenance_check'))
                     ->modalWidth('3xl')
-                    ->action(function (MaintenanceCheck $record): void {
-                        $this->validate([
-                            'data.machine_id' => 'required|exists:machines,id',
-                            'data.check_date' => 'required|date',
-                            'data.maintenance_points' => 'required|array',
-                            'data.notes' => 'nullable|string',
-                        ]);
-
+                    ->action(function (MaintenanceCheck $record, array $data): void {
                         $record->update([
-                            'machine_id' => $this->data['machine_id'],
-                            'date' => $this->data['check_date'],
-                            'notes' => $this->data['notes'],
+                            'machine_id' => $data['machine_id'],
+                            'date' => $data['date'],
+                            'notes' => $data['notes'],
                         ]);
 
                         $record->maintenancePoints()->detach();
 
-                        foreach ($this->data['maintenance_points'] as $pointId => $checked) {
-                            if ($checked) {
-                                $record->maintenancePoints()->attach($pointId, [
-                                    'checked' => true
-                                ]);
-                            }
+                        foreach ($data['maintenance_points'] as $pointId) {
+                            $record->maintenancePoints()->attach($pointId, [
+                                'checked' => true
+                            ]);
                         }
 
                         Notification::make()
@@ -328,8 +349,6 @@ class MaintenanceChecks extends Page implements HasTable
                             ->title(__('messages.updated'))
                             ->body(__('messages.maintenance_check_updated_successfully'))
                             ->send();
-
-                        $this->resetData();
                     }),
                 DeleteAction::make(),
             ])

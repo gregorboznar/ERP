@@ -15,8 +15,7 @@ use App\Models\SeriesTender;
 use App\Models\Product;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\TimePicker;
-use Awcodes\TableRepeater\Components\TableRepeater;
-use Awcodes\TableRepeater\Header;
+use Filament\Forms\Components\Repeater;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Columns\TextColumn;
@@ -74,32 +73,25 @@ class MeltTemperatureResource extends Resource
               ->default(fn() => Machine::first()?->id),
           ]),
 
-        TableRepeater::make('temperature_readings')
+        Repeater::make('temperature_readings')
           ->relationship('temperatureReadings')
-          ->headers([
-            Header::make('temperature')->label(__('messages.temperature'))->width('150px'),
-            Header::make('recorded_at')->label(__('messages.recorded_at'))->width('150px'),
-          ])
           ->schema([
             TextInput::make('temperature')
               ->required()
               ->label(__('messages.temperature'))
               ->numeric()
               ->integer()
-              ->extraAttributes(['class' => 'm-3']),
+              ->columnSpan(1),
             TimePicker::make('recorded_at')
               ->required()
               ->default(now())
               ->format('H:i')
               ->withoutSeconds()
               ->label(__('messages.recorded_at'))
-              ->extraAttributes(['class' => 'm-3']),
+              ->columnSpan(1),
           ])
-          ->defaultItems(1)
-          ->createItemButtonLabel(__('messages.add'))
+          ->columns(2)
           ->columnSpanFull()
-          ->emptyLabel(__('messages.table_empty'))
-          ->streamlined()
           ->mutateRelationshipDataBeforeCreateUsing(function (array $data): array {
             return [
               ...$data,
