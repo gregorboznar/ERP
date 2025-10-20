@@ -2,9 +2,17 @@
 
 namespace App\Filament\Resources\MachinesResource\RelationManagers;
 
+use Filament\Schemas\Schema;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Textarea;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Actions\CreateAction;
+use Filament\Actions\AttachAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\DetachAction;
+use Filament\Actions\BulkActionGroup;
 use App\Models\MaintenancePoint;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -24,21 +32,21 @@ class MaintenancePointsRelationManager extends RelationManager
         return __('messages.daily_maintenance_activity');
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('name')
+        return $schema
+            ->components([
+                TextInput::make('name')
                     ->required()
                     ->maxLength(255)
                     ->label(__('messages.name')),
 
-                Forms\Components\Textarea::make('description')
+                Textarea::make('description')
                     ->maxLength(1000)
                     ->label(__('messages.description'))
                     ->columnSpanFull(),
 
-                Forms\Components\TextInput::make('location')
+                TextInput::make('location')
                     ->required()
                     ->label(__('messages.location')),
             ]);
@@ -50,15 +58,15 @@ class MaintenancePointsRelationManager extends RelationManager
             ->recordTitleAttribute('name')
             ->defaultSort('name')
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                TextColumn::make('name')
                     ->label(__('messages.name'))
                     ->sortable()
                     ->searchable(),
 
-                Tables\Columns\TextColumn::make('description')
+                TextColumn::make('description')
                     ->label(__('messages.description'))
                     ->limit(50)
-                    ->tooltip(function (Tables\Columns\TextColumn $column): ?string {
+                    ->tooltip(function (TextColumn $column): ?string {
                         $state = $column->getState();
                         if (strlen($state) <= 50) {
                             return null;
@@ -66,17 +74,17 @@ class MaintenancePointsRelationManager extends RelationManager
                         return $state;
                     }),
 
-                Tables\Columns\TextColumn::make('location')
+                TextColumn::make('location')
                     ->label(__('messages.location'))
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->label(__('messages.created_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                Tables\Columns\TextColumn::make('updated_at')
+                TextColumn::make('updated_at')
                     ->label(__('messages.updated_at'))
                     ->dateTime()
                     ->sortable()
@@ -86,9 +94,9 @@ class MaintenancePointsRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make()
+                CreateAction::make()
                     ->label(__('messages.new_maintenance_point')),
-                Tables\Actions\AttachAction::make()
+                AttachAction::make()
                     ->recordSelectOptionsQuery(function (Builder $query) {
                         $machineId = $this->getOwnerRecord()->getKey();
                         return $query->whereNotExists(function ($subQuery) use ($machineId) {
@@ -101,13 +109,13 @@ class MaintenancePointsRelationManager extends RelationManager
                     ->recordTitleAttribute('name')
                     ->preloadRecordSelect(),
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DetachAction::make(),
+            ->recordActions([
+                EditAction::make(),
+                DetachAction::make(),
                /*  Tables\Actions\DeleteAction::make(), */
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
+            ->toolbarActions([
+                BulkActionGroup::make([
                 /*     Tables\Actions\DetachBulkAction::make(),
                     Tables\Actions\DeleteBulkAction::make(), */
                 ]),

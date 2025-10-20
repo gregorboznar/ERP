@@ -2,6 +2,13 @@
 
 namespace App\Filament\Pages;
 
+use Filament\Panel;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Actions\ViewAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\BulkActionGroup;
 use Filament\Pages\Page;
 use App\Models\Machine;
 use Filament\Actions\Action;
@@ -10,17 +17,12 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\CheckboxList;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Get;
 use Filament\Notifications\Notification;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\Filter;
 use Illuminate\Database\Eloquent\Builder;
@@ -32,7 +34,7 @@ class MaintenanceChecks extends Page implements HasTable
 {
     use InteractsWithTable;
 
-    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-check';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-clipboard-document-check';
     protected static ?string $navigationLabel = 'Dnevna kontrola';
     protected static ?string $title = 'Dnevna kontrola';
     protected static ?string $slug = 'maintenance-checks-dashboard';
@@ -40,7 +42,7 @@ class MaintenanceChecks extends Page implements HasTable
     protected static ?string $model = null;
     protected static bool $shouldRegisterNavigation = true;
 
-    protected static string $view = 'filament.pages.maintenance-checks';
+    protected string $view = 'filament.pages.maintenance-checks';
 
     public static function getNavigationLabel(): string
     {
@@ -56,7 +58,7 @@ class MaintenanceChecks extends Page implements HasTable
     }
 
 
-    public static function getSlug(): string
+    public static function getSlug(?Panel $panel = null): string
     {
         return static::$slug ?? 'maintenance-checks';
     }
@@ -69,7 +71,7 @@ class MaintenanceChecks extends Page implements HasTable
             Action::make('createMaintenanceCheck')
                 ->label(__('messages.new_maintenance_check'))
                 ->icon('heroicon-m-plus')
-                ->form([
+                ->schema([
                     Grid::make(2)
                         ->schema([
                             Select::make('machine_id')
@@ -224,7 +226,7 @@ class MaintenanceChecks extends Page implements HasTable
                     ->label(__('messages.machine'))
                     ->relationship('machine', 'name'),
                 Filter::make('date')
-                    ->form([
+                    ->schema([
                         DatePicker::make('date_from')
                             ->label(__('messages.date_from')),
                         DatePicker::make('date_until')
@@ -246,7 +248,7 @@ class MaintenanceChecks extends Page implements HasTable
                             );
                     }),
             ])
-            ->actions([
+            ->recordActions([
                 ViewAction::make()
                     ->modalContent(function (MaintenanceCheck $record) {
                         return view('filament.pages.partials.maintenance-check-view', [
@@ -255,7 +257,7 @@ class MaintenanceChecks extends Page implements HasTable
                     })
                     ->modalWidth('3xl'),
                 EditAction::make()
-                    ->form([
+                    ->schema([
                         Grid::make(2)
                             ->schema([
                                 Select::make('machine_id')
@@ -352,8 +354,8 @@ class MaintenanceChecks extends Page implements HasTable
                     }),
                 DeleteAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
+            ->toolbarActions([
+                BulkActionGroup::make([
           /*           Tables\Actions\DeleteBulkAction::make(), */
                 ]),
             ])

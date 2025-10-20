@@ -2,9 +2,14 @@
 
 namespace App\Filament\Resources;
 
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Grid;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use App\Filament\Resources\MeltTemperatureResource\Pages\ListMeltTemperatures;
+use App\Filament\Resources\MeltTemperatureResource\Pages\EditMeltTemperature;
 use App\Filament\Resources\MeltTemperatureResource\Pages;
 use App\Models\MeltTemperature;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -13,11 +18,9 @@ use Filament\Forms\Components\Select;
 use App\Models\Machine;
 use App\Models\SeriesTender;
 use App\Models\Product;
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Components\Repeater;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\DeleteAction;
+use Filament\Forms\Components\Repeater\TableColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ViewColumn;
 
@@ -26,9 +29,9 @@ class MeltTemperatureResource extends Resource
 {
   protected static ?string $model = MeltTemperature::class;
 
-  protected static ?string $navigationIcon = 'phosphor-thermometer';
+  protected static string | \BackedEnum | null $navigationIcon = 'phosphor-thermometer';
 
-  protected static ?string $navigationGroup = 'Quality Control';
+  protected static string | \UnitEnum | null $navigationGroup = 'Quality Control';
 
   public static function getNavigationLabel(): string
   {
@@ -40,11 +43,12 @@ class MeltTemperatureResource extends Resource
     return __('messages.melt_temperature_plural');
   }
 
-  public static function form(Form $form): Form
+  public static function form(Schema $schema): Schema
   {
-    return $form
-      ->schema([
+    return $schema
+      ->components([
         Grid::make(3)
+          ->columnSpanFull()
           ->schema([
             Select::make('series_id')
               ->required()
@@ -73,24 +77,28 @@ class MeltTemperatureResource extends Resource
               ->default(fn() => Machine::first()?->id),
           ]),
 
-        Repeater::make('temperature_readings')
-          ->relationship('temperatureReadings')
+        Repeater::make('temperatureReadings')
+          ->relationship()
+          ->label(__('messages.melt_temperature_plural'))
+          ->table([
+            TableColumn::make(__('messages.temperature'))
+              ->markAsRequired(),
+            TableColumn::make(__('messages.recorded_at'))
+              ->markAsRequired(),
+          ])
           ->schema([
             TextInput::make('temperature')
               ->required()
               ->label(__('messages.temperature'))
               ->numeric()
-              ->integer()
-              ->columnSpan(1),
+              ->integer(),
             TimePicker::make('recorded_at')
               ->required()
               ->default(now())
               ->format('H:i')
               ->withoutSeconds()
-              ->label(__('messages.recorded_at'))
-              ->columnSpan(1),
+              ->label(__('messages.recorded_at')),
           ])
-          ->columns(2)
           ->columnSpanFull()
           ->mutateRelationshipDataBeforeCreateUsing(function (array $data): array {
             return [
@@ -127,7 +135,7 @@ class MeltTemperatureResource extends Resource
           ->width('300px'),
       ])
 
-      ->actions([
+      ->recordActions([
         EditAction::make()
           ->label(__('messages.edit')),
         DeleteAction::make()
@@ -143,9 +151,8 @@ class MeltTemperatureResource extends Resource
   public static function getPages(): array
   {
     return [
-      'index' => Pages\ListMeltTemperatures::route('/'),
-
-      'edit' => Pages\EditMeltTemperature::route('/{record}/edit'),
+      'index' => ListMeltTemperatures::route('/'),
+     /*  'edit' => EditMeltTemperature::route('/{record}/edit'), */
     ];
   }
 }

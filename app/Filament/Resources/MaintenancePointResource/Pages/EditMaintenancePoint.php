@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\MaintenancePointResource\Pages;
 
+use Filament\Actions\DeleteAction;
 use App\Filament\Resources\MaintenancePointResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
@@ -20,7 +21,7 @@ class EditMaintenancePoint extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            DeleteAction::make(),
         ];
     }
 }

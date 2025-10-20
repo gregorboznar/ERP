@@ -2,6 +2,19 @@
 
 namespace App\Http;
 
+use Illuminate\Routing\Middleware\SubstituteBindings;
+use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
+use Illuminate\Session\Middleware\AuthenticateSession;
+use Illuminate\Http\Middleware\SetCacheHeaders;
+use Illuminate\Auth\Middleware\Authorize;
+use App\Http\Middleware\RedirectIfAuthenticated;
+use Illuminate\Auth\Middleware\RequirePassword;
+use App\Http\Middleware\ValidateSignature;
+use Illuminate\Routing\Middleware\ThrottleRequests;
+use Illuminate\Auth\Middleware\EnsureEmailIsVerified;
+use App\Http\Middleware\CheckRole;
+use Spatie\Permission\Middleware\PermissionMiddleware;
+use Spatie\Permission\Middleware\RoleOrPermissionMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -24,7 +37,7 @@ class Kernel extends HttpKernel
 
     'api' => [
       'throttle:api',
-      \Illuminate\Routing\Middleware\SubstituteBindings::class,
+      SubstituteBindings::class,
     ],
   ];
 
@@ -34,19 +47,19 @@ class Kernel extends HttpKernel
    * @var array
    */
   protected $middlewareAliases = [
-    'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
-    'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,
-    'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
-    'can' => \Illuminate\Auth\Middleware\Authorize::class,
-    'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
-    'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
-    'signed' => \App\Http\Middleware\ValidateSignature::class,
-    'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-    'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+    'auth.basic' => AuthenticateWithBasicAuth::class,
+    'auth.session' => AuthenticateSession::class,
+    'cache.headers' => SetCacheHeaders::class,
+    'can' => Authorize::class,
+    'guest' => RedirectIfAuthenticated::class,
+    'password.confirm' => RequirePassword::class,
+    'signed' => ValidateSignature::class,
+    'throttle' => ThrottleRequests::class,
+    'verified' => EnsureEmailIsVerified::class,
     // GraphQL specific middleware
-    'role' => \App\Http\Middleware\CheckRole::class,
-    'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
-    'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+    'role' => CheckRole::class,
+    'permission' => PermissionMiddleware::class,
+    'role_or_permission' => RoleOrPermissionMiddleware::class,
   ];
 
   // Other configurations

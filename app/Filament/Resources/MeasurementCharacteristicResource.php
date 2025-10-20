@@ -2,10 +2,17 @@
 
 namespace App\Filament\Resources;
 
+use Filament\Schemas\Schema;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use App\Filament\Resources\MeasurementCharacteristicResource\Pages\ListMeasurementCharacteristics;
+use App\Filament\Resources\MeasurementCharacteristicResource\Pages\CreateMeasurementCharacteristic;
+use App\Filament\Resources\MeasurementCharacteristicResource\Pages\EditMeasurementCharacteristic;
 use App\Filament\Resources\MeasurementCharacteristicResource\Pages;
 use App\Models\MeasurementCharacteristic;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -16,9 +23,9 @@ class MeasurementCharacteristicResource extends Resource
 {
   protected static ?string $model = MeasurementCharacteristic::class;
 
-  protected static ?string $navigationIcon = 'phosphor-ruler';
+  protected static string | \BackedEnum | null $navigationIcon = 'phosphor-ruler';
 
-  protected static ?string $navigationGroup = 'Quality Control';
+  protected static string | \UnitEnum | null $navigationGroup = 'Quality Control';
 
   protected static ?int $navigationSort = 0;
   public static function getNavigationLabel(): string
@@ -42,10 +49,10 @@ class MeasurementCharacteristicResource extends Resource
     return __('Quality Control');
   }
 
-  public static function form(Form $form): Form
+  public static function form(Schema $schema): Schema
   {
-    return $form
-      ->schema([
+    return $schema
+      ->components([
         TextInput::make('name')
           ->required()
           ->maxLength(255),
@@ -65,13 +72,13 @@ class MeasurementCharacteristicResource extends Resource
       ->filters([
         //
       ])
-      ->actions([
-        Tables\Actions\EditAction::make(),
-        Tables\Actions\DeleteAction::make(),
+      ->recordActions([
+        EditAction::make(),
+        DeleteAction::make(),
       ])
-      ->bulkActions([
-        Tables\Actions\BulkActionGroup::make([
-          Tables\Actions\DeleteBulkAction::make(),
+      ->toolbarActions([
+        BulkActionGroup::make([
+          DeleteBulkAction::make(),
         ]),
       ]);
   }
@@ -79,9 +86,9 @@ class MeasurementCharacteristicResource extends Resource
   public static function getPages(): array
   {
     return [
-      'index' => Pages\ListMeasurementCharacteristics::route('/'),
-      'create' => Pages\CreateMeasurementCharacteristic::route('/create'),
-      'edit' => Pages\EditMeasurementCharacteristic::route('/{record}/edit'),
+      'index' => ListMeasurementCharacteristics::route('/'),
+      'create' => CreateMeasurementCharacteristic::route('/create'),
+      'edit' => EditMeasurementCharacteristic::route('/{record}/edit'),
     ];
   }
 }

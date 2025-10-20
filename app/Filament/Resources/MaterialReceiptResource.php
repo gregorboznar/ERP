@@ -2,6 +2,11 @@
 
 namespace App\Filament\Resources;
 
+use Filament\Schemas\Schema;
+use Filament\Tables\Table;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use App\Filament\Resources\MaterialReceiptResource\Pages\ListMaterialReceipts;
 use App\Filament\Resources\MaterialReceiptResource\Pages;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
@@ -11,15 +16,13 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Illuminate\Support\Facades\Auth;
 
 class MaterialReceiptResource extends Resource
 {
-    protected static ?string $navigationIcon = 'carbon-receipt';
+    protected static string | \BackedEnum | null $navigationIcon = 'carbon-receipt';
 
     public static function getNavigationLabel(): string
     {
@@ -36,10 +39,10 @@ class MaterialReceiptResource extends Resource
         return 'Operativa';
     }
 
-    public static function form(Forms\Form $form): Forms\Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 DatePicker::make('delivery_date')
                     ->label(__('messages.delivery_date'))
                     ->native(false)
@@ -71,7 +74,7 @@ class MaterialReceiptResource extends Resource
             ]);
     }
 
-    public static function table(Tables\Table $table): Tables\Table
+    public static function table(Table $table): Table
     {
         return $table
             ->columns([
@@ -112,7 +115,7 @@ class MaterialReceiptResource extends Resource
             ->filters([
                 TrashedFilter::make(),
             ])
-            ->actions([
+            ->recordActions([
                 EditAction::make()
                     ->label(__('messages.edit'))
                     ->modalHeading(__('messages.edit_material_receipt'))
@@ -127,13 +130,13 @@ class MaterialReceiptResource extends Resource
                     ->modalCancelActionLabel(__('messages.cancel'))
                     ->modalWidth('md'),
             ])
-            ->bulkActions([]);
+            ->toolbarActions([]);
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListMaterialReceipts::route('/'),
+            'index' => ListMaterialReceipts::route('/'),
         ];
     }
 }

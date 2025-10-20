@@ -31,13 +31,6 @@ class MeltTemperature extends Model
     });
   }
 
-  protected $temperature_readings = [];
-
-  public function getTemperatureReadingsAttribute()
-  {
-    return $this->temperature_readings;
-  }
-
   public function temperatureReadings()
   {
     return $this->hasMany(TemperatureReading::class);

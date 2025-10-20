@@ -182,7 +182,6 @@ return [
   'grinding' => 'Brušenje',
   'packaging' => 'Pakiranje',
   'machine_trimming' => 'Strojno obrezovanje',
-  'turning_washing' => 'Struženje in pranje',
   'date_range' => 'Datumski obseg',
   'operation_period' => 'Časovni obseg',
   'series_size' => 'Velikost serije',
@@ -256,5 +255,7 @@ return [
   'update_maintenance_check' => 'Posodobi vzdrževalno kontrolo',
   'updated' => 'Posodobljeno',
   'maintenance_check_updated_successfully' => 'Vzdrževalna kontrola je bila uspešno posodobljena',
+  'new_machine' => 'Nov stroj',
+  'enter_details_for_new_machine' => 'Vnesite podrobnosti za novi stroj',
 
 ];

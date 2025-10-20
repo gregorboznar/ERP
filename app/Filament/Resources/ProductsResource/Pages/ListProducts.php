@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ProductsResource\Pages;
 
+use Filament\Actions\CreateAction;
 use App\Filament\Resources\ProductsResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
@@ -14,7 +15,7 @@ class ListProducts extends ListRecords
     {
         return [
 
-            Actions\CreateAction::make()->label(__('messages.new_product'))
+            CreateAction::make()->label(__('messages.new_product'))
                 ->modalHeading(__('messages.new_product'))
                 ->modalDescription(__('messages.enter_details_for_new_product'))
                 ->modalWidth('xl')

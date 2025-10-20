@@ -2,12 +2,17 @@
 
 namespace App\Filament\Resources;
 
+use Filament\Schemas\Schema;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use App\Filament\Resources\MachinesResource\Pages\ListMachines;
+use App\Filament\Resources\MachinesResource\Pages\CreateMachines;
+use App\Filament\Resources\MachinesResource\Pages\EditMachines;
 use App\Filament\Resources\MachinesResource\Pages;
 use App\Filament\Resources\MachinesResource\RelationManagers;
 use App\Filament\Resources\MachinesResource\RelationManagers\MaintenancePointsRelationManager;
 use App\Models\Machine;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -16,6 +21,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\TextInput;
+
 
 class MachinesResource extends Resource
 {
@@ -33,12 +39,12 @@ class MachinesResource extends Resource
 
 
 
-    protected static ?string $navigationIcon = 'heroicon-o-cog';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-cog';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 TextInput::make('name')->label(__('messages.name')),
                 TextInput::make('machine_type')->label(__('messages.machine_type')),
                 TextInput::make('type')->label(__('messages.type')),
@@ -68,11 +74,11 @@ class MachinesResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+            ->recordActions([
+                EditAction::make(),
+                DeleteAction::make(),
             ])
-            ->bulkActions([
+            ->toolbarActions([
               
             ]);
     }
@@ -87,9 +93,8 @@ class MachinesResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListMachines::route('/'),
-            'create' => Pages\CreateMachines::route('/create'),
-            'edit' => Pages\EditMachines::route('/{record}/edit'),
+            'index' => ListMachines::route('/'),
+        /*     'create' => CreateMachines::route('/create'), */
         ];
     }
 }

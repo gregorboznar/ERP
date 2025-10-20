@@ -2,9 +2,14 @@
 
 namespace App\Filament\Resources;
 
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Grid;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use App\Filament\Resources\ScpMeasurementResource\Pages\ListScpMeasurements;
+use App\Filament\Resources\ScpMeasurementResource\Pages\EditScpMeasurement;
 use App\Filament\Resources\ScpMeasurementResource\Pages;
 use App\Models\ScpMeasurement;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables\Table;
 use Filament\Forms\Components\TextInput;
@@ -12,18 +17,15 @@ use Filament\Forms\Components\DateTimePicker;
 use App\Models\SeriesTender;
 use Filament\Forms\Components\Select;
 use App\Models\Product;
-use Filament\Forms\Components\Grid;
-use Awcodes\TableRepeater\Components\TableRepeater;
-use Awcodes\TableRepeater\Header;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Repeater\TableColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\DeleteAction;
 
 class ScpMeasurementResource extends Resource
 {
     protected static ?string $model = ScpMeasurement::class;
 
-    protected static ?string $navigationIcon = 'carbon-intent-request-active';
+    protected static string | \BackedEnum | null $navigationIcon = 'carbon-intent-request-active';
 
 
     public static function getPluralModelLabel(): string
@@ -37,11 +39,12 @@ class ScpMeasurementResource extends Resource
         return trans('messages.scp_measurements');
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Grid::make(3)
+                    ->columnSpanFull()
                     ->schema([
                         DateTimePicker::make('datetime')
                             ->required()
@@ -74,17 +77,19 @@ class ScpMeasurementResource extends Resource
                             }),
 
                     ]),
-                TableRepeater::make('scp_measurement_fields')
+                Repeater::make('scp_measurement_fields')
                     ->relationship('measurementFields')
-                    ->headers([
-                        Header::make('field_number')->label(__('messages.part'))->width('100px'),
-                        Header::make('nest_number')->label(__('messages.nest'))->width('150px'),
-                        Header::make('measurement_value')->label(__('messages.measurement_value'))->width('150px'),
+                    ->table([
+                        TableColumn::make(__('messages.nest'))
+                            ->markAsRequired(),
+                        TableColumn::make(__('messages.nest_number'))
+                            ->markAsRequired(),
+                        TableColumn::make(__('messages.measurement_value'))
+                            ->markAsRequired(),
                     ])
                     ->schema([
                         TextInput::make('field_number')
                             ->label(__('messages.nest'))
-                            ->readOnly()
                             ->required()
                             ->default(function (callable $get, ?string $state) {
                                 if ($state) return $state;
@@ -101,20 +106,16 @@ class ScpMeasurementResource extends Resource
                             ->required()
                             ->label(__('messages.nest_number'))
                             ->numeric()
-                            ->integer()
-                            ->extraAttributes(['class' => 'm-3']),
+                            ->integer(),
                         TextInput::make('measurement_value')
                             ->required()
                             ->label(__('messages.measurement_value'))
                             ->numeric()
-                            ->step('0.001')
-                            ->extraAttributes(['class' => 'm-3']),
+                            ->step('0.001'),
                     ])
-                    ->defaultItems(5)
+                    ->defaultItems(1)
                     ->createItemButtonLabel(__('messages.add'))
                     ->columnSpanFull()
-                    ->emptyLabel(__('messages.table_empty'))
-                    ->streamlined()
 
             ]);
     }
@@ -175,7 +176,7 @@ class ScpMeasurementResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([
+            ->recordActions([
                 EditAction::make()
                     ->label(__('messages.edit')),
                 DeleteAction::make()
@@ -216,8 +217,8 @@ class ScpMeasurementResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListScpMeasurements::route('/'),
-            'edit' => Pages\EditScpMeasurement::route('/{record}/edit'),
+            'index' => ListScpMeasurements::route('/'),
+           /*  'edit' => EditScpMeasurement::route('/{record}/edit'), */
         ];
     }
 }

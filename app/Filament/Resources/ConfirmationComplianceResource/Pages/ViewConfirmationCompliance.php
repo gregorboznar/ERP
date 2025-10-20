@@ -2,13 +2,13 @@
 
 namespace App\Filament\Resources\ConfirmationComplianceResource\Pages;
 
+use Filament\Pages\Enums\SubNavigationPosition;
 use App\Filament\Resources\ConfirmationComplianceResource;
 use Filament\Resources\Pages\ViewRecord;
-use Filament\Pages\SubNavigationPosition;
 
 class ViewConfirmationCompliance extends ViewRecord
 {
   protected static string $resource = ConfirmationComplianceResource::class;
 
-  protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
+  protected static ?\Filament\Pages\Enums\SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
 }

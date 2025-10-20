@@ -2,12 +2,12 @@
 
 namespace App\Filament\Resources\SeriesTenderResource\Pages;
 
+use Filament\Actions\EditAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
 use App\Filament\Resources\SeriesTenderResource;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Tables\Table;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\DeleteBulkAction;
-use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables;
@@ -51,10 +51,10 @@ class ViewSeriesTender extends ViewRecord
       ->filters([
         //
       ])
-      ->actions([
+      ->recordActions([
         EditAction::make(),
       ])
-      ->bulkActions([
+      ->toolbarActions([
         BulkActionGroup::make([
           DeleteBulkAction::make(),
         ]),

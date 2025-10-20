@@ -2,25 +2,27 @@
 
 namespace App\Filament\Resources;
 
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Grid;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use App\Filament\Resources\MaintenancePointResource\Pages\ListMaintenancePoints;
+use App\Filament\Resources\MaintenancePointResource\Pages\EditMaintenancePoint;
 use App\Filament\Resources\MaintenancePointResource\Pages;
 use App\Models\MaintenancePoint;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Grid;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\DeleteAction;
 
 
 class MaintenancePointResource extends Resource
 {
     protected static ?string $model = MaintenancePoint::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-rectangle-stack';
     
     protected static bool $shouldRegisterNavigation = false;
 
@@ -34,10 +36,10 @@ class MaintenancePointResource extends Resource
         return trans('messages.daily_maintenance_activity');
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Grid::make(1)
                     ->schema([
                         TextInput::make('name')
@@ -77,7 +79,7 @@ class MaintenancePointResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([
+            ->recordActions([
                 EditAction::make()
                     ->label(__('messages.edit')),
                 DeleteAction::make()
@@ -101,8 +103,8 @@ class MaintenancePointResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListMaintenancePoints::route('/'),
-            'edit' => Pages\EditMaintenancePoint::route('/{record}/edit'),
+            'index' => ListMaintenancePoints::route('/'),
+            'edit' => EditMaintenancePoint::route('/{record}/edit'),
         ];
     }
 }

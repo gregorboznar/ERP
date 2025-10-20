@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\SeriesTenderResource\Pages;
 
+use Filament\Actions\CreateAction;
 use App\Filament\Resources\SeriesTenderResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
@@ -13,7 +14,7 @@ class ListSeriesTenders extends ListRecords
   protected function getHeaderActions(): array
   {
     return [
-      Actions\CreateAction::make()->label(__('messages.new_series_tender'))
+      CreateAction::make()->label(__('messages.new_series_tender'))
         ->icon('heroicon-m-plus')
         ->modalHeading(__('messages.new_series_tender'))
         ->modalDescription(__('messages.enter_details_for_new_series_tender'))

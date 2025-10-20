@@ -2,10 +2,11 @@
 
 namespace App\Jobs;
 
+use Filament\Actions\Action;
+use Exception;
 use App\Filament\Exports\ScpMeasurementTemplateExporter;
 use Filament\Actions\Exports\Models\Export;
 use Filament\Notifications\Notification;
-use Filament\Notifications\Actions\Action;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -49,7 +50,7 @@ class ExportScpMeasurementsToTemplate implements ShouldQueue
             ->openUrlInNewTab(),
         ])
         ->sendToDatabase($this->export->user);
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
       // Update export as failed
       $this->export->update([
         'completed_at' => now(),

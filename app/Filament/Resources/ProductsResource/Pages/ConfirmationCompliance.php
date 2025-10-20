@@ -2,25 +2,25 @@
 
 namespace App\Filament\Resources\ProductsResource\Pages;
 
+use Filament\Pages\Enums\SubNavigationPosition;
+use Filament\Actions\EditAction;
+use Filament\Schemas\Components\View;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\Action;
 use App\Filament\Resources\ProductsResource;
 use Filament\Resources\Pages\Page;
 use Filament\Navigation\NavigationItem;
-use Filament\Pages\SubNavigationPosition;
 use Filament\Tables\Table;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\IconColumn;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\DeleteAction;
 use App\Models\ConfirmationCompliance as ConfirmationComplianceModel;
 use App\Models\VisualCharacteristic;
 use App\Models\MeasurementCharacteristic;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Forms\Components\View;
 use Filament\Actions\CreateAction;
 use Filament\Support\Enums\ActionSize;
 use Filament\Support\Enums\Alignment;
@@ -37,9 +37,9 @@ class ConfirmationCompliance extends Page implements HasTable
 
   protected static string $resource = ProductsResource::class;
 
-  protected static string $view = 'filament.resources.products-resource.pages.confirmation-compliance';
+  protected string $view = 'filament.resources.products-resource.pages.confirmation-compliance';
 
-  protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
+  protected static ?\Filament\Pages\Enums\SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
 
   public ?string $record = null;
 
@@ -126,11 +126,11 @@ class ConfirmationCompliance extends Page implements HasTable
       ->filters([
         //
       ])
-      ->actions([
+      ->recordActions([
         EditAction::make()
           ->label(__('messages.edit'))
           ->modalHeading(__('messages.edit_confirmation_compliance'))
-          ->form(function ($record) {
+          ->schema(function ($record) {
             return [
               View::make('filament.pages.partials.confirmation-compliance-modal')
                 ->viewData([
@@ -157,7 +157,7 @@ class ConfirmationCompliance extends Page implements HasTable
           ->label(__('messages.new_confirmation_compliance_button'))
           ->modalHeading(__('messages.new_confirmation_compliance'))
           ->icon('heroicon-m-plus')
-          ->form([
+          ->schema([
             View::make('filament.pages.partials.confirmation-compliance-modal')
               ->viewData(['record' => $this->record])
           ])

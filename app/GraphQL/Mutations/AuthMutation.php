@@ -2,6 +2,7 @@
 
 namespace App\GraphQL\Mutations;
 
+use Exception;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -15,7 +16,7 @@ class AuthMutation
         $credentials = $args['input'];
         
         if (!Auth::attempt($credentials)) {
-            throw new \Exception('Invalid credentials');
+            throw new Exception('Invalid credentials');
         }
 
         $user = Auth::user();

@@ -2,17 +2,23 @@
 
 namespace App\Filament\Resources;
 
+use Filament\Schemas\Schema;
+use Filament\Actions\EditAction;
+use Filament\Schemas\Components\Grid;
+use Filament\Actions\DeleteAction;
+use App\Filament\Resources\ProductsResource\Pages\ListProducts;
+use App\Filament\Resources\ProductsResource\Pages\ViewProducts;
+use App\Filament\Resources\ProductsResource\Pages\TechnologicalRegulations;
+use App\Filament\Resources\ProductsResource\Pages\ConfirmationCompliance;
+use App\Filament\Resources\ProductsResource\Pages\ProductMeasurementCharacteristics;
+use App\Filament\Resources\ProductsResource\Pages\ProductVisualCharacteristics;
 use App\Filament\Resources\ProductsResource\Pages;
 use App\Models\Product;
 use Filament\Forms;
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
 use Filament\Navigation\NavigationItem;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
@@ -23,7 +29,7 @@ class ProductsResource extends Resource
 {
     protected static ?string $model = Product::class;
 
-    protected static ?string $navigationIcon = 'phosphor-factory';
+    protected static string | \BackedEnum | null $navigationIcon = 'phosphor-factory';
 
     public static function getPluralModelLabel(): string
     {
@@ -35,10 +41,10 @@ class ProductsResource extends Resource
         return trans('messages.products');
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 TextInput::make('name')->label(__('messages.name'))->required(),
                 TextInput::make('code')->label(__('messages.code'))->required(),
                 TextInput::make('nest_number')->label(__('messages.nest_number'))->required(),
@@ -56,14 +62,14 @@ class ProductsResource extends Resource
             ->filters([
                 TrashedFilter::make(),
             ])
-            ->actions([
+            ->recordActions([
                 EditAction::make()
                     ->label(trans('messages.edit'))
                     ->modalHeading(__('messages.edit_product'))
                     ->modalButton(__('messages.save_changes'))
                     ->modalCancelActionLabel(__('messages.cancel'))
                     ->modalWidth('3xl')
-                    ->form([
+                    ->schema([
                         Grid::make(2)
                             ->schema([
                                 TextInput::make('name')
@@ -100,12 +106,12 @@ class ProductsResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListProducts::route('/'),
-            'view' => Pages\ViewProducts::route('/{record}'),
-            'technological-regulations' => Pages\TechnologicalRegulations::route('/{record}/technological-regulations'),
-            'confirmation-compliance' => Pages\ConfirmationCompliance::route('/{record}/confirmation-compliance'),
-            'measurement-characteristics' => Pages\ProductMeasurementCharacteristics::route('/{record}/measurement-characteristics'),
-            'visual-characteristics' => Pages\ProductVisualCharacteristics::route('/{record}/visual-characteristics'),
+            'index' => ListProducts::route('/'),
+            'view' => ViewProducts::route('/{record}'),
+            'technological-regulations' => TechnologicalRegulations::route('/{record}/technological-regulations'),
+            'confirmation-compliance' => ConfirmationCompliance::route('/{record}/confirmation-compliance'),
+            'measurement-characteristics' => ProductMeasurementCharacteristics::route('/{record}/measurement-characteristics'),
+            'visual-characteristics' => ProductVisualCharacteristics::route('/{record}/visual-characteristics'),
         ];
     }
 
@@ -123,7 +129,8 @@ class ProductsResource extends Resource
             NavigationItem::make('view')
                 ->label(__('messages.view'))
                 ->icon('heroicon-o-eye')
-                ->url(fn() => static::getUrl('view', ['record' => $record])),
+                ->url(fn() => static::getUrl('view', ['record' => $record]))
+                ->isActiveWhen(fn() => request()->routeIs('filament.admin.resources.products.view')),
 
             NavigationItem::make('technological-regulations')
                 ->label(__('messages.technological_regulations'))

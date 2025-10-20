@@ -2,6 +2,10 @@
 
 namespace App\Providers\Filament;
 
+use App\Models\Settings;
+use Exception;
+use Filament\Pages\Dashboard;
+use Filament\Widgets\AccountWidget;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -27,11 +31,11 @@ class AdminPanelProvider extends PanelProvider
     {
         $brandName = 'Admin';
         try {
-            if (class_exists(\App\Models\Settings::class) && Schema::hasTable('settings')) {
-                $settings = \App\Models\Settings::first();
+            if (class_exists(Settings::class) && Schema::hasTable('settings')) {
+                $settings = Settings::first();
                 $brandName = $settings ? $settings->title : $brandName;
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
         }
 
         return $panel
@@ -46,7 +50,10 @@ class AdminPanelProvider extends PanelProvider
             ->favicon(asset('favicon.png'))
             ->path('admin')
             ->login()
-            ->viteTheme('resources/css/filament/admin/theme.css')
+            ->viteTheme([
+                'resources/css/filament/admin/theme.css',
+                'resources/js/filament/admin/theme.js',
+            ])
             ->databaseNotifications()
             ->colors([
                 'primary' => Color::Amber,
@@ -54,11 +61,11 @@ class AdminPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
-                Pages\Dashboard::class,
+                Dashboard::class,
                 MaintenanceChecks::class,
             ])
             ->widgets([
-                Widgets\AccountWidget::class,
+                AccountWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

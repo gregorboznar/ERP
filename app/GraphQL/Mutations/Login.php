@@ -2,6 +2,7 @@
 
 namespace App\GraphQL\Mutations;
 
+use Exception;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
@@ -13,7 +14,7 @@ final readonly class Login
         $credentials = $args['input'];
 
         if (!Auth::attempt($credentials)) {
-            throw new \Exception('Invalid credentials');
+            throw new Exception('Invalid credentials');
         }
 
         $user = Auth::user();

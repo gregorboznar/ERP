@@ -42,7 +42,6 @@ class ProductionOperation extends Model
     'waste_slag_weight' => 'decimal:2'
   ];
 
-  // Operation type constants - these match the ENUM values in the database
   const TYPE_DIE_CASTING = 'die_casting';
   const TYPE_GRINDING = 'grinding';
   const TYPE_PACKAGING = 'packaging';

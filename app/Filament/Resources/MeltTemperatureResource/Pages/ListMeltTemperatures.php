@@ -15,7 +15,8 @@ class ListMeltTemperatures extends ListRecords
   protected function getHeaderActions(): array
   {
     return [
-      Actions\CreateAction::make()->label(__('messages.create_new_melt_temperature'))
+      Actions\CreateAction::make()
+        ->label(__('messages.create_new_melt_temperature'))
         ->icon('heroicon-m-plus')
         ->modalWidth('3xl')
         ->modalHeading(__('messages.create_new_melt_temperature'))

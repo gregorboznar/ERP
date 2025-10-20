@@ -2,10 +2,19 @@
 
 namespace App\Filament\Resources;
 
+use Filament\Schemas\Schema;
+use Filament\Forms\Components\TextInput;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use App\Filament\Resources\VisualCharacteristicResource\Pages\ListVisualCharacteristics;
+use App\Filament\Resources\VisualCharacteristicResource\Pages\CreateVisualCharacteristic;
+use App\Filament\Resources\VisualCharacteristicResource\Pages\EditVisualCharacteristic;
 use App\Filament\Resources\VisualCharacteristicResource\Pages;
 use App\Models\VisualCharacteristic;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -15,9 +24,9 @@ class VisualCharacteristicResource extends Resource
 {
   protected static ?string $model = VisualCharacteristic::class;
 
-  protected static ?string $navigationIcon = 'phosphor-eye';
+  protected static string | \BackedEnum | null $navigationIcon = 'phosphor-eye';
 
-  protected static ?string $navigationGroup = 'Quality Control';
+  protected static string | \UnitEnum | null $navigationGroup = 'Quality Control';
 
   public static function getNavigationLabel(): string
   {
@@ -41,11 +50,11 @@ class VisualCharacteristicResource extends Resource
     return __('Quality Control');
   }
 
-  public static function form(Form $form): Form
+  public static function form(Schema $schema): Schema
   {
-    return $form
-      ->schema([
-        Forms\Components\TextInput::make('name')
+    return $schema
+      ->components([
+        TextInput::make('name')
           ->required()
           ->maxLength(255),
       ]);
@@ -55,19 +64,19 @@ class VisualCharacteristicResource extends Resource
   {
     return $table
       ->columns([
-        Tables\Columns\TextColumn::make('name')
+        TextColumn::make('name')
           ->label(__('messages.name'))
           ->searchable(),
 
       ])
       ->filters([])
-      ->actions([
-        Tables\Actions\EditAction::make(),
-        Tables\Actions\DeleteAction::make(),
+      ->recordActions([
+        EditAction::make(),
+        DeleteAction::make(),
       ])
-      ->bulkActions([
-        Tables\Actions\BulkActionGroup::make([
-          Tables\Actions\DeleteBulkAction::make(),
+      ->toolbarActions([
+        BulkActionGroup::make([
+          DeleteBulkAction::make(),
         ]),
       ]);
   }
@@ -75,9 +84,9 @@ class VisualCharacteristicResource extends Resource
   public static function getPages(): array
   {
     return [
-      'index' => Pages\ListVisualCharacteristics::route('/'),
-      'create' => Pages\CreateVisualCharacteristic::route('/create'),
-      'edit' => Pages\EditVisualCharacteristic::route('/{record}/edit'),
+      'index' => ListVisualCharacteristics::route('/'),
+      'create' => CreateVisualCharacteristic::route('/create'),
+      'edit' => EditVisualCharacteristic::route('/{record}/edit'),
     ];
   }
 }

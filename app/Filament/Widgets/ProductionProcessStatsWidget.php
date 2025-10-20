@@ -12,7 +12,7 @@ use Livewire\Component;
 
 abstract class ProductionProcessStatsWidget extends BaseWidget
 {
-  protected static ?string $pollingInterval = null;
+  protected ?string $pollingInterval = null;
   protected static ?int $sort = 1;
   protected static bool $isLazy = false;
 
@@ -78,16 +78,15 @@ abstract class ProductionProcessStatsWidget extends BaseWidget
       ];
     }
  */
-    // Calculate total good parts
+  
     $totalGoodParts = $operations->sum('good_parts_count');
 
-    // Calculate total waste
+  
     $totalWaste = $operations->sum('waste');
 
-    // Calculate total technological waste
+   
     $totalTechWaste = $operations->sum('technological_waste');
 
-    // Get the operation type icon and color
     $icons = [
       ProductionOperation::TYPE_DIE_CASTING => 'heroicon-m-rectangle-stack',
       ProductionOperation::TYPE_GRINDING => 'heroicon-m-adjustments-vertical',

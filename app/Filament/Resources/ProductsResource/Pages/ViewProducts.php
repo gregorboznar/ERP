@@ -2,19 +2,19 @@
 
 namespace App\Filament\Resources\ProductsResource\Pages;
 
+use Filament\Pages\Enums\SubNavigationPosition;
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
 use App\Filament\Resources\ProductsResource;
 use Filament\Resources\Pages\ViewRecord;
-use Filament\Pages\SubNavigationPosition;
 use Filament\Navigation\NavigationItem;
-use Filament\Infolists\Infolist;
-use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 
 class ViewProducts extends ViewRecord
 {
   protected static string $resource = ProductsResource::class;
 
-  protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
+  protected static ?\Filament\Pages\Enums\SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
 
   public function getTitle(): string
   {
@@ -26,9 +26,9 @@ class ViewProducts extends ViewRecord
     return ProductsResource::generateNavigation($this->record);
   }
 
-  public function infolist(Infolist $infolist): Infolist
+  public function infolist(Schema $schema): Schema
   {
-    return $infolist
+    return $schema
       ->schema([
         Section::make('Details')
           ->schema([

@@ -2,13 +2,21 @@
 
 namespace App\Filament\Resources\SeriesTenderResource\Pages;
 
+use Filament\Actions\EditAction;
+use Filament\Schemas\Components\Grid;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\TimePicker;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\Hidden;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Carbon\Carbon;
+use Exception;
 use App\Filament\Resources\SeriesTenderResource;
 use Filament\Resources\Pages\Page;
 use Filament\Tables\Table;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Columns\TextColumn;
 use App\Models\ProductionOperation;
 use Filament\Actions\CreateAction;
@@ -33,7 +41,7 @@ class PackagingsPage extends Page implements HasTable, HasForms
 
   protected static string $resource = SeriesTenderResource::class;
 
-  protected static string $view = 'filament.resources.series-tender-resource.pages.packaging';
+  protected string $view = 'filament.resources.series-tender-resource.pages.packaging';
 
   public ?string $record = null;
 
@@ -94,63 +102,63 @@ class PackagingsPage extends Page implements HasTable, HasForms
           ->sortable(),
 
       ])
-      ->actions([
+      ->recordActions([
         EditAction::make()
           ->modalWidth('5xl')
           ->closeModalByClickingAway(true)
-          ->form([
-            Forms\Components\Grid::make()
+          ->schema([
+            Grid::make()
               ->schema([
-                Forms\Components\DatePicker::make('date')
+                DatePicker::make('date')
                   ->label(__('messages.date'))
                   ->native(false)
                   ->required(),
-                Forms\Components\TimePicker::make('start_time')
+                TimePicker::make('start_time')
                   ->label(__('messages.start_time'))
                   ->format('H:i')
                   ->withoutSeconds()
                   ->required(),
-                Forms\Components\TextInput::make('counter_start')
+                TextInput::make('counter_start')
                   ->label(__('messages.counter_start'))
                   ->required()
                   ->numeric(),
-                Forms\Components\TimePicker::make('end_time')
+                TimePicker::make('end_time')
                   ->label(__('messages.end_time'))
                   ->format('H:i')
                   ->withoutSeconds(),
-                Forms\Components\TextInput::make('counter_end')
+                TextInput::make('counter_end')
                   ->label(__('messages.counter_end'))
                   ->required()
                   ->numeric(),
-                Forms\Components\TextInput::make('good_parts_count')
+                TextInput::make('good_parts_count')
                   ->label(__('messages.good_parts_count'))
                   ->required()
                   ->numeric(),
-                Forms\Components\TextInput::make('technological_waste')
+                TextInput::make('technological_waste')
                   ->label(__('messages.technological_waste'))
                   ->required()
                   ->numeric(),
-                Forms\Components\TextInput::make('batch_of_material')
+                TextInput::make('batch_of_material')
                   ->label(__('messages.batch_of_material')),
-                Forms\Components\TextInput::make('palet_number')
+                TextInput::make('palet_number')
                   ->label(__('messages.palet_number')),
-                Forms\Components\TextInput::make('batch_of_material')
+                TextInput::make('batch_of_material')
                   ->label(__('messages.batch_of_material'))
                   ->numeric(),
-                Forms\Components\Textarea::make('stopage_reason')
+                Textarea::make('stopage_reason')
                   ->label(__('messages.stopage_reason'))
                   ->rows(3),
-                Forms\Components\Textarea::make('notes')
+                Textarea::make('notes')
                   ->label(__('messages.notes'))
                   ->rows(3),
-                Forms\Components\Hidden::make('operation_type')
+                Hidden::make('operation_type')
                   ->default(ProductionOperation::TYPE_PACKAGING),
               ])
               ->columns(2)
           ]),
         DeleteAction::make(),
       ])
-      ->bulkActions([
+      ->toolbarActions([
         BulkActionGroup::make([
           DeleteBulkAction::make(),
         ]),
@@ -167,19 +175,19 @@ class PackagingsPage extends Page implements HasTable, HasForms
         ->modalWidth('5xl')
         ->closeModalByClickingAway(true)
         ->createAnother(false)
-        ->form([
-          Forms\Components\Grid::make()
+        ->schema([
+          Grid::make()
             ->schema([
-              Forms\Components\Grid::make()->schema([
+              Grid::make()->schema([
 
-                Forms\Components\Grid::make()
+                Grid::make()
                   ->schema([
-                    Forms\Components\DatePicker::make('date')
+                    DatePicker::make('date')
                       ->label(__('messages.date'))
                       ->native(false)
                       ->required()
                       ->default(now()->format('Y-m-d')),
-                    Forms\Components\TimePicker::make('start_time')
+                    TimePicker::make('start_time')
                       ->label(__('messages.start_time'))
                       ->format('H:i')
                       ->withoutSeconds()
@@ -193,11 +201,11 @@ class PackagingsPage extends Page implements HasTable, HasForms
                           return '22:00';
                         }
                       }),
-                    Forms\Components\TextInput::make('counter_start')
+                    TextInput::make('counter_start')
                       ->label(__('messages.counter_start'))
                       ->required()
                       ->numeric(),
-                    Forms\Components\TimePicker::make('end_time')
+                    TimePicker::make('end_time')
                       ->label(__('messages.end_time'))
                       ->format('H:i')
                       ->withoutSeconds()
@@ -208,43 +216,43 @@ class PackagingsPage extends Page implements HasTable, HasForms
                         }
 
                         try {
-                          return \Carbon\Carbon::createFromFormat('H:i', $startTime)
+                          return Carbon::createFromFormat('H:i', $startTime)
                             ->addHours(8)
                             ->format('H:i');
-                        } catch (\Exception $e) {
+                        } catch (Exception $e) {
                           return null;
                         }
                       }),
-                    Forms\Components\TextInput::make('counter_end')
+                    TextInput::make('counter_end')
                       ->label(__('messages.counter_end'))
                       ->required()
                       ->numeric(),
-                    Forms\Components\TextInput::make('good_parts_count')
+                    TextInput::make('good_parts_count')
                       ->label(__('messages.good_parts_count'))
                       ->required()
                       ->numeric(),
-                    Forms\Components\TextInput::make('technological_waste')
+                    TextInput::make('technological_waste')
                       ->label(__('messages.technological_waste'))
                       ->required()
                       ->numeric(),
-                    Forms\Components\TextInput::make('batch_of_material')
+                    TextInput::make('batch_of_material')
                       ->label(__('messages.batch_of_material'))
                       ->numeric(),
-                    Forms\Components\TextInput::make('palet_number')
+                    TextInput::make('palet_number')
                       ->label(__('messages.palet_number')),
-                    Forms\Components\Hidden::make('operation_type')
+                    Hidden::make('operation_type')
                       ->default(ProductionOperation::TYPE_PACKAGING),
                   ])
                   ->columns(2)
                   ->columnSpan(['lg' => 2]),
 
 
-                Forms\Components\Grid::make()
+                Grid::make()
                   ->schema([
-                    Forms\Components\Textarea::make('stopage_reason')
+                    Textarea::make('stopage_reason')
                       ->label(__('messages.stopage_reason'))
                       ->rows(6),
-                    Forms\Components\Textarea::make('notes')
+                    Textarea::make('notes')
                       ->label(__('messages.notes'))
                       ->rows(6),
                   ])

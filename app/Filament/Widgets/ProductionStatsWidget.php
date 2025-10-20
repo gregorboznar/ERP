@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProductionStatsWidget extends BaseWidget
 {
-  protected static ?string $pollingInterval = null;
+  protected ?string $pollingInterval = null;
   protected static ?int $sort = 1;
 
   protected static bool $isLazy = false;

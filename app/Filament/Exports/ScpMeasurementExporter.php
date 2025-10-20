@@ -2,6 +2,7 @@
 
 namespace App\Filament\Exports;
 
+use Filament\Actions\Action;
 use App\Models\ScpMeasurement;
 use Filament\Actions\Exports\ExportColumn;
 use Filament\Actions\Exports\Exporter;
@@ -57,7 +58,7 @@ class ScpMeasurementExporter extends Exporter
             ->title('Export completed')
             ->body(self::getCompletedNotificationBody($export))
             ->actions([
-                \Filament\Notifications\Actions\Action::make('download')
+                Action::make('download')
                     ->label('Download')
                     ->url(fn() => $export->getDownloadUrl())
                     ->openUrlInNewTab(),

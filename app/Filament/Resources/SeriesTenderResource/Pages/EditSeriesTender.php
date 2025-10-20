@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\SeriesTenderResource\Pages;
 
+use Filament\Actions\DeleteAction;
 use App\Filament\Resources\SeriesTenderResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
@@ -20,7 +21,7 @@ class EditSeriesTender extends EditRecord
 
   {
     return [
-      Actions\DeleteAction::make(),
+      DeleteAction::make(),
     ];
   }
 }

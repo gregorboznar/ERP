@@ -2,30 +2,37 @@
 
 namespace App\Filament\Resources;
 
+use Filament\Schemas\Schema;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use App\Filament\Resources\ConfirmationComplianceResource\Pages\ListConfirmationCompliances;
+use App\Filament\Resources\ConfirmationComplianceResource\Pages\CreateConfirmationCompliance;
+use App\Filament\Resources\ConfirmationComplianceResource\Pages\EditConfirmationCompliance;
+use App\Filament\Resources\ConfirmationComplianceResource\Pages\ViewConfirmationCompliance;
+use App\Filament\Resources\ConfirmationComplianceResource\Pages\VisualCharacteristics;
+use App\Filament\Resources\ConfirmationComplianceResource\Pages\MeasurementCharacteristics;
+use Filament\Pages\Page;
 use App\Filament\Resources\ConfirmationComplianceResource\Pages;
 use App\Models\ConfirmationCompliance;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables\Table;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\DeleteAction;
 
 
 class ConfirmationComplianceResource extends Resource
 {
     protected static ?string $model = ConfirmationCompliance::class;
 
-    protected static ?string $navigationIcon = 'phosphor-check-circle';
+    protected static string | \BackedEnum | null $navigationIcon = 'phosphor-check-circle';
 
     public static function shouldRegisterNavigation(): bool
     {
         return false;
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 //
             ]);
     }
@@ -39,7 +46,7 @@ class ConfirmationComplianceResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([
+            ->recordActions([
                 EditAction::make()
                     ->label(__('messages.edit')),
                 DeleteAction::make()
@@ -62,21 +69,21 @@ class ConfirmationComplianceResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListConfirmationCompliances::route('/'),
-            'create' => Pages\CreateConfirmationCompliance::route('/create'),
-            'edit' => Pages\EditConfirmationCompliance::route('/{record}/edit'),
-            'view' => Pages\ViewConfirmationCompliance::route('/{record}'),
-            'visual-characteristics' => Pages\VisualCharacteristics::route('/{record}/visual-characteristics'),
-            'measurement-characteristics' => Pages\MeasurementCharacteristics::route('/{record}/measurement-characteristics'),
+            'index' => ListConfirmationCompliances::route('/'),
+            'create' => CreateConfirmationCompliance::route('/create'),
+            'edit' => EditConfirmationCompliance::route('/{record}/edit'),
+            'view' => ViewConfirmationCompliance::route('/{record}'),
+            'visual-characteristics' => VisualCharacteristics::route('/{record}/visual-characteristics'),
+            'measurement-characteristics' => MeasurementCharacteristics::route('/{record}/measurement-characteristics'),
         ];
     }
 
-    public static function getRecordSubNavigation(\Filament\Pages\Page $page): array
+    public static function getRecordSubNavigation(Page $page): array
     {
         return [
-            'view' => Pages\ViewConfirmationCompliance::class,
-            'visual-characteristics' => Pages\VisualCharacteristics::class,
-            'measurement-characteristics' => Pages\MeasurementCharacteristics::class,
+            'view' => ViewConfirmationCompliance::class,
+            'visual-characteristics' => VisualCharacteristics::class,
+            'measurement-characteristics' => MeasurementCharacteristics::class,
         ];
     }
 }

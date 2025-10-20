@@ -2,17 +2,17 @@
 
 namespace App\Filament\Resources\ConfirmationComplianceResource\Pages;
 
+use Filament\Pages\Enums\SubNavigationPosition;
 use App\Filament\Resources\ConfirmationComplianceResource;
 use Filament\Resources\Pages\Page;
-use Filament\Pages\SubNavigationPosition;
 
 class MeasurementCharacteristics extends Page
 {
   protected static string $resource = ConfirmationComplianceResource::class;
 
-  protected static string $view = 'filament.resources.confirmation-compliance-resource.pages.measurement-characteristics';
+  protected string $view = 'filament.resources.confirmation-compliance-resource.pages.measurement-characteristics';
 
-  protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
+  protected static ?\Filament\Pages\Enums\SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
 
   public ?string $record = null;
 

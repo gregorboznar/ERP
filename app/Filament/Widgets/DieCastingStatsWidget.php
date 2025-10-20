@@ -10,7 +10,7 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class DieCastingStatsWidget extends ProductionProcessStatsWidget
 {
-  protected static ?string $pollingInterval = null;
+  protected ?string $pollingInterval = null;
   protected static ?int $sort = 1;
   protected static bool $isLazy = false;
 

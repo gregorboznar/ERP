@@ -10,7 +10,7 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class GrindingStatsWidget extends ProductionProcessStatsWidget
 {
-  protected static ?string $pollingInterval = null;
+  protected ?string $pollingInterval = null;
   protected static ?int $sort = 1;
 
   public function mount(?SeriesTender $record = null): void

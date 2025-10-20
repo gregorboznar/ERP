@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ScpMeasurementResource\Pages;
 
+use Filament\Actions\DeleteAction;
 use App\Filament\Resources\ScpMeasurementResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
@@ -19,7 +20,7 @@ class EditScpMeasurement extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            DeleteAction::make(),
         ];
     }
 }

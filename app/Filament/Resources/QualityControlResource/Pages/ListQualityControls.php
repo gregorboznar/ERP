@@ -2,6 +2,13 @@
 
 namespace App\Filament\Resources\QualityControlResource\Pages;
 
+use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Actions\BulkActionGroup;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Actions\EditAction;
+use Filament\Forms\Components\TextInput;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\CreateAction;
 use App\Filament\Resources\QualityControlResource;
 use App\Models\MeasurementCharacteristic;
 use App\Models\VisualCharacteristic;
@@ -11,7 +18,6 @@ use Filament\Forms;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Resources\Components\Tab;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Url;
 
@@ -58,9 +64,9 @@ class ListQualityControls extends ListRecords
             ->query($this->getTableQuery())
             ->columns($this->getTableColumns())
             ->filters([])
-            ->actions($this->getTableActions())
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
+            ->recordActions($this->getTableActions())
+            ->toolbarActions([
+                BulkActionGroup::make([
                 /*     Tables\Actions\DeleteBulkAction::make(), */
                 ]),
             ]);
@@ -83,15 +89,15 @@ class ListQualityControls extends ListRecords
         
         if ($activeTab === 'visual') {
             return [
-                Tables\Columns\TextColumn::make('name')
+                TextColumn::make('name')
                     ->label(__('messages.name'))
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->label(__('messages.created_at'))
                     ->dateTime()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('updated_at')
+                TextColumn::make('updated_at')
                     ->label(__('messages.updated_at'))
                     ->dateTime()
                     ->sortable()
@@ -101,19 +107,19 @@ class ListQualityControls extends ListRecords
 
         if ($activeTab === 'maintenance') {
             return [
-                Tables\Columns\TextColumn::make('name')
+                TextColumn::make('name')
                     ->label(__('messages.name'))
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('description')
+                TextColumn::make('description')
                     ->label(__('messages.description'))
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('location')
+                TextColumn::make('location')
                     ->label(__('messages.location'))
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('updated_at')
+                TextColumn::make('updated_at')
                     ->label(__('messages.updated_at'))
                     ->dateTime()
                     ->sortable()
@@ -122,21 +128,21 @@ class ListQualityControls extends ListRecords
         }
 
         return [
-            Tables\Columns\TextColumn::make('name')
+            TextColumn::make('name')
                 ->label(__('messages.name'))
                 ->searchable()
                 ->sortable(),
-            Tables\Columns\TextColumn::make('unit')
+            TextColumn::make('unit')
                 ->label(__('messages.unit'))
                 ->searchable()
                 ->sortable(),
-            Tables\Columns\TextColumn::make('nominal_value')
+            TextColumn::make('nominal_value')
                 ->label(__('messages.nominal_value'))
                 ->sortable(),
-            Tables\Columns\TextColumn::make('tolerance')
+            TextColumn::make('tolerance')
                 ->label(__('messages.tolerance'))
                 ->sortable(),
-            Tables\Columns\TextColumn::make('updated_at')
+            TextColumn::make('updated_at')
                 ->label(__('messages.updated_at'))
                 ->dateTime()
                 ->sortable()
@@ -150,37 +156,37 @@ class ListQualityControls extends ListRecords
         
         if ($activeTab === 'visual') {
             return [
-                Tables\Actions\EditAction::make()
+                EditAction::make()
                     ->modalHeading(__('messages.edit_visual_characteristic'))
-                    ->form([
-                        Forms\Components\TextInput::make('name')
+                    ->schema([
+                        TextInput::make('name')
                             ->label(__('messages.name'))
                             ->required()
                             ->maxLength(255),
                     ]),
-                Tables\Actions\DeleteAction::make(),
+                DeleteAction::make(),
             ];
         }
 
         if ($activeTab === 'maintenance') {
             return [
-                Tables\Actions\EditAction::make()
+                EditAction::make()
                     ->label(__('messages.edit'))
                     ->modalHeading(__('messages.edit_maintenance_point'))
-                    ->form([
-                        Forms\Components\TextInput::make('name')
+                    ->schema([
+                        TextInput::make('name')
                             ->label(__('messages.name'))
                             ->required()
                             ->maxLength(255),
-                        Forms\Components\TextInput::make('description')
+                        TextInput::make('description')
                             ->label(__('messages.description'))
                             ->required()
                             ->maxLength(255),
-                        Forms\Components\TextInput::make('location')
+                        TextInput::make('location')
                             ->label(__('messages.location'))
                             ->maxLength(255),
                     ]),
-                Tables\Actions\DeleteAction::make()
+                DeleteAction::make()
                     ->label(__('messages.delete'))
                     ->modalHeading(__('messages.delete_maintenance_point'))
                     ->modalDescription(__('messages.delete_maintenance_point_confirmation'))
@@ -191,22 +197,22 @@ class ListQualityControls extends ListRecords
         }
 
         return [
-            Tables\Actions\EditAction::make()
+            EditAction::make()
                 ->modalHeading(__('messages.edit_measurement_characteristic'))
-                ->form([
-                    Forms\Components\TextInput::make('name')
+                ->schema([
+                    TextInput::make('name')
                         ->label(__('messages.name'))
                         ->required()
                         ->maxLength(255),
-                    Forms\Components\TextInput::make('unit')
+                    TextInput::make('unit')
                         ->label(__('messages.unit'))
                         ->maxLength(255),
-                    Forms\Components\TextInput::make('nominal_value')
+                    TextInput::make('nominal_value')
                         ->label(__('messages.nominal_value')),
-                    Forms\Components\TextInput::make('tolerance')
+                    TextInput::make('tolerance')
                         ->label(__('messages.tolerance')),
                 ]),
-            Tables\Actions\DeleteAction::make(),
+            DeleteAction::make(),
         ];
     }
 
@@ -216,7 +222,7 @@ class ListQualityControls extends ListRecords
         
         if ($activeTab === 'visual') {
             return [
-                Actions\CreateAction::make()
+                CreateAction::make()
                     ->label(__('messages.create_visual_characteristic'))
                     ->icon('heroicon-m-plus')
                     ->modalWidth('xl')
@@ -225,13 +231,13 @@ class ListQualityControls extends ListRecords
                     ->modalCancelActionLabel(__('messages.cancel'))
                     ->model(VisualCharacteristic::class)
                     ->modalHeading(__('messages.create_visual_characteristic'))
-                    ->form([
-                        Forms\Components\TextInput::make('name')
+                    ->schema([
+                        TextInput::make('name')
                             ->label(__('messages.name'))
                             ->required()
                             ->maxLength(255),
                     ])
-                    ->mutateFormDataUsing(function (array $data): array {
+                    ->mutateDataUsing(function (array $data): array {
                         return $data;
                     }),
             ];
@@ -239,7 +245,7 @@ class ListQualityControls extends ListRecords
 
         if ($activeTab === 'maintenance') {
             return [
-                Actions\CreateAction::make()
+                CreateAction::make()
                     ->label(__('messages.create_maintenance_point'))
                     ->icon('heroicon-m-plus')
                     ->modalWidth('xl')
@@ -248,28 +254,28 @@ class ListQualityControls extends ListRecords
                     ->modalCancelActionLabel(__('messages.cancel'))
                     ->model(MaintenancePoint::class)
                     ->modalHeading(__('messages.create_maintenance_point'))
-                    ->form([
-                        Forms\Components\TextInput::make('name')
+                    ->schema([
+                        TextInput::make('name')
                             ->label(__('messages.name'))
                             ->required()
                             ->maxLength(255),
-                        Forms\Components\TextInput::make('description')
+                        TextInput::make('description')
                             ->label(__('messages.description'))
                             ->required()
                             ->maxLength(255),
-                        Forms\Components\TextInput::make('location')
+                        TextInput::make('location')
                             ->label(__('messages.location'))
                             ->required()
                             ->maxLength(255),
                     ])
-                    ->mutateFormDataUsing(function (array $data): array {
+                    ->mutateDataUsing(function (array $data): array {
                         return $data;
                     }),
             ];
         }
 
         return [
-            Actions\CreateAction::make()
+            CreateAction::make()
                 ->label(__('messages.create_measurement_characteristic'))
                 ->icon('heroicon-m-plus')
                 ->modalWidth('xl')
@@ -278,20 +284,20 @@ class ListQualityControls extends ListRecords
                 ->modalCancelActionLabel(__('messages.cancel'))
                 ->model(MeasurementCharacteristic::class)
                 ->modalHeading(__('messages.create_measurement_characteristic'))
-                ->form([
-                    Forms\Components\TextInput::make('name')
+                ->schema([
+                    TextInput::make('name')
                         ->label(__('messages.name'))
                         ->required()
                         ->maxLength(255),
-                    Forms\Components\TextInput::make('unit')
+                    TextInput::make('unit')
                         ->label(__('messages.unit'))
                         ->maxLength(255),
-                    Forms\Components\TextInput::make('nominal_value')
+                    TextInput::make('nominal_value')
                         ->label(__('messages.nominal_value')),
-                    Forms\Components\TextInput::make('tolerance')
+                    TextInput::make('tolerance')
                         ->label(__('messages.tolerance')),
                 ])
-                ->mutateFormDataUsing(function (array $data): array {
+                ->mutateDataUsing(function (array $data): array {
                     return $data;
                 }),
         ];

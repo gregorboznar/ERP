@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\MeltTemperatureResource\Pages;
 
+use Filament\Actions\DeleteAction;
 use App\Filament\Resources\MeltTemperatureResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
@@ -18,7 +19,7 @@ class EditMeltTemperature extends EditRecord
   protected function getHeaderActions(): array
   {
     return [
-      Actions\DeleteAction::make(),
+      DeleteAction::make(),
     ];
   }
 }

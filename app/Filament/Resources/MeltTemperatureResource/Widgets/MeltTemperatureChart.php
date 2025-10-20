@@ -9,7 +9,7 @@ use Carbon\Carbon;
 
 class MeltTemperatureChart extends ChartWidget
 {
-    protected static ?string $heading = 'Melt Temperature Chart';
+    protected ?string $heading = 'Melt Temperature Chart';
 
     // Add filter property
     public ?string $filter = null;

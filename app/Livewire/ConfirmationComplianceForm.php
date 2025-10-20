@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use Exception;
 use Livewire\Component;
 use App\Models\ConfirmationCompliance;
 use App\Models\VisualCharacteristic;
@@ -162,7 +163,7 @@ class ConfirmationComplianceForm extends Component
       DB::beginTransaction();
       $userId = auth('web')->id();
       if (!$userId) {
-        throw new \Exception('User is not authenticated');
+        throw new Exception('User is not authenticated');
       }
 
       if ($this->isEditing) {
@@ -241,7 +242,7 @@ class ConfirmationComplianceForm extends Component
         : 'Confirmation compliance saved successfully.';
       session()->flash('success', $message);
       return redirect()->route('filament.admin.resources.products.confirmation-compliance', ['record' => $this->productId]);
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
       DB::rollBack();
       Log::error('Error saving confirmation compliance: ' . $e->getMessage());
       $this->addError('save', 'Failed to save confirmation compliance. Please try again.');

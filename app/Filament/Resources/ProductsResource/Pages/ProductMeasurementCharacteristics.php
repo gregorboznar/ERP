@@ -2,18 +2,18 @@
 
 namespace App\Filament\Resources\ProductsResource\Pages;
 
+use Filament\Pages\Enums\SubNavigationPosition;
+use Filament\Actions\DetachAction;
+use Filament\Actions\Action;
 use App\Filament\Resources\ProductsResource;
 use App\Models\MeasurementCharacteristic;
 use App\Models\Product;
 use Filament\Resources\Pages\Page;
 use Filament\Navigation\NavigationItem;
-use Filament\Pages\SubNavigationPosition;
 use Filament\Tables\Table;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\DetachAction;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
@@ -26,9 +26,9 @@ class ProductMeasurementCharacteristics extends Page implements HasTable
 
     protected static string $resource = ProductsResource::class;
 
-    protected static string $view = 'filament.resources.products-resource.pages.product-measurement-characteristics';
+    protected string $view = 'filament.resources.products-resource.pages.product-measurement-characteristics';
 
-    protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
+    protected static ?\Filament\Pages\Enums\SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
 
     public ?string $record = null;
 
@@ -84,7 +84,7 @@ class ProductMeasurementCharacteristics extends Page implements HasTable
             ->filters([
                 //
             ])
-            ->actions([
+            ->recordActions([
                 DetachAction::make()
                     ->label(__('messages.delete'))
                     ->modalHeading(__('messages.delete_measurement_characteristic'))
@@ -101,7 +101,7 @@ class ProductMeasurementCharacteristics extends Page implements HasTable
                     ->label(__('messages.add_measurement_characteristic'))
                     ->modalHeading(__('messages.add_measurement_characteristic'))
                     ->icon('heroicon-m-plus')
-                    ->form([
+                    ->schema([
                         Select::make('measurement_characteristic_id')
                             ->label(__('messages.measurement_characteristics'))
                             ->options(function () {

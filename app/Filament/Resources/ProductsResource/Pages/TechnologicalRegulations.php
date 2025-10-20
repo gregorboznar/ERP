@@ -2,23 +2,23 @@
 
 namespace App\Filament\Resources\ProductsResource\Pages;
 
+use Filament\Pages\Enums\SubNavigationPosition;
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
 use App\Filament\Resources\ProductsResource;
 use Filament\Resources\Pages\Page;
-use Filament\Infolists\Infolist;
-use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Navigation\NavigationItem;
-use Filament\Pages\SubNavigationPosition;
 
 class TechnologicalRegulations extends Page
 {
   protected static string $resource = ProductsResource::class;
 
-  protected static ?string $navigationIcon = 'heroicon-o-document-text';
+  protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-document-text';
 
-  protected static string $view = 'filament.pages.custom-page';
+  protected string $view = 'filament.pages.custom-page';
 
-  protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
+  protected static ?\Filament\Pages\Enums\SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
 
   public ?string $record = null;
 
@@ -32,9 +32,9 @@ class TechnologicalRegulations extends Page
   {
     return ProductsResource::generateNavigation($this->record);
   }
-  public function infolist(Infolist $infolist): Infolist
+  public function infolist(Schema $schema): Schema
   {
-    return $infolist
+    return $schema
       ->record(ProductsResource::getModel()::find($this->record))
       ->schema([
         Section::make('Technological Regulations')

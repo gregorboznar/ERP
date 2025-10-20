@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ScpMeasurementResource\Pages;
 
+use Filament\Actions\CreateAction;
 use App\Filament\Resources\ScpMeasurementResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
@@ -16,7 +17,7 @@ class ListScpMeasurements extends ListRecords
     {
         return [
 
-            Actions\CreateAction::make()->label(__('messages.new_scp_measurement'))
+            CreateAction::make()->label(__('messages.new_scp_measurement'))
                 ->icon('heroicon-m-plus')
                 ->modalHeading(__('messages.new_scp_measurement'))
                 ->modalDescription(__('messages.enter_details_for_new_scp_measurement'))

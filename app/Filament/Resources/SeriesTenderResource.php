@@ -2,28 +2,36 @@
 
 namespace App\Filament\Resources;
 
+use Filament\Pages\Enums\SubNavigationPosition;
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Grid;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use App\Filament\Resources\SeriesTenderResource\Pages\ListSeriesTenders;
+use App\Filament\Resources\SeriesTenderResource\Pages\ViewSeriesTender;
+use App\Filament\Resources\SeriesTenderResource\Pages\EditSeriesTender;
+use App\Filament\Resources\SeriesTenderResource\Pages\DieCastingsPage;
+use App\Filament\Resources\SeriesTenderResource\Pages\PackagingsPage;
+use App\Filament\Resources\SeriesTenderResource\Pages\GrindingPage;
+use App\Filament\Resources\SeriesTenderResource\Pages\MachineTrimming;
+use App\Filament\Resources\SeriesTenderResource\Pages\TurningWashing;
 use App\Filament\Resources\SeriesTenderResource\Pages;
 use App\Models\SeriesTender;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\DeleteAction;
 use App\Models\Product;
-use Filament\Forms\Components\Grid;
-use Filament\Pages\SubNavigationPosition;
 use Filament\Pages\Page;
 use Filament\Navigation\NavigationItem;
-
+use Filament\Tables\Columns\BadgeColumn;
 class SeriesTenderResource extends Resource
 {
   protected static ?string $model = SeriesTender::class;
 
-  protected static ?string $navigationIcon = 'carbon-bare-metal-server';
+  protected static string | \BackedEnum | null $navigationIcon = 'carbon-bare-metal-server';
 
   public static function getNavigationLabel(): string
   {
@@ -37,13 +45,13 @@ class SeriesTenderResource extends Resource
   {
     return __('messages.series_tender');
   }
-  protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Start;
+  protected static ?\Filament\Pages\Enums\SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Start;
 
 
-  public static function form(Form $form): Form
+  public static function form(Schema $schema): Schema
   {
-    return $form
-      ->schema([
+    return $schema
+      ->components([
         Grid::make(2)
           ->schema([
             TextInput::make('series_number')
@@ -83,7 +91,7 @@ class SeriesTenderResource extends Resource
   {
     return $table
       ->columns([
-        TextColumn::make('series_number')
+        BadgeColumn::make('series_number')
           ->label(__('messages.series_number'))
           ->formatStateUsing(fn($state) => str_pad($state, strlen($state), '0', STR_PAD_LEFT))
           ->sortable()
@@ -107,7 +115,7 @@ class SeriesTenderResource extends Resource
           ->date('d.m.Y')
           ->sortable(),
       ])
-      ->actions([
+      ->recordActions([
 
         EditAction::make()
           ->label(__('messages.edit')),
@@ -128,14 +136,14 @@ class SeriesTenderResource extends Resource
   public static function getPages(): array
   {
     return [
-      'index' => Pages\ListSeriesTenders::route('/'),
-      'view' => Pages\ViewSeriesTender::route('/{record}'),
-      'edit' => Pages\EditSeriesTender::route('/{record}/edit'),
-      'die-castings' => Pages\DieCastingsPage::route('/{record}/die-castings'),
-      'packaging' => Pages\PackagingsPage::route('/{record}/packaging'),
-      'grinding' => Pages\GrindingPage::route('/{record}/grinding'),
-      'machine-trimming' => Pages\MachineTrimming::route('/{record}/machine-trimming'),
-      'turning-washing' => Pages\TurningWashing::route('/{record}/turning-washing'),
+      'index' => ListSeriesTenders::route('/'),
+      'view' => ViewSeriesTender::route('/{record}'),
+      'edit' => EditSeriesTender::route('/{record}/edit'),
+      'die-castings' => DieCastingsPage::route('/{record}/die-castings'),
+      'packaging' => PackagingsPage::route('/{record}/packaging'),
+      'grinding' => GrindingPage::route('/{record}/grinding'),
+      'machine-trimming' => MachineTrimming::route('/{record}/machine-trimming'),
+      'turning-washing' => TurningWashing::route('/{record}/turning-washing'),
     ];
   }
 
@@ -156,7 +164,13 @@ class SeriesTenderResource extends Resource
       NavigationItem::make('view')
         ->label(__('messages.view_series_tender'))
         ->icon('heroicon-o-eye')
-        ->url(fn() => static::getUrl('view', ['record' => $record])),
+        ->url(fn() => static::getUrl('view', ['record' => $record]))
+        ->isActiveWhen(fn() => request()->routeIs('filament.admin.resources.series-tenders.view')),
+      NavigationItem::make('edit')
+        ->label(__('messages.edit_series_tender'))
+        ->icon('heroicon-o-pencil')
+        ->url(fn() => static::getUrl('edit', ['record' => $record]))
+        ->isActiveWhen(fn() => request()->routeIs('filament.admin.resources.series-tenders.edit')),
 
       NavigationItem::make('die-castings')
         ->label(__('messages.die_castings'))
@@ -188,10 +202,6 @@ class SeriesTenderResource extends Resource
         ->url(fn() => static::getUrl('packaging', ['record' => $record]))
         ->isActiveWhen(fn() => request()->routeIs('filament.admin.resources.series-tenders.packaging')),
 
-      NavigationItem::make('edit')
-        ->label(__('messages.edit_series_tender'))
-        ->icon('heroicon-o-pencil')
-        ->url(fn() => static::getUrl('edit', ['record' => $record])),
     ];
   }
 }

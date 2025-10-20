@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Filament\Exports\ScpMeasurementTemplateExporter;
+use Exception;
 use App\Jobs\ExportScpMeasurementsToTemplate;
 use App\Models\ScpMeasurement;
 use Filament\Actions\Exports\Models\Export;
@@ -297,12 +299,12 @@ class ScpMeasurementExportController extends Controller
       Log::info('Created export record with ID: ' . $export->id);
 
       // Create and run the exporter directly (don't use the job)
-      $exporter = new \App\Filament\Exports\ScpMeasurementTemplateExporter($export);
+      $exporter = new ScpMeasurementTemplateExporter($export);
 
       try {
         $exporter->handle();
         Log::info('Exporter handled successfully');
-      } catch (\Exception $e) {
+      } catch (Exception $e) {
         Log::error('Exception in exporter->handle(): ' . $e->getMessage());
         Log::error($e->getTraceAsString());
 
@@ -375,7 +377,7 @@ class ScpMeasurementExportController extends Controller
         'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         'Content-Disposition' => 'attachment; filename="' . $export->file_name . '.xlsx"'
       ]);
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
       Log::error('Unhandled exception in freshExportAndDownload: ' . $e->getMessage());
       Log::error($e->getTraceAsString());
 

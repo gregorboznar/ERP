@@ -2,6 +2,8 @@
 
 namespace App\Filament\Exports;
 
+use Exception;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use App\Models\ScpMeasurement;
 use Filament\Actions\Exports\Models\Export;
 use Filament\Actions\Exports\Exporter;
@@ -95,7 +97,7 @@ class ScpMeasurementTemplateExporter extends Exporter
   {
     // Check if template exists
     if (!file_exists($this->templatePath)) {
-      throw new \Exception("Template file not found at: {$this->templatePath}");
+      throw new Exception("Template file not found at: {$this->templatePath}");
     }
 
     try {
@@ -109,7 +111,7 @@ class ScpMeasurementTemplateExporter extends Exporter
       Log::info("Template copied to temp location: " . $tempFile);
 
       // Now load the copied file for modification
-      $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($tempFile);
+      $spreadsheet = IOFactory::load($tempFile);
       $worksheet = $spreadsheet->getActiveSheet();
 
       // Get SCP measurements
@@ -157,14 +159,14 @@ class ScpMeasurementTemplateExporter extends Exporter
           $worksheet->setCellValueExplicit(
             "{$column}{$row}",
             $allMeasurementValues[$valueIndex],
-            \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_NUMERIC
+            DataType::TYPE_NUMERIC
           );
           $valueIndex++;
         }
       }
 
       // Save the spreadsheet to the storage location
-      $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+      $writer = new Xlsx($spreadsheet);
 
       // Important: Set these options to preserve charts and drawings
       $writer->setIncludeCharts(true);
@@ -179,7 +181,7 @@ class ScpMeasurementTemplateExporter extends Exporter
       }
 
       Log::info("Export completed and saved to: " . $exportPath);
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
       // Log the error and rethrow it
       Log::error('Template export error: ' . $e->getMessage());
       Log::error($e->getTraceAsString());
