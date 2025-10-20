@@ -2,7 +2,7 @@
 
 namespace App\Providers\Filament;
 
-use App\Models\Settings;
+use App\Settings\AppSettings;
 use Exception;
 use Filament\Pages\Dashboard;
 use Filament\Widgets\AccountWidget;
@@ -21,9 +21,9 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Illuminate\Support\Facades\Schema;
 use App\Filament\Pages\MaintenanceChecks;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
+use Jacobtims\FilamentLogger\FilamentLoggerPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -31,10 +31,8 @@ class AdminPanelProvider extends PanelProvider
     {
         $brandName = 'Admin';
         try {
-            if (class_exists(Settings::class) && Schema::hasTable('settings')) {
-                $settings = Settings::first();
-                $brandName = $settings ? $settings->title : $brandName;
-            }
+            $settings = app(AppSettings::class);
+            $brandName = $settings->brand_name ?? $brandName;
         } catch (Exception $e) {
         }
 
@@ -81,6 +79,7 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->plugin(FilamentShieldPlugin::make());
+            ->plugin(FilamentShieldPlugin::make())
+            ->plugin(FilamentLoggerPlugin::make());
     }
 }

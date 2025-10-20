@@ -12,6 +12,8 @@
         "filafly/filament-phosphor-icons": "^2.0",
         "filament/filament": "^4.0",
         "filament/notifications": "^4.0",
+        "filament/spatie-laravel-settings-plugin": "^4.0",
+        "jacobtims/filament-logger": "^1.0",
         "laravel/framework": "^11.31",
         "laravel/sanctum": "^4.2",
         "laravel/tinker": "^2.9",
@@ -19,6 +21,7 @@
         "nuwave/lighthouse": "^6.63",
         "phpoffice/phpspreadsheet": "^4.1",
         "spatie/laravel-permission": "^6.10",
+        "spatie/laravel-settings": "^3.4",
         "tymon/jwt-auth": "^2.2"
     },
     "require-dev": {
