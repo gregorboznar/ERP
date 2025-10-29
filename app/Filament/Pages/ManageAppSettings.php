@@ -7,6 +7,7 @@ use BackedEnum;
 use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Navigation\NavigationItem;
 use Filament\Pages\SettingsPage;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -18,11 +19,15 @@ class ManageAppSettings extends SettingsPage
 
     protected static string $settings = AppSettings::class;
 
-    protected static ?string $navigationLabel = 'App Settings';
+    
+    protected static ?string $title = 'Settings';
 
-    protected static ?string $title = 'Application Settings';
+    protected static ?string $slug = 'manage-app-settings';
 
-    protected static string|UnitEnum|null $navigationGroup = 'Settings';
+
+
+    protected static bool $shouldRegisterNavigation = true;
+    protected static ?int $navigationSort = 900;
 
     public function form(Schema $schema): Schema
     {
@@ -57,5 +62,22 @@ class ManageAppSettings extends SettingsPage
                             ->maxLength(1000),
                     ]),
             ]);
+    }
+
+    public function getSubNavigation(): array
+    {
+        return [
+            NavigationItem::make('settings')
+                ->label('Settings')
+                ->icon('heroicon-o-cog-6-tooth')
+                ->url(fn () => '/admin/manage-app-settings')
+                ->isActiveWhen(fn() => str_contains(request()->url(), 'manage-app-settings')),
+
+            NavigationItem::make('activity-log')
+                ->label('Activity Log')
+                ->icon('heroicon-o-clipboard-document-list')
+                ->url(fn () => '/admin/activity-log-page')
+                ->isActiveWhen(fn() => str_contains(request()->url(), 'activity-log-page')),
+        ];
     }
 }
