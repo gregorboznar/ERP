@@ -2,8 +2,8 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Pages\Concerns\HasSettingsSubNavigation;
 use Filament\Pages\Page;
-use Filament\Navigation\NavigationItem;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -16,12 +16,14 @@ use BackedEnum;
 class ActivityLogPage extends Page implements HasTable
 {
     use InteractsWithTable;
+    use HasSettingsSubNavigation;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-clipboard-document-list';
 
     protected static ?string $slug = 'activity-log-page';
-    
-    protected static ?string $title = 'Activity Log';
+
+
+    protected static ?string $title = 'Dnevnik test2';
 
     protected static bool $shouldRegisterNavigation = false;
     
@@ -34,7 +36,7 @@ class ActivityLogPage extends Page implements HasTable
             ->query(ActivityLog::query()->latest())
             ->columns([
                 BadgeColumn::make('log_name')
-                    ->label('Log Nameeee')
+                    ->label(__('messages.log_type'))
                     ->color(fn ($state) => match ($state) {
                         'Resource' => 'gray',
                         'Access' => 'success',
@@ -45,19 +47,19 @@ class ActivityLogPage extends Page implements HasTable
 
                     ->sortable(),
                 TextColumn::make('description')
-                    ->label('Description')
+                    ->label(__('messages.log_description'))
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('subject_type')
-                    ->label('Subject Type')
+                    ->label(__('messages.log_subject_type'))
                     ->formatStateUsing(fn ($state) => class_basename($state))
                     ->sortable(),
                 TextColumn::make('causer.name')
-                    ->label('User')
+                    ->label(__('messages.log_causer'))
                     ->default('System')
                     ->sortable(),
                 TextColumn::make('created_at')
-                    ->label('Date')
+                    ->label(__('messages.date'))
                     ->dateTime()
                     ->sortable(),
             ])
@@ -66,20 +68,5 @@ class ActivityLogPage extends Page implements HasTable
             ->paginated([10, 25, 50]);
     }
 
-    public function getSubNavigation(): array
-    {
-        return [
-            NavigationItem::make('settings')
-                ->label('Settings')
-                ->icon('heroicon-o-cog-6-tooth')
-                ->url(fn () => '/admin/manage-app-settings')
-                ->isActiveWhen(fn() => str_contains(request()->url(), 'manage-app-settings')),
-
-            NavigationItem::make('activity-log')
-                ->label('Activity Log')
-                ->icon('heroicon-o-clipboard-document-list')
-                ->url(fn () => '/admin/activity-log-page')
-                ->isActiveWhen(fn() => str_contains(request()->url(), 'activity-log-page')),
-        ];
-    }
+ 
 }

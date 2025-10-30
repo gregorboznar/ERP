@@ -71,7 +71,6 @@ return [
   'series_tenders' => 'Serije',
   'view' => 'Ogled',
   'no_series_tenders_found' => 'Ni serij',
-  'visual_characteristics' => 'Vizualne karakteristike',
   'visual_characteristic' => 'Vizualna karakteristika',
   'visual_characteristic_plural' => 'Vizualne karakteristike',
   'series' => 'Serija',
@@ -257,5 +256,16 @@ return [
   'maintenance_check_updated_successfully' => 'Vzdrževalna kontrola je bila uspešno posodobljena',
   'new_machine' => 'Nov stroj',
   'enter_details_for_new_machine' => 'Vnesite podrobnosti za novi stroj',
-
+  'settings' => 'Nastavitve',
+  'brand_information' => 'Podrobnosti o Podjetju',
+ 
+  'this_will_be_displayed_in_the_admin_panel_header' => 'To bo prikazano v glavi admin panela',
+  'brand_name' => 'Ime blagovne znamke',
+  'company_name' => 'Ime podjetja',
+  'logo_url' => 'URL ali pot do logotipa',
+  'activity_log' => 'Dnevnik test 3',
+  'log_type' => 'Vrsta',
+  'log_description' => 'Opis',
+  'log_subject_type' => 'Vrsta subjekta',
+  'log_causer' => 'Uporabnik',
 ];

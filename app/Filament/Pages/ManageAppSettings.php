@@ -2,12 +2,12 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Pages\Concerns\HasSettingsSubNavigation;
 use App\Settings\AppSettings;
 use BackedEnum;
 use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Navigation\NavigationItem;
 use Filament\Pages\SettingsPage;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -15,16 +15,19 @@ use UnitEnum;
 
 class ManageAppSettings extends SettingsPage
 {
+    use HasSettingsSubNavigation;
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCog6Tooth;
 
     protected static string $settings = AppSettings::class;
 
-    
-    protected static ?string $title = 'Settings';
+    public static function getNavigationLabel(): string
+    {
+        return __('messages.settings');
+    }
 
     protected static ?string $slug = 'manage-app-settings';
-
-
+    protected static ?string $title = 'Nastavitve';
 
     protected static bool $shouldRegisterNavigation = true;
     protected static ?int $navigationSort = 900;
@@ -33,22 +36,18 @@ class ManageAppSettings extends SettingsPage
     {
         return $schema
             ->components([
-                Section::make('Brand Information')
-                    ->description('Manage your application branding and company details')
+                Section::make(__('messages.brand_information'))
                     ->schema([
                         TextInput::make('brand_name')
-                            ->label('Brand Name')
-                            ->helperText('This will be displayed in the admin panel header')
+                            ->label(__('messages.brand_name'))
                             ->required()
                             ->maxLength(255),
                         TextInput::make('company_name')
-                            ->label('Company Name')
-                            ->helperText('Your official company name')
+                            ->label(__('messages.company_name'))
                             ->required()
                             ->maxLength(255),
                         TextInput::make('logo_url')
-                            ->label('Logo URL')
-                            ->helperText('URL or path to your company logo')
+                            ->label(__('messages.logo_url'))
                             ->url()
                             ->maxLength(500),
                     ]),
@@ -57,27 +56,9 @@ class ManageAppSettings extends SettingsPage
                     ->schema([
                         Textarea::make('footer_text')
                             ->label('Footer Text')
-                            ->helperText('Copyright notice or additional footer information')
                             ->rows(3)
                             ->maxLength(1000),
                     ]),
             ]);
-    }
-
-    public function getSubNavigation(): array
-    {
-        return [
-            NavigationItem::make('settings')
-                ->label('Settings')
-                ->icon('heroicon-o-cog-6-tooth')
-                ->url(fn () => '/admin/manage-app-settings')
-                ->isActiveWhen(fn() => str_contains(request()->url(), 'manage-app-settings')),
-
-            NavigationItem::make('activity-log')
-                ->label('Activity Log')
-                ->icon('heroicon-o-clipboard-document-list')
-                ->url(fn () => '/admin/activity-log-page')
-                ->isActiveWhen(fn() => str_contains(request()->url(), 'activity-log-page')),
-        ];
     }
 }
