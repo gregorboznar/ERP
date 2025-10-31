@@ -23,7 +23,7 @@ class ActivityLogPage extends Page implements HasTable
     protected static ?string $slug = 'activity-log-page';
 
 
-    protected static ?string $title = 'Dnevnik test2';
+    protected static ?string $title = 'Dnevnik dejavnosti';
 
     protected static bool $shouldRegisterNavigation = false;
     

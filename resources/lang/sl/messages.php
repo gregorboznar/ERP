@@ -263,9 +263,17 @@ return [
   'brand_name' => 'Ime blagovne znamke',
   'company_name' => 'Ime podjetja',
   'logo_url' => 'URL ali pot do logotipa',
-  'activity_log' => 'Dnevnik test 3',
+  'activity_log' => 'Dnevnik dejavnosti',
   'log_type' => 'Vrsta',
   'log_description' => 'Opis',
   'log_subject_type' => 'Vrsta subjekta',
   'log_causer' => 'Uporabnik',
+  'permissions' => 'Dovoljenja',
+  'updated_at' => 'Posodobljeno',
+  'guard_name' => 'Ime vloge',
+  'permissions_count' => 'Število dovoljenj',
+  'shield_roles' => 'Vloge in dovoljenja',
+  'shield_roles_page' => 'Vloge in dovoljenja',
+
+
 ];

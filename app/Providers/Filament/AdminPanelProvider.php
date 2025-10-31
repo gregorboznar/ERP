@@ -58,6 +58,9 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
+            ->resources([
+                \App\Filament\Resources\RoleResource::class,
+            ])
             ->pages([
                 Dashboard::class,
                 MaintenanceChecks::class,
@@ -79,7 +82,6 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->plugin(FilamentShieldPlugin::make())
-            ->plugin(FilamentLoggerPlugin::make());
+            ->plugin(FilamentShieldPlugin::make());
     }
 }

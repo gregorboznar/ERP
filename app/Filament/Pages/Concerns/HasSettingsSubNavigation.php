@@ -20,6 +20,12 @@ trait HasSettingsSubNavigation
                 ->icon('heroicon-o-clipboard-document-list')
                 ->url(fn () => '/admin/activity-log-page')
                 ->isActiveWhen(fn () => str_contains(request()->url(), 'activity-log-page')),
+
+             NavigationItem::make('shield-roles')
+                ->label(__('messages.shield_roles'))
+                ->icon('heroicon-o-shield-check')
+                ->url(fn () => '/admin/shield-page')
+                ->isActiveWhen(fn () => str_contains(request()->url(), 'shield-page')),
         ];
     }
 }

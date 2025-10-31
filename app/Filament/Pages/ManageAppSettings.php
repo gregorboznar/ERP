@@ -20,6 +20,7 @@ class ManageAppSettings extends SettingsPage
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCog6Tooth;
 
     protected static string $settings = AppSettings::class;
+    
 
     public static function getNavigationLabel(): string
     {

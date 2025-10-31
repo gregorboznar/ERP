@@ -34,7 +34,7 @@ return [
     'nav.group' => 'Filament Shield',
     'nav.role.label' => 'Vloge',
     'nav.role.icon' => 'heroicon-o-shield-check',
-    'resource.label.role' => 'Vloga',
+    'resource.label.role' => 'Vlogo',
     'resource.label.roles' => 'Vloge',
 
     /*
