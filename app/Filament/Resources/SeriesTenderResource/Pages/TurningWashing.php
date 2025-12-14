@@ -176,6 +176,7 @@ class TurningWashing extends Page implements HasTable, HasForms
         ->createAnother(false)
         ->schema([
           Grid::make()
+            ->columns(1)
             ->schema([
               Grid::make()->schema([
                 Grid::make()

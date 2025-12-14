@@ -23,7 +23,7 @@ export default defineConfig({
     },
     server: {
         hmr: {
-            host: "erp.test",
+            host: "localhost",
         },
     },
 });

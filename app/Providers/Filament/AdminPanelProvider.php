@@ -47,6 +47,9 @@ class AdminPanelProvider extends PanelProvider
             ->brandlogoHeight('3rem')
             ->favicon(asset('favicon.png'))
             ->path('admin')
+            ->maxContentWidth('fi-width-custom')
+           /*  ->maxContentWidth('full') */
+
             ->login()
             ->viteTheme([
                 'resources/css/filament/admin/theme.css',

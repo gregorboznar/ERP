@@ -159,9 +159,9 @@ class PackagingsPage extends Page implements HasTable, HasForms
         DeleteAction::make(),
       ])
       ->toolbarActions([
-        BulkActionGroup::make([
+      /*   BulkActionGroup::make([
           DeleteBulkAction::make(),
-        ]),
+        ]), */
       ]);
   }
 
@@ -177,9 +177,10 @@ class PackagingsPage extends Page implements HasTable, HasForms
         ->createAnother(false)
         ->schema([
           Grid::make()
+          ->columns(1)
             ->schema([
-              Grid::make()->schema([
-
+              Grid::make()
+              ->schema([
                 Grid::make()
                   ->schema([
                     DatePicker::make('date')

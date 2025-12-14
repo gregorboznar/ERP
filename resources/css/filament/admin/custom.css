@@ -27,3 +27,11 @@ min-width: 250px;
     text-align: left;
     border-bottom: 1px solid;
 }
+
+.filament-panels-layout-base {
+    max-width: 40rem !important;
+}
+
+.fi-main.fi-width-custom {
+    max-width: 85rem !important;
+}

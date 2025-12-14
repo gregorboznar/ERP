@@ -26,9 +26,9 @@ class ActivityLogPage extends Page implements HasTable
     protected static ?string $title = 'Dnevnik dejavnosti';
 
     protected static bool $shouldRegisterNavigation = false;
-    
+
     protected string $view = 'filament.pages.activity-log-page';
-    
+
 
     public function table(Table $table): Table
     {
@@ -37,7 +37,7 @@ class ActivityLogPage extends Page implements HasTable
             ->columns([
                 BadgeColumn::make('log_name')
                     ->label(__('messages.log_type'))
-                    ->color(fn ($state) => match ($state) {
+                    ->color(fn($state) => match ($state) {
                         'Resource' => 'gray',
                         'Access' => 'success',
                         'Notification' => 'warning',
@@ -52,7 +52,7 @@ class ActivityLogPage extends Page implements HasTable
                     ->sortable(),
                 TextColumn::make('subject_type')
                     ->label(__('messages.log_subject_type'))
-                    ->formatStateUsing(fn ($state) => class_basename($state))
+                    ->formatStateUsing(fn($state) => class_basename($state))
                     ->sortable(),
                 TextColumn::make('causer.name')
                     ->label(__('messages.log_causer'))
@@ -63,10 +63,8 @@ class ActivityLogPage extends Page implements HasTable
                     ->dateTime()
                     ->sortable(),
             ])
-            ->recordUrl(fn (ActivityLog $record): string => "/admin/activity-logs/{$record->id}")
+            ->recordUrl(fn(ActivityLog $record): string => "/admin/activity-logs/{$record->id}")
             ->defaultSort('created_at', 'desc')
             ->paginated([10, 25, 50]);
     }
-
- 
 }
