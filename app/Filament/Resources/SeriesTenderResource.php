@@ -53,6 +53,7 @@ class SeriesTenderResource extends Resource
     return $schema
       ->components([
         Grid::make(2)
+          ->columnSpanFull()
           ->schema([
             TextInput::make('series_number')
               ->required()
