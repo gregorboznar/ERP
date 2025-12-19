@@ -261,11 +261,9 @@ class ListQualityControls extends ListRecords
                             ->maxLength(255),
                         TextInput::make('description')
                             ->label(__('messages.description'))
-                            ->required()
                             ->maxLength(255),
                         TextInput::make('location')
                             ->label(__('messages.location'))
-                            ->required()
                             ->maxLength(255),
                     ])
                     ->mutateDataUsing(function (array $data): array {

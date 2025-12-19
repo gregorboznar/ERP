@@ -47,7 +47,6 @@ class MaintenancePointsRelationManager extends RelationManager
                     ->columnSpanFull(),
 
                 TextInput::make('location')
-                    ->required()
                     ->label(__('messages.location')),
             ]);
     }
