@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use Filament\Pages\Enums\SubNavigationPosition;
 use Filament\Schemas\Schema;
 use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
 use Filament\Actions\EditAction;
 use Filament\Actions\DeleteAction;
 use App\Filament\Resources\SeriesTenderResource\Pages\ListSeriesTenders;
@@ -52,39 +53,49 @@ class SeriesTenderResource extends Resource
   {
     return $schema
       ->components([
-        Grid::make(2)
-          ->columnSpanFull()
+        Section::make(__('messages.basic_information'))
           ->schema([
-            TextInput::make('series_number')
-              ->required()
-              ->string()
-              ->maxLength(255)
-              ->label(__('messages.series_number')),
+            Grid::make(2)
+              ->schema([
+                TextInput::make('series_number')
+                  ->required()
+                  ->string()
+                  ->maxLength(255)
+                  ->label(__('messages.series_number')),
 
-            TextInput::make('company')
-              ->required()->label(__('messages.company')),
+                TextInput::make('company')
+                  ->required()
+                  ->label(__('messages.company')),
 
-            Select::make('product_id')
-              ->required()
-              ->label(__('messages.product'))
-              ->options(Product::all()->pluck('name', 'id'))
-              ->searchable(),
+                Select::make('product_id')
+                  ->required()
+                  ->label(__('messages.product'))
+                  ->options(Product::all()->pluck('name', 'id'))
+                  ->searchable(),
 
-            DatePicker::make('tender_date')
-              ->required()
-              ->native(false)
-              ->default(now())
-              ->label(__('messages.tender_date')),
-            TextInput::make('series_size')
-              ->string()
-              ->maxLength(255)
-              ->label(__('messages.series_size')),
-            TextInput::make('series_code')
+                DatePicker::make('tender_date')
+                  ->required()
+                  ->native(false)
+                  ->default(now())
+                  ->label(__('messages.tender_date')),
+              ]),
+          ]),
 
-              ->string()
-              ->maxLength(255)
-              ->label(__('messages.series_code')),
-          ])
+        Section::make(__('messages.series_details'))
+          ->schema([
+            Grid::make(2)
+              ->schema([
+                TextInput::make('series_size')
+                  ->string()
+                  ->maxLength(255)
+                  ->label(__('messages.series_size')),
+
+                TextInput::make('series_code')
+                  ->string()
+                  ->maxLength(255)
+                  ->label(__('messages.series_code')),
+              ]),
+          ]),
       ]);
   }
 

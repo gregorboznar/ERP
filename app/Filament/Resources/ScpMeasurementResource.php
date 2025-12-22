@@ -20,6 +20,11 @@ use App\Models\Product;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Repeater\TableColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Actions\ExportAction;
+use Filament\Actions\Action;
+use Filament\Notifications\Notification;
+use App\Filament\Exports\ScpMeasurementTemplateExporter;
+use App\Filament\Exports\ScpMeasurementExporter;
 
 class ScpMeasurementResource extends Resource
 {
@@ -189,7 +194,7 @@ class ScpMeasurementResource extends Resource
             ])
 
             ->headerActions([
-                /*  ExportAction::make()
+                  ExportAction::make()
                     ->exporter(ScpMeasurementExporter::class)
                     ->label(__('messages.export'))
                     ->successNotification(
@@ -197,14 +202,14 @@ class ScpMeasurementResource extends Resource
                             ->success()
                             ->title('Export started')
                             ->body('Your export has begun and will be processed in the background. You will receive a notification with the download link when it is complete.')
-                    ), */
+                    ),
 
-                /*   Action::make('downloadLatestExport')
+                   Action::make('downloadLatestExport')
                     ->label(__('messages.download_excel_template'))
                     ->url(route('scp-measurements.fresh-export-download'))
                     ->icon('heroicon-o-arrow-down-tray')
                     ->color('primary')
-                    ->openUrlInNewTab(true) */]);
+                    ->openUrlInNewTab(true)]);
     }
 
     public static function getRelations(): array

@@ -20,7 +20,6 @@ class CreateScpMeasurementTemplate extends Command
     $spreadsheet = new Spreadsheet();
     $sheet = $spreadsheet->getActiveSheet();
 
-    // Set title and header styles
     $sheet->setCellValue('A1', 'SCP MEASUREMENTS REPORT');
     $sheet->mergeCells('A1:E1');
 
@@ -34,18 +33,15 @@ class CreateScpMeasurementTemplate extends Command
       ],
     ]);
 
-    // Add some explanatory text
     $sheet->setCellValue('A3', 'This template is used for exporting SCP Measurements data.');
     $sheet->setCellValue('A4', 'Data will be inserted starting from row 10.');
     $sheet->setCellValue('A5', 'Any formulas or calculations in other cells will be preserved.');
 
-    // Table headers
     $headers = ['Date & Time', 'Operator', 'Series Number', 'Product Name', 'Measurements'];
     foreach ($headers as $index => $header) {
-      $column = chr(65 + $index); // A, B, C, etc.
+      $column = chr(65 + $index); 
       $sheet->setCellValue($column . '9', $header);
 
-      // Style headers
       $sheet->getStyle($column . '9')->applyFromArray([
         'font' => [
           'bold' => true,
@@ -63,11 +59,9 @@ class CreateScpMeasurementTemplate extends Command
         ],
       ]);
 
-      // Auto-size columns
       $sheet->getColumnDimension($column)->setAutoSize(true);
     }
 
-    // Add some example formulas in cells that won't be overwritten
     $sheet->setCellValue('G3', 'Statistics:');
     $sheet->setCellValue('G4', 'Total Count:');
     $sheet->setCellValue('H4', '=COUNTA(A10:A1000)');
@@ -81,9 +75,7 @@ class CreateScpMeasurementTemplate extends Command
     $sheet->setCellValue('G7', 'Min:');
     $sheet->setCellValue('H7', '=MIN(E10:E1000)');
 
-    // Empty rows where data will be inserted
     for ($i = 10; $i < 30; $i++) {
-      // Add light borders to the data area
       $sheet->getStyle('A' . $i . ':E' . $i)->applyFromArray([
         'borders' => [
           'allBorders' => [
@@ -94,14 +86,12 @@ class CreateScpMeasurementTemplate extends Command
       ]);
     }
 
-    // Create the directory if it doesn't exist
-    if (!Storage::exists('templates')) {
-      Storage::makeDirectory('templates');
+    if (!Storage::disk('local')->exists('templates')) {
+      Storage::disk('local')->makeDirectory('templates');
     }
 
-    // Save the template file
     $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
-    $templatePath = storage_path('app/templates/scp-template2.xlsx');
+    $templatePath = Storage::disk('local')->path('templates/scp-template2.xlsx');
     $writer->save($templatePath);
 
     $this->info('Excel template created successfully at: ' . $templatePath);

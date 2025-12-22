@@ -249,6 +249,7 @@ return [
   'date_from' => 'Datum od',
   'date_until' => 'Datum do',
   'basic_information' => 'Osnovne informacije',
+  'series_details' => 'Podrobnosti serije',
   'completion_status' => 'Status dokončanja',
   'no_maintenance_points' => 'Ni vzdrževalnih točk',
   'update_maintenance_check' => 'Posodobi vzdrževalno kontrolo',

@@ -11,11 +11,9 @@ class MaintenancePointSeeder extends Seeder
 {
   public function run(): void
   {
-    // Get all machines
     $machines = Machine::all();
 
     if ($machines->isEmpty()) {
-      // Make sure we have at least one machine
       $this->call(MachineSeeder::class);
       $machines = Machine::all();
     }
@@ -66,8 +64,6 @@ class MaintenancePointSeeder extends Seeder
     foreach ($maintenancePoints as $point) {
       $maintenancePoint = MaintenancePoint::create($point);
 
-      // Associate this point with all machines
-      // In a real application, you might want to be more selective about which points go with which machines
       foreach ($machines as $machine) {
         $machine->maintenancePoints()->attach($maintenancePoint->id);
       }

@@ -19,26 +19,19 @@ class ExportScpMeasurementsToTemplate implements ShouldQueue
 
   protected $export;
 
-  /**
-   * Create a new job instance.
-   */
   public function __construct(Export $export)
   {
     $this->export = $export;
   }
 
-  /**
-   * Execute the job.
-   */
+  
   public function handle(): void
   {
     $exporter = new ScpMeasurementTemplateExporter($this->export);
 
     try {
-      // Process the export
       $exporter->handle();
 
-      // Send success notification
       Notification::make()
         ->success()
         ->title('Export completed')
@@ -51,20 +44,17 @@ class ExportScpMeasurementsToTemplate implements ShouldQueue
         ])
         ->sendToDatabase($this->export->user);
     } catch (Exception $e) {
-      // Update export as failed
       $this->export->update([
         'completed_at' => now(),
         'status' => 'failed',
       ]);
 
-      // Send failure notification
       Notification::make()
         ->danger()
         ->title('Export failed')
         ->body('There was an error processing your export: ' . $e->getMessage())
         ->sendToDatabase($this->export->user);
 
-      // Re-throw the exception for proper queue handling
       throw $e;
     }
   }

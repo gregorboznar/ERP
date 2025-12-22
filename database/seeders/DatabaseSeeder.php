@@ -14,32 +14,20 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Comment out other seeders to only seed users
-        /*
-        $this->call([
-            MachineSeeder::class,
-            MaintenancePointSeeder::class,
-            MeltTemperatureSeeder::class,
-        ]);
-        */
-
-        // Create roles first
+       
         Role::firstOrCreate(['name' => 'admin']);
         Role::firstOrCreate(['name' => 'user']);
 
-        // Create multiple random users
         User::factory(5)->create()->each(function ($user) {
             $user->assignRole('user');
         });
 
-        // Create test user
         $testUser = User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
         $testUser->assignRole('user');
 
-        // Create admin user
         $adminUser = User::factory()->create([
             'name' => 'Admin User',
             'email' => 'admin@example.com',

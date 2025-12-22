@@ -17,8 +17,7 @@ class ScpMeasurementExportController extends Controller
 {
   public function exportToTemplate()
   {
-    // Check if template exists
-    $templatePath = storage_path('app/templates/scp-template2.xlsx');
+    $templatePath = Storage::disk('local')->path('templates/scp-template2.xlsx');
     if (!file_exists($templatePath)) {
       Notification::make()
         ->danger()
@@ -29,10 +28,8 @@ class ScpMeasurementExportController extends Controller
       return redirect()->back();
     }
 
-    // Count total records
     $totalRows = ScpMeasurement::count();
 
-    // Create export record
     $export = Export::create([
       'user_id' => Auth::id(),
       'file_name' => 'scp-template-export-' . now()->format('Y-m-d-H-i-s'),
@@ -41,10 +38,8 @@ class ScpMeasurementExportController extends Controller
       'total_rows' => $totalRows,
     ]);
 
-    // Dispatch the export job
     ExportScpMeasurementsToTemplate::dispatch($export);
 
-    // Send notification
     Notification::make()
       ->success()
       ->title('Template Export started')
@@ -56,7 +51,6 @@ class ScpMeasurementExportController extends Controller
 
   public function downloadLatestExport()
   {
-    // Find the latest completed export
     $latestExport = Export::where('user_id', Auth::id())
       ->where('exporter', 'App\\Filament\\Exports\\ScpMeasurementTemplateExporter')
       ->orderBy('created_at', 'desc')
@@ -72,17 +66,13 @@ class ScpMeasurementExportController extends Controller
       return redirect()->back();
     }
 
-    // First try in the standard location
     $filePath = 'private/filament_exports/' . $latestExport->getKey() . '/' . $latestExport->file_name . '.xlsx';
 
-    // If not found, try the alternative location
     if (!Storage::disk('local')->exists($filePath)) {
       $filePath = 'private/private/filament_exports/' . $latestExport->getKey() . '/' . $latestExport->file_name . '.xlsx';
     }
 
-    // Check if the file exists in either location
     if (!Storage::disk('local')->exists($filePath)) {
-      // If still not found, look for any file in this export directory
       $exportDir = 'private/filament_exports/' . $latestExport->getKey();
       $altExportDir = 'private/private/filament_exports/' . $latestExport->getKey();
 
@@ -96,7 +86,6 @@ class ScpMeasurementExportController extends Controller
         $filePath = $files[0];
       }
 
-      // Still no file found
       if (empty($files)) {
         Notification::make()
           ->danger()
@@ -108,10 +97,8 @@ class ScpMeasurementExportController extends Controller
       }
     }
 
-    // Serve the file directly
     $file = Storage::disk('local')->path($filePath);
 
-    // Check if file exists
     if (!file_exists($file)) {
       Notification::make()
         ->danger()
@@ -122,12 +109,10 @@ class ScpMeasurementExportController extends Controller
       return redirect()->back();
     }
 
-    // Clear any output buffers
     while (ob_get_level()) {
       ob_end_clean();
     }
 
-    // Set the headers
     header('Content-Description: File Transfer');
     header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     header('Content-Disposition: attachment; filename="' . $latestExport->file_name . '.xlsx"');
@@ -137,28 +122,23 @@ class ScpMeasurementExportController extends Controller
     header('Pragma: public');
     header('Content-Length: ' . filesize($file));
 
-    // Read the file and exit
     readfile($file);
     exit;
   }
 
   public function directDownload($id)
   {
-    // Find the export by ID
     $export = Export::findOrFail($id);
 
-    // Check if the user has permission to download this export
     if ($export->user_id != Auth::id()) {
       abort(403, 'Unauthorized');
     }
 
-    // Build paths
     $paths = [
       'private/filament_exports/' . $export->getKey() . '/' . $export->file_name . '.xlsx',
       'private/private/filament_exports/' . $export->getKey() . '/' . $export->file_name . '.xlsx'
     ];
 
-    // Find the first existing file
     $filePath = null;
     foreach ($paths as $path) {
       if (Storage::disk('local')->exists($path)) {
@@ -167,7 +147,6 @@ class ScpMeasurementExportController extends Controller
       }
     }
 
-    // If no file found in specified paths, look for any file in the export directories
     if (!$filePath) {
       $directories = [
         'private/filament_exports/' . $export->getKey(),
@@ -183,15 +162,12 @@ class ScpMeasurementExportController extends Controller
       }
     }
 
-    // If still no file found, abort
     if (!$filePath) {
       abort(404, 'Export file not found');
     }
 
-    // Get the actual file path
     $file = Storage::disk('local')->path($filePath);
 
-    // Download using a simple file response
     return response()->file($file, [
       'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       'Content-Disposition' => 'attachment; filename="' . $export->file_name . '.xlsx"'
@@ -200,14 +176,12 @@ class ScpMeasurementExportController extends Controller
 
   public function directDownloadLatest()
   {
-    // First try to find exports with our new template naming convention
     $latestExport = Export::where('user_id', Auth::id())
       ->where('exporter', 'App\\Filament\\Exports\\ScpMeasurementTemplateExporter')
       ->where('file_name', 'like', 'scp-template-export-%')
       ->orderBy('created_at', 'desc')
       ->first();
 
-    // If none found with new pattern, fall back to any export from our exporter
     if (!$latestExport) {
       $latestExport = Export::where('user_id', Auth::id())
         ->where('exporter', 'App\\Filament\\Exports\\ScpMeasurementTemplateExporter')
@@ -219,13 +193,11 @@ class ScpMeasurementExportController extends Controller
       abort(404, 'No export found');
     }
 
-    // Build paths
     $paths = [
       'private/filament_exports/' . $latestExport->getKey() . '/' . $latestExport->file_name . '.xlsx',
       'private/private/filament_exports/' . $latestExport->getKey() . '/' . $latestExport->file_name . '.xlsx'
     ];
 
-    // Find the first existing file
     $filePath = null;
     foreach ($paths as $path) {
       if (Storage::disk('local')->exists($path)) {
@@ -234,7 +206,6 @@ class ScpMeasurementExportController extends Controller
       }
     }
 
-    // If no file found in specified paths, look for any file in the export directories
     if (!$filePath) {
       $directories = [
         'private/filament_exports/' . $latestExport->getKey(),
@@ -250,15 +221,12 @@ class ScpMeasurementExportController extends Controller
       }
     }
 
-    // If still no file found, abort
     if (!$filePath) {
       abort(404, 'Export file not found');
     }
 
-    // Get the actual file path
     $file = Storage::disk('local')->path($filePath);
 
-    // Return the file for download
     return response()->file($file, [
       'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       'Content-Disposition' => 'attachment; filename="' . $latestExport->file_name . '.xlsx"'
@@ -268,8 +236,7 @@ class ScpMeasurementExportController extends Controller
   public function freshExportAndDownload()
   {
     try {
-      // Check if template exists
-      $templatePath = storage_path('app/templates/scp-template2.xlsx');
+      $templatePath = Storage::disk('local')->path('templates/scp-template2.xlsx');
       if (!file_exists($templatePath)) {
         Notification::make()
           ->danger()
@@ -280,14 +247,11 @@ class ScpMeasurementExportController extends Controller
         return redirect()->back();
       }
 
-      // Log the start of the process
       Log::info('Starting fresh export and download with template: ' . $templatePath);
 
-      // Count total records
       $totalRows = ScpMeasurement::count();
       Log::info('Total records to export: ' . $totalRows);
 
-      // Create export record with fresh timestamp to ensure it's the newest
       $export = Export::create([
         'user_id' => Auth::id(),
         'file_name' => 'scp-template-export-' . now()->format('Y-m-d-H-i-s'),
@@ -298,7 +262,6 @@ class ScpMeasurementExportController extends Controller
 
       Log::info('Created export record with ID: ' . $export->id);
 
-      // Create and run the exporter directly (don't use the job)
       $exporter = new ScpMeasurementTemplateExporter($export);
 
       try {
@@ -317,7 +280,6 @@ class ScpMeasurementExportController extends Controller
         return redirect()->back();
       }
 
-      // Now get the path to the newly created file
       $paths = [
         'private/filament_exports/' . $export->getKey() . '/' . $export->file_name . '.xlsx',
         'private/private/filament_exports/' . $export->getKey() . '/' . $export->file_name . '.xlsx',
@@ -326,7 +288,6 @@ class ScpMeasurementExportController extends Controller
 
       Log::info('Looking for export file in paths: ' . implode(', ', $paths));
 
-      // Find the first existing file
       $filePath = null;
       foreach ($paths as $path) {
         if (Storage::disk('local')->exists($path)) {
@@ -336,7 +297,6 @@ class ScpMeasurementExportController extends Controller
         }
       }
 
-      // If no file found in standard locations, check directories for any file
       if (!$filePath) {
         $directories = [
           'private/filament_exports/' . $export->getKey(),
@@ -362,17 +322,14 @@ class ScpMeasurementExportController extends Controller
         }
       }
 
-      // If still no file found, abort
       if (!$filePath) {
         Log::error('No export file found after checking all paths and directories');
         abort(404, 'Export file not found. The export process failed.');
       }
 
-      // Get the actual file path
       $file = Storage::disk('local')->path($filePath);
       Log::info('Final file path for download: ' . $file);
 
-      // Return the file for download
       return response()->file($file, [
         'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         'Content-Disposition' => 'attachment; filename="' . $export->file_name . '.xlsx"'

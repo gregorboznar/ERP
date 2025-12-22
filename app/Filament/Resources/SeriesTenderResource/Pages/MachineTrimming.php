@@ -172,7 +172,7 @@ class MachineTrimming extends Page implements HasTable, HasForms
         ->schema([
           Grid::make()
             ->schema([
-              Grid::make()->schema([
+              Grid::make()->columnSpanFull()->schema([
                 Grid::make()
                   ->schema([
                     DatePicker::make('date')

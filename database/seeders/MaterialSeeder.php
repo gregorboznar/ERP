@@ -16,16 +16,10 @@ class MaterialSeeder extends Seeder
     {
         Material::create([
             'title' => 'Aluminijeva zlitina  EN AB 43400',
-
-            // Add other fields as necessary
         ]);
 
         Material::create([
             'title' => 'Aluminijeva zlitina  EN AB 46000',
-
-            // Add other fields as necessary
         ]);
-
-        // Add more materials as needed
     }
 }
